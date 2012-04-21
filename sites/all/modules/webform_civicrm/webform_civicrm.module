@@ -1,0 +1,218 @@
+<?php
+// $Id$
+
+/**
+ * Implimentation of Hook Menu.
+ */
+function webform_civicrm_menu() {
+  $items = array();
+  $items['node/%webform_menu/civicrm'] = array(
+    'title' => 'CiviCRM',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('webform_civicrm_configure_form', 1),
+    'access callback' => 'node_access',
+    'access arguments' => array('update', 1),
+    'file' => 'webform_civicrm_forms.inc',
+    'weight' => 3,
+    'type' => MENU_LOCAL_TASK,
+  );
+  $items['webform-civicrm/js/%/%'] = array(
+    'page callback' => 'webform_civicrm_js_options',
+    'file' => 'webform_civicrm_utils.inc',
+    'access callback' => 'node_access',
+    'access arguments' => array('update', 2),
+    'page arguments' => array(3),
+    'type' => MENU_CALLBACK
+  );
+  return $items;
+}
+
+/**
+ * Implimentation of Hook Form Alter.
+ */
+function webform_civicrm_form_alter(&$form, $form_state, $form_id) {
+  if ( $form_id == 'webform_component_edit_form' ) {
+    require_once 'webform_civicrm_forms.inc';
+    if ( webform_civicrm_get_settings( $form['nid']['#value'] ) ) {
+      $fields = webform_civicrm_get_fields();
+      $key = $form['form_key']['#default_value'];
+      // Prevent users from editing the form_key for CiviCRM processed fields
+      if ( array_key_exists( $key, $fields ) ) {
+        $form['form_key']['#disabled'] = TRUE;
+        $form['form_key']['#value'] = $key;
+        $form['form_key']['#description'] = t('Automatically set for use by CiviCRM processing.');
+
+        // Instructions for option lists
+        $lists = webform_civicrm_get_fields( 'lists' );
+        if ( array_key_exists( $key, $lists ) || $key == 'civicrm_country_id' ) {
+          unset( $form['extra']['options_source'] );
+          $complete_msg = t('The options have been reloaded.');
+          $form['extra']['items']['#description'] = t('These options were automatically selected from the CiviCRM database. You may reduce the number of options as you see fit. You may also change the labels (text after the |) to be more descriptive. However, adding new items here that are <em>not</em> in CiviCRM won\'t work. Instead, create your new options in CiviCRM, then click here to refresh this list:' );
+          if ( $_GET['reload-data'] ) {
+            $form['extra']['items']['#description'] .= '<div style="color:green; font-weight:bold; margin-top:0.5em;">'. $complete_msg .'</div>';
+            if ( $key == 'civicrm_country_id' )
+              $form['extra']['items']['#default_value'] = webform_civicrm_get_countries();
+            else
+              $form['extra']['items']['#default_value'] = webform_civicrm_get_options( $key );
+
+          }
+          else $form['extra']['items']['#description'] .= '<div id="civicrm-ajax" style="color:green; font-weight:bold; margin-top:0.5em;">'. l( t('Reload options'), $_GET['q'], array('query' => 'reload-data=1', 'attributes' => array('style' => 'color:blue;',
+          'onclick' => "$(this).addClass('views-throbbing');
+            $.ajax({
+              url: '/webform-civicrm/js/". arg(1) ."/$key',
+              success: function(data) {
+                $('#edit-extra-items').val(data);
+                $('#civicrm-ajax').html('$complete_msg');
+              }
+            }); return false;") ) ) .'</div>';
+        }
+        elseif ( $key == 'civicrm_contact_id' ) {
+          $form['value']['#type'] = 'hidden';
+          $form['value']['#value'] = 0;
+          $form['#prefix'] = t('<p>There are no configuration options for this hidden field. You can use it for post processing, for example to include a link to the CiviCRM contact in an email.</p>');
+        }
+
+        // Special options for CiviCRM groups
+        if ( $key == 'civicrm_groups' ) {
+          $form['extra']['items']['#type'] = 'hidden';
+          $form['extra']['items']['#required'] = FALSE;
+          unset( $form['extra']['options_source'] );
+          $selected = array();
+          $defaults = explode( "\n", trim($form['extra']['items']['#default_value']) );
+          foreach ( $defaults as $d ) {
+            list($key, $value) = explode( '|', $d );
+            $selected[] = trim( $key );
+          }
+          $form['civicrm_groups_fieldset'] = array(
+            '#type'  => 'fieldset',
+            '#title' => t('Allowed Groups'),
+            '#description' => t('Which group(s) is the user allowed to join on this form? (Often used for letting people subscribe to mailing lists)'),
+          );
+          $form['civicrm_groups_fieldset']['civicrm_groups'] = array(
+            '#type'  => 'checkboxes',
+            '#required' => TRUE,
+            '#options' => webform_civicrm_get_groups(),
+            '#default_value' => $selected
+          );
+          array_unshift( $form['#submit'], 'webform_civicrm_process_group_selection' );
+        }
+        // Auto set multi-value option for other fields based on schema
+        elseif ( $form['extra']['multiple'] ) {
+          $form['extra']['multiple']['#type'] = 'hidden';
+          $form['extra']['multiple']['#value'] = $fields[$key]['extra']['multiple'];
+        }
+      }
+    }
+  }
+  // Set custom prefix, and webform default values if CID is known
+  elseif ( strpos( $form_id, 'webform_client_form_' ) !== FALSE ) {
+
+    require_once 'webform_civicrm_forms.inc';
+    $node = $form['#node'];
+    if ( $settings = webform_civicrm_get_settings( $node->nid ) ) {
+      $enabled = webform_civicrm_enabled_fields( $node );
+
+      if ( $submission = $form['#submission'] ) {
+        $cid = $submission->civicrm['contact_id'];
+      }
+      else {
+        civicrm_initialize();
+        global $user;
+        if ( $user->uid ) {
+          require_once 'CRM/Core/BAO/UFMatch.php';
+          $cid = CRM_Core_BAO_UFMatch::getContactId($user->uid);
+        }
+        elseif ($_GET['cs'] && $_GET['cid']) {
+          require_once 'CRM/Contact/BAO/Contact/Utils.php';
+          if ( CRM_Contact_BAO_Contact_Utils::validChecksum( $_GET['cid'], $_GET['cs'] ) ) {
+            $cid = $_GET['cid'];
+            $_SESSION['webform_civicrm_cid'] = $cid;
+            $_SESSION['webform_civicrm_cs'] = $_GET['cs'];
+          }
+        }
+      }
+      if ( !$cid ) {
+        $form['#prefix'] .= $settings['prefix_unknown'];
+        if ( $settings['block_unknown_users'] )
+          $form = array();
+        return;
+      }
+      require_once 'api/v2/Contact.php';
+      $params = array( 'contact_id' => $cid );
+      $contact = civicrm_contact_get( $params );
+      $fields = webform_civicrm_get_fields( );
+      $custom = FALSE;
+      foreach ( $fields as $id => $f ) {
+        if ( strpos( $id, 'custom' ) ) {
+          $custom = TRUE;
+          $params[str_replace('civicrm', 'return', $id)] = 1;
+          }
+      }
+      if ( $custom ) {
+        $custom = civicrm_contact_get( $params );
+        $contact = array_merge( $contact[$cid], $custom[$cid] );
+      }
+      else
+        $contact = $contact[$cid];
+      $contact_info = array();
+      $form['#prefix'] .= webform_civicrm_replace_tokens( $settings['prefix_known'], $contact );
+
+      if ( $submission )
+        return;
+
+      foreach ( $enabled as $id => $val ) {
+        $new_id = str_replace( array('civicrm_', 'prefix', 'suffix'), array('', 'individual_prefix', 'individual_suffix'), $id );
+        if ( ($value = $contact[$new_id]) || isset($contact[$new_id]) )
+          $contact_info[$id] = $value;
+      }
+
+      if ( $enabled['civicrm_groups'] ) {
+        require_once 'api/v2/GroupContact.php';
+        $groups = civicrm_group_contact_get( $params );
+        $contact_info['civicrm_groups'] = array();
+        foreach ( $groups as $group ) {
+          $contact_info['civicrm_groups'][] = $group['group_id'];
+        }
+      }
+      webform_civicrm_fill_values( $form['submitted'], $contact_info );
+    }
+  }
+}
+
+/**
+ * Implimentation of Hook Webform submission presave.
+ */
+function webform_civicrm_webform_submission_presave($node, &$submission) {
+  require_once 'webform_civicrm_forms.inc';
+  if ( $settings = webform_civicrm_get_settings( $node->nid ) ) {
+    webform_civicrm_contact_match( $node, $submission, $settings );
+  }
+}
+
+/**
+ * Implimentation of Hook Webform submission insert.
+ */
+function webform_civicrm_webform_submission_insert($node, $submission) {
+  require_once 'webform_civicrm_forms.inc';
+  webform_civicrm_process_submission($node, $submission);
+}
+
+/**
+ * Implimentation of Hook Webform submission delete.
+ */
+function webform_civicrm_webform_submission_delete($node, $submission) {
+  db_query("DELETE FROM {webform_civicrm_submissions} WHERE sid = %d", $submission->sid);
+}
+
+/**
+ * Implimentation of Hook Webform submission load.
+ * Add CiviCRM contact info to submissions.
+ */
+function webform_civicrm_webform_submission_load(&$submissions) {
+  $db = db_query( "SELECT * FROM {webform_civicrm_submissions} WHERE sid IN (". implode(',', array_keys($submissions)) .")" );
+  while ( $row = db_fetch_array( $db ) ) {
+    $sid = $row['sid'];
+    unset( $row['sid'] );
+    $submissions[$sid]->civicrm = $row;
+  }
+}

@@ -1,0 +1,72 @@
+/* $Id: ajax_slideshow.css,v 1.4 2010/08/11 20:42:16 udig Exp $ */ 
+
+/* ajax slideshow */
+.ajax_slideshow{clear:both}
+.as-tabs-panes{width:90%; float:left;}
+
+/*tabs*/
+div.as-tabs {margin:0 !important; padding:0;}
+div.as-tabs .item-list ul{margin:0} 
+
+/* single tab */
+div.as-tabs ul li {float:left; padding:0; margin:0; list-style-type:none;}
+
+/* link inside the tab. uses a background image */
+div.as-tabs a.as-tab { 
+  float:left;
+  font-size:13px;
+  display:block;
+  padding:5px 30px; 
+  text-decoration:none;
+  border:1px solid #ddd;  
+  border-bottom:0px;
+  height:auto;
+  background-color:#efefef;
+  color:#888;
+  margin-right:2px;
+  -moz-border-radius-topleft: 4px;
+  -moz-border-radius-topright:4px;
+  position:relative;
+  top:1px;  
+}
+
+div.as-tabs a.as-tab:hover {background-color:#F7F7F7; color:#333;}
+  
+/* selected tab */
+div.as-tabs a.current {
+  background-color:#fff;   /* background of selected tab pure white */
+  color:#000;              /* text of selected tab pure black */
+  cursor:default; 
+  height:auto;             /* control height of selected tab */
+  border:1px solid #bbb;   /* give it a one-pixel border in grey */ 
+  border-bottom:1px solid #fff;    /* a white bottom border covers the border of the pane ... */
+  z-index:2;               /* ... because of having a higher z-index */
+}
+
+/* panes */
+div.as-panes {position:relative; overflow:hidden}
+.as-panes-border{border:1px solid #bbb; z-index:1;}
+
+/* single pane */
+div.absolute_pane{position:absolute;top:0;left:0;}   
+div.as-panes div.pane {background-color:#FFFFFF; display:none; font-size:14px; padding:15px 10px; width:98%;}
+
+/* navigation buttons */
+a.prev, a.next{
+  float:left;
+  background:url(images/hori_large.png) no-repeat; 
+  display:block;
+  width:30px;
+  height:30px;
+  cursor:pointer;
+  font-size:1px;
+  text-indent:-9999em;  
+}
+
+a.next{background-position: 0 -30px; clear:right; margin-left:10px}
+a.next:hover{background-position:-30px -30px;}
+a.next:active{background-position:-60px -30px;}
+
+a.prev{margin-right:10px;}
+a.prev:hover{background-position:-30px 0px;}
+a.prev:active{background-position:-60px 0px;}

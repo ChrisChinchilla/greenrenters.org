@@ -1,0 +1,5 @@
+name = Auto-calculate Shipping
+description = "Use JavaScript to automatically click the Calculate Shipping button at checkout."
+version = "6.x-1.1"
+core = "6.x"
+package = "Ubercart - fulfillment"

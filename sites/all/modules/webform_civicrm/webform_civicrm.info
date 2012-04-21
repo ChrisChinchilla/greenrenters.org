@@ -1,0 +1,7 @@
+; $Id: $
+name = Webform CiviCRM Integration
+description = Link between Webforms and your CiviCRM contacts.
+core = 6.x
+package = CiviCRM
+dependencies[] = civicrm
+dependencies[] = webform

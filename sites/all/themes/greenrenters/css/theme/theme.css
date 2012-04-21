@@ -1,0 +1,2036 @@
+/**
+ * $Id: theme.css,v 1.1.2.19 2010/03/23 03:29:25 jmburnz Exp $
+ * adaptivethemes.com
+ *
+ * @file theme.css
+ * theme.css is the file to use when building your theme. 
+ * Make a copy first as a backup.
+ */
+
+/**********************************************************
+ *                    HTML & Body
+ **********************************************************/
+html {}
+body {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 14px;
+	color: #212121;
+}
+
+/* Admin menu */
+body.admin-menu {}
+body.admin-menu #container {}
+
+/**********************************************************
+ *                 HTML Elements
+ **********************************************************/
+h1 {}
+h2,h2 a {
+	
+color: #243E90;
+    font-weight: bold;
+	font-size:16px;
+	
+	}
+h3 {}
+h4 {}
+h5 {
+	color: #243E90;
+}
+h6 {}
+
+p {}
+
+strong {}
+em, dfn {}
+dfn {}
+
+sup, sub {}
+
+del {}
+ins {}
+
+blockquote {}
+cite {}
+q {}
+
+address {}
+
+ul {}
+ol {}
+li {}
+
+dl {}
+dd {}
+dt {}
+
+abbr {}
+acronym {}
+
+pre, code, tt {}
+p code {}
+samp {}
+kbd {}
+var {}
+
+
+/**********************************************************
+ *                 Global Link Styles
+ **********************************************************/
+a,
+#crm-container a,
+#crm-container a:link
+ {
+	color: #156734;
+	text-decoration:none;
+}
+a:link    {}
+a:visited {}
+a:hover   {}
+a:active  {}
+a.active  {}
+
+/* Set global a:active and a:focus styles. */
+a:active,
+a:focus {}
+
+
+/**********************************************************
+ *                    Body Classes
+ **********************************************************/
+ /* NOTE: these are not active by default; you need to 
+    enable them in the Advanced theme settings. */
+
+/* Front or not front. */
+.front {}
+.not-front {}
+
+/* Is the user logged in. */
+.logged-in {}
+.not-logged-in {}
+
+/* Content type body classes. */
+.article-type-book  {}
+.article-type-blog  {}
+.article-type-forum {}
+.article-type-page  {}
+.article-type-poll  {}
+.article-type-story {}
+
+	
+/**********************************************************
+ *                  The wrapper divs
+ *    Be careful how you modify these, see layout.css
+ **********************************************************/
+#container {width:980px !important;}
+/* TEMPORARY */
+
+/* Column wrappers */
+#columns {}
+.columns-inner {}
+
+/* Content wrappers */
+#content-column {
+	
+    min-width: 720px;
+	width:50%;
+	
+	}
+	
+	.page-fbsurvey #container #columns .columns-inner #content-column,
+	.page-fbstore #container #columns .columns-inner #content-column,
+	.page-node-1017 #container #columns .columns-inner #content-column
+
+	
+	{
+		width:500px;
+		min-width:0;
+	}
+	
+	.page-fbsurvey #container
+	
+	{
+		width:500px;
+	}
+	
+.content-inner {
+	
+	margin:0px !important;
+	border: 2px solid black;
+/*width:696px;*/
+	
+	}
+
+/* Main content wrappers*/
+#main-content {}
+#content {
+	padding:10px;
+	}
+
+
+/**********************************************************
+ *                       Regions
+ **********************************************************/
+/* Leaderboard is a full width region at the very top of the page. */
+#leaderboard {}
+
+/* Header region is embedded in the header, floated between the logo/site_name
+   and the search box. */
+#header-region {
+	width:700px;
+	}
+
+/* Menu Bar sits below the header and is ideal for dynamic menus 
+   such as http://drupal.org/project/superfish. */
+#menu-bar {}
+
+/* Secondary content is a full width region between the header and the
+   main columns. */
+#secondary-content {}
+
+/* Tertiary content is a full width region above the footer, below the
+   main content. */
+#tertiary-content {}
+
+/* Content top and bottom are above and below the main content, within the main 
+   content column. Content aside floats to the right within the main central
+   column, but below content top. */
+#content-top {}
+#content-aside {
+	
+	}
+	
+#content-bottom {
+	
+	
+	}
+
+/* Article aside appears only in articles (nodes). By default its placed at
+   the bottom of the node.tpl.php template. */
+#article-aside {
+	width: 150px;
+	position: absolute;
+    top: 300px;
+	}
+
+
+/**********************************************************
+ *                      Sidebars
+ **********************************************************/
+/* Target both sidebars with this low specifity selector. */
+.sidebar {
+	padding: 10px;
+	}
+
+/* Target a specific sidebar. */
+#sidebar-first {
+    margin: 0 !important;
+    width: 240px;	
+	
+	}
+#sidebar-last {
+	/*margin-left:0 !important;
+	margin-top: 265px;*/
+	    margin: 0 !important;
+		padding-top:262px;
+	}
+
+
+/**********************************************************
+ *                   Skip navigation
+ **********************************************************/
+/**
+ * DO NOT USE display:none as this hides it from screen readers!
+ */
+#skip-nav {}
+
+/* Override default pseudo class styles */
+#skip-nav a:link    {}
+#skip-nav a:visited {}
+#skip-nav a:hover   {}
+#skip-nav a:focus   {}
+#skip-nav a:active  {}
+
+
+/**********************************************************
+ *                 Header Elements
+ **********************************************************/
+/* #header wraps #branding, #search-box-top and #header-blocks. */
+#header {
+	width: 700px;
+		margin: 0 auto;
+
+	/*background-image: url(../images/house_header.gif);	*/
+	}
+
+/* #branding wraps #logo, #site-name and #site-slogan. */
+#branding {
+	 margin: 0 0 20px;
+	 width:240px;
+	 }
+
+/* Logo and Site Name wrapper. */
+.logo-site-name {}
+
+/* Logo and Site Name wrapper h1 - normally applies only the homepage. */
+h1.logo-site-name  {}
+
+/* Logo and Site Name wrapper DIV - normally applies to all internal pages,
+   or where no title is set. */
+div.logo-site-name {}
+
+/* DIV/strong combo when when title is set. */
+div.logo-site-name strong {}
+
+/* By default the span is set to display:block, you can display:inline
+   or float the elements to get them all on one line. */
+.logo-site-name span {}
+
+/* Logo and Site Name SPAN wrappers. */
+span#logo {}
+span#site-name {}
+
+/* Override default pseudo class styles. */
+#site-name a:link    {}
+#site-name a:visited {}
+#site-name a:hover   {}
+#site-name a:focus   {}
+#site-name a:active  {}
+
+/* Site slogan. */
+#site-slogan {}
+
+
+/**********************************************************
+ *    Search box, Advanced search form, Search results
+ *          For the search block see blocks.css
+ **********************************************************/
+/**
+ * Search box
+ */
+/* Float the serch box right. */
+#search-box {
+		float: none;
+			 width:240px;
+
+}
+
+/* Reset form element margins. */
+#search-theme-form {
+	float: none;
+	}
+
+/* Wrapper DIVs */
+#search-theme-form > div {}
+#search-theme-form #search {}
+#edit-search-theme-form-1-wrapper {}
+
+#search-theme-form label {}
+#search-theme-form input {}
+
+#search-theme-form .form-text {}
+#search-theme-form .form-submit {
+	font:Georgia, "Times New Roman", Times, serif;
+	font-size:12px;
+	}
+
+/**
+ * Advanced search form
+ */
+/* Advanced search-form id. */
+#search-form {}
+
+/* Use the child selector because the inner div has no class. */
+#search-form > div {}
+#search-form .container-inline {}
+#search-form #edit-keys-wrapper {}
+
+#search-form label {}
+#search-form input {}
+#search-form .form-item {}
+#search-form .form-submit {}
+
+/* Textfield styles. */
+#search-form #edit-keys-wrapper input {}
+#search-form #edit-keys-wrapper input:hover,
+#search-form #edit-keys-wrapper input:focus {}
+
+/* Advanced search fieldset. */
+#search-form fieldset.search-advanced {}
+
+/**
+ * Search results
+ */
+/* Box styles for the results page. */
+.section-search .box {}
+.section-search .box-inner {}
+.section-search .box-title {}
+
+/* Style the no results messages. */
+.section-search .box ul {}
+.section-search .box ul li {}
+
+/* Search results document list. */
+dl.search-results {}
+dl.search-results dt {}
+dl.search-results dd {}
+dl.search-results dd p {}
+dl.search-results dd .search-snippet {}
+dl.search-results dd .search-info {}
+
+span.search-info-type {}
+span.search-info-user {}
+span.search-info-date {}
+span.search-info-comment {}
+span.search-info-upload  {}
+
+
+/**********************************************************
+ *               Primary & Secondary Links
+ **********************************************************/
+/* Primary-links div wrapper */
+#primary {}
+
+/* Class on the ul */
+.primary-links {}
+
+/* Modify the margin to set tab spacings. */
+.primary-links li {}
+.primary-links li a {}
+
+/* Set pseudo class styles. */
+.primary-links li a:link {}
+.primary-links li a:visited {}
+.primary-links li a:hover {}
+.primary-links li a:focus {}
+.primary-links li a:active {}
+
+/* Primary first and last classes. */
+.primary-links li.first {}
+.primary-links li.last {}
+
+/* Active trail classes. */
+.primary-links li.active {}
+.primary-links li.active-trail {}
+.primary-links li.active-trail a {}
+
+/* Secondary-links div wrapper */
+#secondary {}
+
+/* Class on the ul */
+.secondary-links {}
+
+/* Modify the margin to set tab spacings. */
+.secondary-links li {}
+.secondary-links li a {}
+
+/* Set pseudo class styles. */
+.secondary-links li a:link {}
+.secondary-links li a:visited {}
+.secondary-links li a:hover {}
+.secondary-links li a:focus {}
+.secondary-links li a:active {}
+
+/* Secondary first and last classes. */
+.secondary-links li.first {}
+.secondary-links li.last {}
+
+/* Active trail classes. */
+.secondary-links li.active {}
+.secondary-links li.active-trail {}
+.secondary-links li.active-trail a {}
+
+
+/**********************************************************
+ *                      Breadcrumb
+ **********************************************************/
+#breadcrumb {
+	padding-top:20px;
+	/*
+	background:#e9e9e9;
+	     -moz-border-radius: 20px;
+    -webkit-border-radius: 20px;
+    -khtml-border-radius: 20px;
+    border-radius: 20px;
+  margin: 20px 10px 0;
+    padding: 20px;
+    width: 30%*/
+}
+#breadcrumb a {}
+#breadcrumb a:link {}
+#breadcrumb a:visited {}
+#breadcrumb a:hover {}
+#breadcrumb a:focus {}
+#breadcrumb a:active {}
+
+
+/**********************************************************
+ *                       Mission
+ **********************************************************/
+	 
+	 #mission {
+    font-weight: normal;
+}
+
+
+/**********************************************************
+ *                    H1 Page Title
+ **********************************************************/
+h1#page-title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #003399;
+	padding-top: 20px;
+}
+
+
+/**********************************************************
+ *                     Pager 
+ **********************************************************/
+/* The first 2 classes provide the base pager styles. */
+ul.pager    {}
+ul.pager li {}
+
+/* Theme the various states of pager links. */
+ul.pager li a:link    {}
+ul.pager li a:visited {}
+ul.pager li a:hover   {}
+
+/* Note: .pager-current is for the current page. */
+ul.pager li.pager-item     {}
+ul.pager li.first          {}
+ul.pager li.last           {}
+ul.pager li.pager-current  {}
+ul.pager li.pager-first    {}
+ul.pager li.pager-previous {}
+ul.pager li.pager-next     {}
+ul.pager li.pager-last     {}
+
+
+/**********************************************************
+ *               Footer, Footer Message
+ **********************************************************/
+#footer {}
+
+#footer-region {}
+#footer-region a {}
+
+#footer-message {}
+#footer-message a {}
+
+
+/**********************************************************
+ *                 RSS Feed Icon
+ **********************************************************/
+#feed-icons {}
+#feed-icons .feed-icon {}
+#feed-icons .feed-icon img {}
+#feed-icons a.feed-icon {}
+
+
+/**********************************************************
+ *                  Generic Content Classes
+ **********************************************************/
+.title {}
+.submitted {
+	float:left;
+	vertical-align: middle;
+	margin:0;
+	}
+.submitted em {}
+.submitted a {}
+.content {}
+ul.links {}
+ul.links li {}
+ul.links li a {}
+
+
+/**********************************************************
+ *                      Articles (nodes)
+ **********************************************************/
+.article {}
+
+/* Teaser title (H2). */
+.article-title {}
+
+.article-title a:link,
+.article-title a:visited {}
+.article-title a:hover,
+.article-title a:focus,
+.article-title a:active {}
+
+/* User Picture. */
+.article .user-picture {}
+.article .user-picture img {}
+
+/* Submitted */
+.article .submitted,
+.article .submitted .author,
+.article .submitted .time,
+.pane-node-created,
+.created
+ {
+	font-size: 12px;
+	font-style: italic;
+	float:left;
+
+}
+
+.views-row-unformatted .created
+{
+float:none;	
+}
+
+.pane-node-author,
+.name
+{
+	font-size: 12px;
+	float:left;	
+	border-right: 1px solid;
+	margin-right: 4px;
+    padding-right: 4px;
+}
+
+.views-list-item .name
+{
+	float:none;	
+	border-right: none;
+}
+
+#block-views-og_group_posts-block_1 .name
+{
+border-right:none;
+float:none;	
+}
+
+.article .submitted em {}
+.article .submitted a {}
+.article .submitted a:hover {}
+
+
+/* Common links classes. */
+.article ul.links {}
+.article ul.links li {}
+.article ul.links li a {}
+
+/* Taxonomy terms. */
+/* Term list */
+.pane-panel-tag, 
+ul.taxonomy,
+.pane-node-terms
+ {
+	 width: 375px;
+	float:right;
+font-size: 12px;
+text-align: right;
+vertical-align: middle;
+	margin:0;
+}
+ul.taxonomy li {}
+ul.taxonomy li a {}
+/* With vocab headers */
+ul.taxonomy li.vocab {}
+.vocab-name {}
+ul.vocab-list {}
+ul.vocab-list li {}
+ul.vocab-list li a {}
+
+/* Style module links. */
+ul.links li.node_read_more a {}
+ul.links li.comment_add a {}
+ul.links li.comment_comments a {}
+ul.links li.comment_new_comments a {}
+ul.links li.blog_usernames_blog a {}
+ul.links li.print_html a {}
+ul.links li.print_email a {}
+ul.links li.print_pdf a {}
+
+/* UL link first and last classes. */
+.article ul.links li.first {}
+.article ul.links li.last  {}
+
+/* Workflow states. */
+.article-add    {}
+.article-edit   {}
+.article-delete {}
+.article-preview  {}
+.article-sticky   {}
+.article-promoted {}
+
+/* Status. */
+.article-unpublished {}
+
+/* Theme the teaser seperatly. */
+.article-teaser {}
+
+
+/**********************************************************
+ *                     Content types
+ *              Style article types by type.
+ **********************************************************/
+.book-article  {}
+.blog-article  {}
+.forum-article {}
+.page-article  {}
+.poll-article  {}
+.story-article {}
+
+ /**
+  * Custom Content Types
+  * Replace CONTENT_TYPE with the content type
+  * machine-readable name.
+  */
+.CONTENT_TYPE-article {}
+
+
+/**********************************************************
+ *                    CCK Fields
+ **********************************************************/
+/* Wrapper for any CCK field. */
+.field {}
+
+/* Use "datetime" when creating new CCK date fields. */
+.field-type-datetime {}
+
+/* Filefield field. */
+.field-type-filefield {}
+
+/* Node reference field. */
+.field-type-nodereference {}
+
+/* User reference field. */
+.field-type-userreference {}
+
+/* Number fields. */
+.field-type-number-decimal {}
+.field-type-number-float   {}
+.field-type-number-integer {}
+
+/* Text field. */
+.field-type-text {}
+
+/**
+ * Specific field names.
+ */
+/* Underscores in field name are replaced with dashes. */
+.field-field-FIELDNAME {}
+
+
+/**********************************************************
+ *                     Comments
+ **********************************************************/
+/* Comment wrapper: wraps all comments and the comment form. */
+#comments {}
+#comments-title {}
+
+/* Wrapper class for each individual comment. */
+.comment {}
+
+/* Indentation */
+.comment .indented {}
+
+/* Comment Title (H3) */
+.comment-title {}
+.comment-title a:link,
+.comment-title a:visited {}
+.comment-title a:hover,
+.comment-title a:focus,
+.comment-title a:active {}
+
+/* Comment id (count with pound sign, see line 28 comment.tpl.php) 
+   and comment "new" notification. */
+.comment-id {}
+.comment-title .new {}
+
+
+/* User Picture */
+.comment .user-picture {}
+.comment .user-picture img {}
+
+/* Submitted */
+.comment .submitted {}
+.comment .submitted em {}
+.comment .submitted a {}
+.comment .submitted a:hover {}
+.comment .submitted .author {}
+.comment .submitted .time {}
+
+/* Links */
+.comment ul.links {}
+.comment ul.links li {}
+.comment ul.links li a {}
+
+/* Core comment link classes. */
+ul.links li.comment_reply a {}
+ul.links li.comment_edit a {}
+ul.links li.comment_delete a {}
+
+/* UL link first and last classes. */
+.comment ul.links li.first {}
+.comment ul.links li.last  {}
+
+/* Author */
+.comment-by-anonymous   {}
+.comment-by-article-author {}
+.comment-by-viewer      {}
+
+/* New */
+.comment-new {}
+
+/* Zebra */
+.comment.odd  {}
+.comment.even {}
+
+/* Status */
+.comment-unpublished {}
+
+/* Themes the "Unpublished" text. */
+.comment-unpublished .unpublished {}
+
+/* Comment box wrapper on a seperate page. */
+.section-comment .box {}
+.section-comment .box .box-title {}
+
+/* Comment box wrapper below content. */
+#comments .box {}
+#comments .box .box-title {}
+
+/* Sytle comments by article type. */
+.book-comments  {}
+.blog-comments  {}
+.forum-comments {}
+.page-comments  {}
+.poll-comments  {}
+.story-comments {}
+
+
+/**********************************************************
+ *                       Blocks
+ **********************************************************/
+/**
+ * Styles set for .block, .block-inner, block-title and 
+ * .block-content will be inherited by all blocks.
+ */
+.block {
+	padding:10px;
+	margin:0;
+	}
+.block-inner   {} /* Block inner div */
+.block-title   {} /* h2 block title */
+
+
+/**********************************************************
+ *                   Sidebar blocks
+ **********************************************************/
+/**
+ * You can target blocks in one or more regions and 
+ * style them differently. 
+ */
+ 
+/* Low specifity selector to style blocks in all regions. */
+.aside .block {}
+.aside .block h2 {}
+.aside .block-inner {}
+
+/* Low specifity selector to style blocks in both sidebars. */
+.sidebar .block {}
+.sidebar .block h2 {}
+.sidebar .block-inner {}
+
+/* High specifity selectors to style blocks in one sidebar - be careful,
+   these are powerful selectors! */
+#sidebar-first .block {
+	}
+	
+#sidebar-first .block h2 {}
+#sidebar-first .block-inner {}
+
+#sidebar-last .block {}
+#sidebar-last .block h2 {}
+#sidebar-last .block-inner {}
+
+#sidebar-last .block p,
+#sidebar-last #block-block-9 .block-inner,
+#sidebar-last #block-block-13 .block-inner,
+#sidebar-last #block-block-16 .block-inner
+
+
+{
+margin:0;
+padding:0;	
+}
+
+/**********************************************************
+ *                  Region blocks
+ **********************************************************/
+/* High specifity selectors to style blocks in one region. */
+#leaderboard       .block {}
+#header-region     .block {
+	margin:0;
+	padding:0;
+		height: 272px;
+
+	}
+#menu-bar          .block {}
+#secondary-content .block {}
+#tertiary-content  .block {}
+#content-top       .block {}
+#content           .block {}
+#content-bottom    .block {
+	
+		clear:none;
+
+}
+#footer-region     .block {}
+
+
+/**********************************************************
+ *                   Module blocks
+ **********************************************************/
+/**
+ * Module Block ID's 
+ * For contributed module blocks the pattern is the same,
+ * i.e. #block-[module]-[delta]
+ */
+#block-book-0       {} /* Book navigation block   */
+#block-blog-0       {} /* Recent Blog posts       */
+#block-comment-0    {} /* Recent Comments block   */
+#block-forum-0      {} /* Active Forum topics     */
+#block-forum-1      {} /* New Forum topics        */
+#block-locale-0     {} /* Language Switcher block */
+#block-node-0       {} /* Syndicate block         */
+#block-poll-0       {} /* Most recent poll        */
+#block-profile-0    {} /* Author information      */
+#block-search-0     {} /* Search form block       */
+#block-statistics-0 {} /* Popular content         */
+#block-system-0     {} /* Powered by Drupal       */
+#block-user-0       {} /* Login block             */
+#block-user-1       {} /* Navigation Menu block   */
+#block-user-2       {} /* Who's New block         */
+#block-user-3       {} /* Who's Online block      */
+
+/* Primary and Secondary links blocks */
+#block-menu-primary-links   {}
+#block-menu-secondary-links {}
+
+/* The class selector applies to all blocks of these types. */
+.block-user {} 
+.block-book {} 
+.block-aggregator {}
+
+
+/**********************************************************
+ *                 Search block form
+ **********************************************************/
+#search-block-form {}
+
+/* Wrapper DIVs. */
+#search-block-form > div {}
+#search-block-form .container-inline{}
+#edit-search-block-form-1-wrapper {}
+
+#search-block-form label {}
+#search-block-form input {}
+
+#search-block-form .form-submit {}
+#search-block-form .form-text {}
+
+/* Override forms.css focus style */
+#edit-search-block-form-1:hover,
+#edit-search-block-form-1:focus {}
+
+
+/**********************************************************
+ *                   Menu blocks
+ **********************************************************/
+/**
+ * Prefix these with the block id to style one menu only.
+ */
+ul.menu,
+ul.menu ul, 
+ul.menu ul ul, 
+ul.menu ul ul ul {}
+
+/* Menu li styles */
+ul.menu li {}
+
+ul.menu li.collapsed {}
+ul.menu li.expanded  {}
+ul.menu li.leaf      {}
+
+ul.menu li a:link,
+ul.menu li a:visited {}
+ul.menu li a:hover,
+ul.menu li a:focus,
+ul.menu li a:active   {}
+ul.menu li.active a  {}
+ul.menu li.active-trail a {}
+
+ul.menu li.first {}
+ul.menu li.last  {}
+
+
+/**********************************************************
+ *                   Block item-list
+ **********************************************************/
+.block .item-list ul {}
+.block .item-list ul li {}
+
+
+/**********************************************************
+ *                  Gpanel blocks
+ **********************************************************/
+/* Examples to get started. Add col specific selectors to style
+   blocks in different Gpanel columns, or element selectors to
+   style specific elements */
+   
+.two-col-2x50  .block {}
+.two-col-33-66 .block {}
+.two-col-66-33 .block {}
+
+.three-col-3x33     .block {}
+.three-col-25-25-50 .block {}
+.three-col-50-25-25 .block {}
+
+.four-col-4x25 .block {}
+.five-col-5x20 .block {}
+.six-col-6x16  .block {}
+
+
+/**********************************************************
+ *                  Gpanel Regions
+ **********************************************************/
+/**
+ * NOTE: If you are adding borders, padding or margin (anything
+ * that adds width) you should apply these to the INNER div or
+ * the contained element, such as a block or mini-panel.
+ */
+
+.gpanel {}
+.gpanel .region {}
+.gpanel .region .inner {}
+.gpanel .first  .inner {}
+.gpanel .last   .inner {}
+
+/* 2 column */
+.two-col-2x50 {}
+.two-col-2x50 .region {}
+.two-col-2x50 .region .inner {}
+.two-col-2x50 .col-1  {}
+.two-col-2x50 .col-2  {}
+.two-col-2x50 .col-1 .inner {}
+.two-col-2x50 .col-2 .inner {}
+
+.two-col-33-66 {}
+.two-col-33-66 .region {}
+.two-col-33-66 .region .inner {}
+.two-col-33-66 .col-1 {}
+.two-col-33-66 .col-2 {}
+.two-col-33-66 .col-1 .inner {}
+.two-col-33-66 .col-2 .inner {}
+
+.two-col-66-33 {}
+.two-col-66-33 .region {}
+.two-col-66-33 .region .inner {}
+.two-col-66-33 .col-1 {}
+.two-col-66-33 .col-2 {}
+.two-col-66-33 .col-1 .inner {}
+.two-col-66-33 .col-2 .inner {}
+
+/* 3 column */
+.three-col-3x33 {}
+.three-col-3x33 .region {}
+.three-col-3x33 .region .inner {}
+.three-col-3x33 .col-1 {}
+.three-col-3x33 .col-2 {}
+.three-col-3x33 .col-3 {}
+.three-col-3x33 .col-1 .inner {}
+.three-col-3x33 .col-2 .inner {}
+.three-col-3x33 .col-3 .inner {}
+
+.three-col-25-25-50 {}
+.three-col-25-25-50 .region {}
+.three-col-25-25-50 .region .inner {}
+.three-col-25-25-50 .col-1 {}
+.three-col-25-25-50 .col-2 {}
+.three-col-25-25-50 .col-3 {}
+.three-col-25-25-50 .col-1 .inner {}
+.three-col-25-25-50 .col-2 .inner {}
+.three-col-25-25-50 .col-3 .inner {}
+
+.three-col-50-25-25 {}
+.three-col-50-25-25 .region {}
+.three-col-50-25-25 .region .inner {}
+.three-col-50-25-25 .col-1 {}
+.three-col-50-25-25 .col-2 {}
+.three-col-50-25-25 .col-3 {}
+.three-col-50-25-25 .col-1 .inner {}
+.three-col-50-25-25 .col-2 .inner {}
+.three-col-50-25-25 .col-3 .inner {}
+
+/* 4 column */
+.four-col-4x25 {}
+.four-col-4x25 .region {}
+.four-col-4x25 .region .inner {}
+.four-col-4x25 .section-1 {}
+.four-col-4x25 .section-2 {}
+.four-col-4x25 .col-1 {}
+.four-col-4x25 .col-2 {}
+.four-col-4x25 .col-3 {}
+.four-col-4x25 .col-4 {}
+.four-col-4x25 .col-1 .inner {}
+.four-col-4x25 .col-2 .inner {}
+.four-col-4x25 .col-3 .inner {}
+.four-col-4x25 .col-4 .inner {}
+
+/* 5 column */
+.five-col-5x20 {}
+.five-col-5x20 .region {}
+.five-col-5x20 .region .inner {}
+.five-col-5x20 .col-1 {}
+.five-col-5x20 .col-2 {}
+.five-col-5x20 .col-3 {}
+.five-col-5x20 .col-4 {}
+.five-col-5x20 .col-5 {}
+.five-col-5x20 .col-1 .inner {}
+.five-col-5x20 .col-2 .inner {}
+.five-col-5x20 .col-3 .inner {}
+.five-col-5x20 .col-4 .inner {}
+.five-col-5x20 .col-5 .inner {}
+
+/* 6 column */
+.six-col-6x16 {}
+.six-col-6x16 .region {}
+.six-col-6x16 .region .inner {}
+.six-col-6x16 .col-1 {}
+.six-col-6x16 .col-2 {}
+.six-col-6x16 .col-3 {}
+.six-col-6x16 .col-4 {}
+.six-col-6x16 .col-5 {}
+.six-col-6x16 .col-6 {}
+.six-col-6x16 .col-1 .inner {}
+.six-col-6x16 .col-2 .inner {}
+.six-col-6x16 .col-3 .inner {}
+.six-col-6x16 .col-4 .inner {}
+.six-col-6x16 .col-5 .inner {}
+.six-col-6x16 .col-6 .inner {}
+
+
+/**********************************************************
+                      AT Panels
+    Classes for styling the built in Panels Layouts
+    You need the Panels 3 module installed to use the
+    built in panels and the Adaptivetheme base theme
+    must be enabled.
+ **********************************************************/
+.panel-col {}
+.panel-col .inside {}
+.panel-pane {}
+
+.sixcol-6x16 {}
+.fivecol-5x20 {}
+.fourcol-4x25 {}
+
+.threecol-at-25-25-50 {}
+.threecol-at-50-25-25 {}
+
+.twocol-at-33-66 {}
+.twocol-at-66-33 {}
+
+.threecol-at-stacked-inset {}
+.twocol-at-stacked-inset {}
+
+
+/**********************************************************
+ *                 AT Button Wrappers
+ **********************************************************/
+/**
+ * Adaptivetheme wraps input buttons with SPANs for
+ * easy theming.
+ */
+ span.button-wrapper {} /* Outer wrapper */
+ span.button {} /* Inner wrapper */
+
+
+/**********************************************************
+ *                       Tables
+ **********************************************************/
+/**
+ * The selector groupings are from Garland which offers a
+ * sensible starting point for styling Drupal tables.
+ */
+table {}
+
+caption, th, td {}
+caption, th {}
+
+table, td, th {}
+tbody, tfoot, thead, tr {}
+thead th {}
+td, th {}
+
+tr.even, tr.odd, tbody th {}
+tr.odd, tr.info {}
+tr.even {}
+
+tr.drag {}
+tr.drag-previous  {}
+
+tr.odd td.active  {}
+tr.even td.active {}
+
+td.region,
+td.module,
+td.container td.category {}
+
+tr:first-child td.region,
+tr:first-child td.module,
+tr:first-child td.container {}
+
+
+/**********************************************************
+ *                   Forum Tables
+ **********************************************************/
+#forum table {}
+#forum tr td.forum {}
+#forum tr td.forum .name {}
+#forum div.indent {}
+
+
+
+
+/* CCK */
+.imagefield-field_image,
+.field-image,
+.pane-field-image
+{
+	/*
+float: left;
+margin-right: 20px;
+margin-bottom: 100%;*/
+}
+
+.view-content .field-image,
+.field-image-fid
+{
+float: left;
+margin-right: 20px;
+}
+
+.view-content .body
+{
+	margin-top:20px;
+
+}
+
+.pane-availableworkshopsblocks .view-content .body
+{
+	margin-top:0;
+}
+
+.pane-field-relatedworkshops
+{
+	clear: both;
+	margin-top: 15px;
+}
+
+.pane-field-relatedworkshops .item
+{
+	font-size:12px;
+}
+
+.pane-block-2 {
+	clear: both;
+	height: 110px;
+}
+
+.page-store .view-content .body
+{
+margin-top:0;
+}
+
+.buyitnowbutton
+{
+float:left;
+}
+.view-content .views-row-unformatted
+{
+float:left;
+margin-bottom: 20px;	
+}
+
+#magnify
+{
+	 height: 24px;
+    margin-left: 4px;
+    margin-top: -35px;
+    width: 24px;
+}
+
+
+.nodetype_tutorial
+{
+	width:18px;
+	height:26px;
+	margin: 20px 0;
+}
+
+.nodetype_event
+{
+	width:23px;
+	height:25px;
+	margin: 20px 0;}
+
+.nodetype_news
+{
+	width:28px;
+	height:23px;
+	margin: 20px 0;}
+
+.nodetype_product
+{
+	width:28px;
+	height:23px;
+	margin: 20px 0;}
+
+.nodetype_project
+{
+	width:32px;
+	height:21px;
+	margin: 20px 0;}
+
+.nodetype_opinion
+{
+	width:24px;
+	height:17px;
+	margin: 20px 0;}
+
+.nodetype_competition
+{
+	width:24px;
+	height:24px;
+	margin: 20px 0;}
+
+.nodetype_campaign
+{
+	width:22px;
+	height:25px;
+	margin: 20px 0;}
+	
+	
+.nodetype_resource
+{
+	width:14px;
+	height:21px;
+	margin: 20px 0;}
+
+.nodetype_story,
+.nodetype_ec_blog
+{
+	width:32px;
+	height:21px;
+	margin: 20px 0;}
+	
+	.nodetype_page
+{
+	width:22px;
+	height:22px;
+	margin: 20px 0;}
+	
+.node-body,
+.pane-node-body
+{
+	clear: right;
+    /*margin-left: 170px;*/
+	margin-bottom:40px;
+	/*position: absolute;
+    top: 300px;	*/
+	/*min-height: 150px;*/
+	float:right;
+}
+
+#topbar
+{
+	
+	height: 40px;
+}
+
+#floaty_div{
+margin-top: 210px;
+    width: 150px;
+}
+
+/* panels */
+.panel-2col-stacked .panel-col-top .inside {
+    float: left;
+    margin-bottom: 0.5em;
+    width: 100%;
+}
+
+.panel-2col-stacked .panel-col-first {
+	float: left;
+    width: 180px;
+	margin-right: 10px;
+    margin-top: 0px;
+}
+
+.panel-2col-stacked .panel-col-last {
+	    float: right;
+min-width: 485px;
+/*width:45%;*/
+	    margin-top: 0px;
+
+}
+
+/* Front page panels */
+
+
+#front_page .panel-col-first {
+	    float: left;
+    width: 40%;
+	margin-right: 10px;
+    margin-top: 0px;
+}
+
+#front_page .panel-col-last {
+	    float: left;
+	    margin-top: 0px;
+		min-width:0px;
+}
+
+.pane-print-0
+{
+clear:both;
+}
+
+/* Flags */
+.flag-wrapper
+{
+ clear: both;
+    float: left;
+    font-size: 12px;
+    width: 150px;
+}
+
+/*Related posts */
+
+#block-associated_links-1 .content,
+.pane-field-review .pane-content
+{
+font-size:12px;	
+}
+
+#block-associated_links-1 .item-list ul {
+	margin:0;
+}
+
+#block-associated_links-1 .item-list ul li
+{
+	list-style: none outside none;
+		margin:0;
+}
+
+/* Nav Table */
+
+#header table,
+#header table tbody,
+#header table tr,
+#header table tr td,
+#header table th
+{
+	border-bottom: none;
+    margin: 0;
+    padding: 0;
+	border:none;
+	vertical-align: top;
+	line-height: 0;
+}
+
+/*Superfish*/
+
+.sf-menu.sf-style-white li, .sf-navbar.sf-style-white {
+    background: none ;
+}
+
+.block ul.sf-menu {
+    margin: 0;
+    padding: 0;
+}
+
+.sf-menu.sf-style-white a,
+.sf-menu a {
+    border: none !important;
+color: #006600 !important ;
+
+padding: 4px 0;
+    text-decoration: none;
+}
+
+ul.sf-menu li ul
+{
+	margin:0;
+}
+
+.pane-promoted-acontent .views-row-unformatted,
+.pane-product-block .views-row-unformatted,
+#block-block-3 .block-inner,
+#block-block-6 .block-inner,
+#block-block-7 .block-inner,
+#block-block-14 .block-inner,
+#block-block-15 .block-inner,
+#block-block-10 .block-inner,
+#block-block-11 .block-inner,
+#block-views-og_group_posts-block_1 .block-inner,
+#block-views-og_ghp_ron-block_1 .block-inner,
+.pane-block-19,
+#block-block-19 .block-inner,
+.pane-block-7 h2,
+.pane-block-20,
+#block-block-20,
+.pane-block-23,
+.pane-frontpageevents
+/*#block-block-7 .block-inner h2*/
+{
+	background:#e9e9e9;
+
+padding:15px;
+
+}
+
+.pane-latest-articles
+{
+margin-bottom:5px;
+}
+
+.pane-frontpageevents ul
+{
+margin:0;
+}
+
+.pane-frontpageevents
+{
+font-size: 12px;
+width:370px;
+}
+
+.pane-frontpageevents .item-list ul li 
+{
+list-style:none;
+margin: 0 0 5px 0;
+}
+
+.pane-frontpageevents .view-footer
+{
+margin-top:10px;
+}
+
+#front_page .panel-col-first .pane-block
+{
+	background:#e9e9e9;
+
+padding:15px;
+font-size: 12px;
+
+margin-bottom:10px;
+}
+
+.pane-block-19,
+#block-block-19
+{
+	margin-bottom:10px;
+}
+
+.pane-block-23
+{
+font-size:12px;
+margin-top: 100px;	
+border-color: 1px solid #C72026;
+border: 1px solid #C72026;
+
+}
+
+#block-block-7 .block-inner p,
+#block-block-14 .block-inner p,
+#block-block-15 .block-inner p,
+.pane-block-19 .pane-content p,
+#block-block-19 .block-inner p
+{
+	margin:0;
+	padding:0;
+}
+/*
+.pane-block-7 h2 
+{
+	float: left;
+margin:20px 20px 20px 0;
+}
+
+
+#block-block-7 .block-inner h2
+{
+	margin:20px;
+}
+*/
+#block-block-3 .block-inner .content,
+#block-block-6 .block-inner .content,
+#block-block-10 .block-inner .content,
+#block-block-11 .block-inner .content,
+
+#block-views-og_group_posts-block_1 .block-inner .content,
+#block-views-og_ghp_ron-block_1 .block-inner .content
+ {
+    font-size: 12px;
+}
+
+
+#block-block-3{
+
+}
+
+#block-block-6{
+float:right;
+}
+
+/* Store */
+.uc-price
+{
+ color: #003399;
+    font-size: 16px;
+    font-weight: bold;	
+}
+
+.pane-field-review 
+{
+margin: 0 0 20px;
+padding: 0 10px;	
+}
+
+.pane-product-block 
+{
+}
+
+div.add-to-cart form span.button-wrapper {
+    float: right;
+    margin: 0.8333em;
+}
+
+div.add-to-cart form div.form-item {
+    margin-bottom: 0.833em;
+    margin-top: 0.833em;
+}
+
+#edit-qty-wrapper
+{
+    float: left;
+	
+}
+
+div.add-to-cart form
+{
+margin:0px;
+pdding:0px;	
+}
+
+/*Lightbox overrides */
+
+#lightbox
+{
+text-align: left;	
+}
+
+/* Forms */
+form {
+    margin: 0;
+    padding: 0;
+}
+
+textarea, input {
+font:Georgia, "Times New Roman", Times, serif;
+font-size:12px;
+}
+
+/* eco challenge */
+.event-nodeapi div {
+    color: #000000;
+    padding: 0;
+}
+#block-views-og_ghp_ron-block_1 div.views-row-unformatted,
+body.article-type-ec-group div.views-row-unformatted,
+#block-views-og_group_posts-block_1 div.views-row-unformatted
+{
+float:none;	
+margin-bottom: 5px;
+}
+
+#crm-container .crm-section .content, .crm-section .content {
+    float: left;
+	margin:0;
+}
+
+#crm-container div.form-item {
+    border-top-style: none;
+    clear: none;
+    height: auto;
+    margin: 0;
+    padding: 3px 0 5px;
+}
+
+#crm-container .crm-section .label, .crm-section .label {
+   float: left;
+    text-align: left;
+    width: 100%;
+	
+}
+
+#crm-container label {
+    display: inline;
+    font-weight: normal;
+}
+input.text, input.title, textarea, select,
+input.form-text, textarea,
+#crm-container input[type="text"], #crm-container input[type="password"] {
+    border: 1px solid #212121;
+    /*border-radius: 10px 10px 10px 10px;*/
+    padding: 6px;
+    vertical-align: middle;
+	margin-right: 10px;
+	font-size:12px;
+}
+
+
+.form-text:focus,.form-checkbox:focus,.form-radio:focus,.form-select:focus{border:1px solid #212121;background:#e9e9e9;}
+
+
+
+.vud-widget-upanddown {
+    clear: both;
+    margin: 5px 10px;
+    position: relative;
+    width: 40px;
+}
+
+#shares
+{
+margin-left:10px;
+	clear: both;	
+}
+
+#twitter_share, #fb_like
+{
+float: left;
+    width: 60px;	
+}
+
+.pane-civi-workshops 
+{
+float:left;	
+}
+
+.adsense
+{
+	
+float:left;
+margin-top:50px;	
+}
+
+.type
+{
+/*float:left;
+margin-right:5px;	*/
+}
+
+div.views_slideshow_singleframe_slide .views-row .type
+{
+ background: #E9E9E9 ;
+height: 50px;
+    padding-left: 10px;
+    padding-top: 5px;
+    position: absolute;
+    top: 235px;
+    width: 35px;
+	
+	 filter:alpha(opacity=80);
+        -moz-opacity:0.8;
+        -khtml-opacity: 0.8;
+        opacity: 0.8;
+
+	}
+	
+	div.views_slideshow_singleframe_slide .views-row .title a
+
+{
+	font-weight:bold;
+}
+
+div.views_slideshow_singleframe_slide .views-row .title
+{
+	 background: #E9E9E9;
+    height: 35px;
+    left: 45px;
+    position: absolute;
+    top: 235px;
+    width: 325px;
+	padding:10px;
+	
+	 filter:alpha(opacity=80);
+        -moz-opacity:0.8;
+        -khtml-opacity: 0.8;
+        opacity: 0.8;
+
+}
+
+#front_page .panel-col-last .pane-block
+{
+margin-bottom:10px;
+}
+
+
+div.nothing
+{
+width:350px;	
+}
+
+.pane-faq-block,
+.pane-disqus-disqus-recent-comments 
+{
+float:left;
+clear:both;	
+margin-bottom:20px;
+ margin-top: 20px;
+width:350px;
+}
+
+.views-row-unformatted .view-node
+{
+	float:right;padding:20px 30px 0px 0px;
+}
+
+// civi widgets
+
+
+    .crm-contribute-widget {
+        /*font-size:12px;
+        font-family:Helvetica, Arial, sans;*/
+        padding:6px;
+
+        border:1px solid #96C0E7;
+        /*width:200px;*/
+    }
+    .crm-contribute-widget h5 {
+		/*
+        font-size:14px;
+        padding:3px;
+        margin: 0px;
+        text-align:center;
+        -moz-border-radius: 	4px;
+        -webkit-border-radius: 	4px;
+        -khtml-border-radius: 	4px;
+        border-radius:			4px;*/
+    }
+
+    .crm-contribute-widget .crm-amounts {
+		/*
+        height:1em;
+        margin:.8em 0px;
+        fon-size:13px;
+		*/
+    }
+    .crm-contribute-widget .crm-amount-low {
+        float:left;
+    }
+    .crm-contribute-widget .crm-amount-high {
+        float:right;
+    }
+    .crm-contribute-widget .crm-percentage {
+        margin:0px 30%;
+        text-align:center;
+    }
+    .crm-contribute-widget .crm-amount-bar {
+        background-color:#FFF;
+        width:100%;
+        display:block;
+        border:1px solid #CECECE;
+
+        margin-bottom:.8em;
+        text-align:left;
+    }
+    .crm-contribute-widget .crm-amount-fill {
+       /* background-color:#2786C2;*/
+        height:1em;
+        display:block;
+
+        text-align:left;
+    }
+    .crm-contribute-widget .crm-amount-raised-wrapper {
+        margin-bottom:.8em;
+    }
+    .crm-contribute-widget .crm-amount-raised {
+        font-weight:bold;
+    }
+    
+    .crm-contribute-widget .crm-logo {
+        text-align:center;
+    }
+
+    .crm-contribute-widget .crm-comments,
+    .crm-contribute-widget .crm-donors,
+    .crm-contribute-widget .crm-campaign {
+        font-size:11px;
+        margin-bottom:.8em;
+    }
+
+    .crm-contribute-widget .crm-contribute-button {
+        display:block;
+        background-color:#CECECE;
+
+        text-align:center;
+        margin:0px 10% .8em 10%;
+        text-decoration:none;
+        color:#556C82;
+        padding:2px;
+        font-size:13px;
+    }
+
+    .crm-contribute-widget .crm-home-url {
+        text-decoration:none;
+        border:0px;
+    }
+
+
+    .crm-contribute-widget { 
+	/*
+        background-color: #e9e9e9; 
+        border-color:#e9e9e9; 
+		*/
+		/*width:150px;*/
+    }
+
+    .crm-contribute-widget h5 {
+       /* color: #003399;*/
+        /*background-color: #e9e9e9;*/
+    } /* title */
+
+    .crm-contribute-widget .crm-amount-raised { color:#000; }
+    .crm-contribute-widget .crm-amount-bar  /* progress bar */
+	{
+        background-color:#C72026;
+        border-color:#CECECE;
+    }
+    .crm-contribute-widget .crm-amount-fill { background-color:#C72026; }
+
+    .crm-contribute-widget a.crm-contribute-button { /* button color */
+        background-color:#FFFFFF;
+    }
+
+    .crm-contribute-widget .crm-contribute-button-inner { /* button text color */
+        padding:2px;
+        display:block;
+        color:#156734;
+    }
+
+    .crm-contribute-widget .crm-comments,
+    .crm-contribute-widget .crm-donors,
+    .crm-contribute-widget .crm-campaign {
+        color:#212121 /* other color*/
+    }
+    
+    .crm-contribute-widget .crm-home-url {
+        color:#156734 /* home page link color*/
+    }
+
+.pane-block-20
+{
+	font-size:12px;
+	clear:both;
+	margin-top:20px;	
+}
+
+.pane-block-20 .pane-title
+{
+	font-size:14px;
+}
+
+
+
+
+
+.crm_user-group,
+.custom_post_profile-group fieldset,
+.for_organization-group,
+.email-5-section,
+.is_for_organization-section,
+#membership fieldset,
+.is_pay_later-section
+{
+clear:both !important;	
+margin-top: 20px !important;
+border: 1px solid #212121 !important;
+padding:15px !important;
+}
+
+.is_pay_later-section .content,
+.is_for_organization-section .content
+{
+float:none !important;	
+}
+
+#crm-container fieldset legend
+{	
+	color:#C72026;
+}
+
+#membership-intro
+{
+	margin-top:-20px;
+}
+
+#crm-container #help, #crm-container .help {
+    background-color: #DE6A26;
+    color: #3E3E3E;
+    font-size: 12px;
+    margin: 0 0 8px;
+    padding: 4px 4px 4px 40px;
+}
+
+#crm-container .odd-row, #crm-container .odd, tbody.scrollContent {
+background-color: #E9E9E9;
+}
+
+/* Appeal CSS */
+
+#block-views-recent_contributions-block_1 .views-row-unformatted
+{
+	float:none;
+	margin-bottom:0;
+	color: #C72026;
+    font-size: 24px;
+    font-weight: bold;	
+}
+
+#plus_one {
+width:50px;float:left;margin-left:-8px;margin-right:1px;margin-top:2px;
+}x;
+margin-top:2px
+} inline-block;
+    float: left !important;
+    font-size: 1px;
+    height: 60px;
+    line-height: normal;
+    margin: 0 0 0 -8px;
+    padding: 0;
+    text-indent: 0;
+    vertical-align: baseline;
+    width: 20px !important;
+}
+
+#___plusone_0 {
+float:left;
+width:20px;
+margin-left:-10px;
+}
+
+
+#main-content, #columns {
+    display: inline-block !important;
+    width: 100%;
+}

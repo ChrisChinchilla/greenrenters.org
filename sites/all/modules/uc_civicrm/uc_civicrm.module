@@ -1,0 +1,661 @@
+<?php
+
+/**
+ * @file
+ * Module to integrate Ubercart with CiviCRM
+ */
+
+/**
+ * Implementation of hook_help().
+ */
+function uc_civicrm_help($path = 'admin/help#uc_civicrm') {
+  if (!module_exists('civicrm')) { return; }
+  switch ($path) {
+    case 'admin/help#uc_civicrm':
+      return t('This module integrates Ubercart with CiviCRM. When a customer buys something from the store, the name and address information they provide is added to CiviCRM. Existing contact records will be updated. The new or updated contact is added to a group, contribution/activity added the contact\'s history and the \'Purchases\' tab on the contact\'s dashboard is populated with a link to their order history.');
+  }
+}
+
+
+/**
+ * Implementation of hook_civicrm_tabs().
+ */
+function uc_civicrm_civicrm_tabs(&$tabs, $cid) {
+  if (!civicrm_initialize()) { return; }
+  $uid = CRM_Core_BAO_UFMatch::getUFId($cid);
+  if (empty($uid)) { return; }
+
+  $count = 0;
+  $history = uc_civicrm_contact_transaction($uid, FALSE);
+
+  // Ugly? Yes, but seems to work. It parses the order history and counts the
+  // number of order rows. Simplest way to get order count since there are no
+  // public functions in uc_store to get the count.
+  $dom = new DOMDocument();
+  $html = $dom->loadHTML($history);
+  $xpath = new DomXPath($dom);
+  $id = "order-";
+  $nodes = $xpath->query("//*[contains(@id, '$id')]");
+  foreach ($nodes as $node) { $count++; }
+
+  $tab = array(
+    'id'     => 'purchases',
+    'title'  => t('Purchases'),
+    'count'  => $count,
+    'weight' => 99, 
+  );  
+
+  if ($count > 0) { $tab['url'] = url("admin/store/civicrm/customer/orders/$uid"); }
+  $tabs[] = $tab;
+
+  return $tabs;
+}
+
+
+/**
+ * Implementation of hook_menu().
+ */
+function uc_civicrm_menu() {
+  if (!module_exists('civicrm')) { return; }
+
+  $items = array();
+  $items['admin/store/civicrm/customer/orders/%'] = array(
+    'title'            => t('CiviCRM'),
+    'page callback'    => 'uc_civicrm_contact_transaction',
+    'page arguments'   => array(5),
+    'access arguments' => array('administer CiviCRM'),
+    'type'             => MENU_CALLBACK,
+  );
+
+  $items['admin/settings/uc_civicrm_menu'] = array(
+    'title' => 'Ubercart/CiviCRM',
+    'description' => 'Configuration options for Ubercart/CiviCRM.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('uc_civicrm_admin'),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+
+/**
+ * Callback to expose order information in a CiviCRM tab.
+ *
+ * @param $uid
+ *   Drupal UID for the customer
+ */
+function uc_civicrm_contact_transaction($uid, $snippet = TRUE) {
+  if (!module_exists('civicrm') || is_null($uid)) { return; }
+  module_load_include('inc', 'uc_store', 'uc_store.admin');
+  civicrm_initialize();
+  $output = uc_store_customer_orders($uid);
+  if ($snippet) { print $output; }
+  else { return $output; }
+  return;
+}
+
+
+/**
+ *  Admin form configuration for this module
+ */
+function uc_civicrm_admin() {
+  if (!module_exists('civicrm')) { return; }
+  if (!civicrm_initialize()) { return; }
+  require_once 'api/v2/Group.php';
+  require_once 'CRM/Core/Config.php';
+  $params = array();
+  $allGroups = civicrm_group_get($params);
+  natsort($allGroups);
+  $options = array();
+  foreach ($allGroups as $group) { $options[$group['id']] = $group['title']; }
+
+  $sql = "SELECT id, name FROM civicrm_contribution_type WHERE is_active = 1";
+  $dao =& CRM_Core_DAO::executeQuery($sql, array());
+  $contTypes = array(0 => "Select a type...");
+  while ($dao->fetch()) {
+    $contTypes[$dao->id] = $dao->name;
+  }
+
+  $form = array();
+  $form['uc_civicrm_contribution_type'] = array(
+    '#type' => 'select',
+    '#title' => t('Contribution type'),
+    '#default_value' => variable_get('uc_civicrm_contribution_type', array()),
+    '#options' => $contTypes,
+    '#description' => t('Select a contribution type for purchases, making a new type with a name like "Ubercart purchase" is recommended.'),
+  );
+
+  $form['uc_civicrm_groups'] = array(
+    '#type' => 'checkboxes',
+    '#title' => t('Groups to add purchasers to'),
+    '#default_value' => variable_get('uc_civicrm_groups', array()),
+    '#options' => $options,
+    '#description' => t('Check to add purchasers to the selected groups')
+  );
+
+  return system_settings_form($form);
+}
+
+
+/**
+ *  Implementation of Ubercart conditional action hook_ca_predicate().
+ *
+ *  Tell Ubercart to let us know when an order is complete
+ */
+function uc_civicrm_ca_predicate() {
+  if (!module_exists('civicrm')) { return; }
+
+  $predicates['uc_civicrm_contact_on_order'] = array(
+    '#title'   => t('Copy to CiviCRM upon order submission'),
+    '#trigger' => 'uc_checkout_complete',
+    '#class'   => 'uc_civicrm',
+    '#status'  => 1,
+    '#actions' => array(
+      array(
+        '#name'         => 'uc_civicrm_order_to_civicrm',
+        '#title'        => t('Copy order information to CiviCRM'),
+        '#argument_map' => array('order' => 'order',),
+      ),
+    ),
+  );
+
+  $predicates['uc_civicrm_check_order_status'] = array(
+    '#title'   => t('Sync CiviCRM status on status update'),
+    '#trigger' => 'uc_order_status_update',
+    '#class'   => 'uc_civicrm',
+    '#status'  => 1,
+    '#actions' => array(
+      array(
+        '#name'         => 'uc_civicrm_sync_status',
+        '#title'        => t('Syncronize status'),
+        '#argument_map' => array('order' => 'updated_order',),
+      ),
+    ),
+  );
+
+  return $predicates;
+}
+
+
+/**
+ * Implementation of Ubercart conditional action hook_ca_action().
+ */
+function uc_civicrm_ca_action() {
+  if (!module_exists('civicrm')) { return; }
+
+  $order_arg = array('#entity' => 'uc_order', '#title'  => t('Order'),);
+
+  $actions['uc_civicrm_order_to_civicrm'] = array(
+    '#title'     => t('Inform CiviCRM upon order submission'),
+    '#category'  => t('Order'),
+    '#callback'  => 'uc_civicrm_action_order_to_civicrm',
+    '#arguments' => array('order' => $order_arg,),
+  );
+
+  $actions['uc_civicrm_sync_status'] = array(
+    '#title'     => t('Syncronize order status with CiviCRM when changed'),
+    '#category'  => t('Order'),
+    '#callback'  => 'uc_civicrm_synchronize_status',
+    '#arguments' => array('order' => $order_arg,),
+  );
+
+  return $actions;
+}
+
+
+/**
+ * Callback to inform CiviCRM on order complete
+ *
+ * Called when the conditional action trigger 'uc_checkout_complete'
+ * is pulled, with the order information.  Merge the information
+ * in the order into the CiviCRM contact database.
+ *
+ * @param $order
+ *   Order
+ */
+function uc_civicrm_action_order_to_civicrm($order) {
+  global $user;
+
+  if (!module_exists('civicrm')) { return; }
+  civicrm_initialize();
+  require_once 'CRM/Core/BAO/UFMatch.php';
+  require_once 'api/v2/Contact.php';
+
+  $cid = _uc_civicrm_get_cid($order);
+  if ($cid === false) {
+    watchdog('uc_civicrm', '_uc_civicrm_get_cid() returned '. $cid, array(), WATCHDOG_ERROR);
+    return;
+  }
+
+  $cid = _uc_civicrm_add_update_contact($cid, $order);
+  if ($cid === false) {
+    watchdog('uc_civicrm', '_uc_civicrm_add_update_contact() returned '. $cid, array(), WATCHDOG_ERROR);
+    return;
+  }
+
+  $rc = _uc_civicrm_add_contribution($cid, $order);
+  if ($rc === false) {
+    watchdog('uc_civicrm', '_uc_civicrm_add_contribution() returned '. $cid, array(), WATCHDOG_ERROR);
+    return;
+  }
+
+  _uc_civicrm_add_to_groups($cid);
+}
+
+
+/**
+ * Add this contact to groups.
+ *
+ * @param $contact
+ *   CRM_Contact_BAO_Group object describing the contact to add
+ */
+function _uc_civicrm_add_to_groups($cid) {
+  require_once 'api/v2/GroupContact.php';
+
+  $groups = variable_get('uc_civicrm_groups', '');
+  if ($groups == '') { return; }
+  
+  foreach ($groups as $id => $key) {
+    if ($key != 0) {
+      $params = array('contact_id' => $cid, 'group_id' => $key);
+      $rc = civicrm_group_contact_add($params);
+
+      if (!empty($rc['is_error'])) {
+        watchdog('uc_civicrm', 'civicrm_group_contact_add() returned '. $rc['error_message'], array(), WATCHDOG_ERROR);
+      }
+    }
+  }
+}
+
+
+/**
+ * Get CiviCRM contact ID for the customer.
+ *
+ * @param $order
+ *   Order
+ * @return
+ *   false|integer false   => an error occured
+ *                 integer => CID if non-zero; must create if zero
+ */
+function _uc_civicrm_get_cid($order) {
+  if (!module_exists('civicrm')) { return; }
+
+  if ($order->uid != 0) {
+    $match = CRM_Core_BAO_UFMatch::synchronizeUFMatch($user, $order->uid, $order->primary_email, 'Drupal', false, 'Individual');
+    if (!is_object($match)) {
+      watchdog('uc_civicrm', 'CRM_Core_BAO_UFMatch::synchronizeUFMatch() failed', array(), WATCHDOG_ERROR);
+      return false;
+    }
+    return $match->contact_id;
+  }
+
+  // The customer is anonymous. Try to match against primary email.
+  $params = array('email' => $order->primary_email, 'return.contact_id' => true);
+  $contact = civicrm_contact_search($params);
+  if (!empty($contact['is_error'])) {
+    watchdog('uc_civicrm', 'civicrm_contact_search() returned '. $contact['error_message'], array(), WATCHDOG_ERROR);
+    return false;
+  }
+
+  // No matches found, create a contact.
+  if (count($contact) == 0) { return 0; }
+  $cid = array_shift($contact);
+
+  return $cid;
+
+}
+
+
+/**
+ *  Add or update contact information.
+ */
+function _uc_civicrm_add_update_contact($cid, $order) {
+  require_once 'api/v2/Location.php';
+
+  $contact = array();
+
+  if ($cid != 0) {
+    $params = array('contact_id' => $cid,
+      'return.contact_id'        => 1,
+      'return.contact_source'    => 1,
+    );
+    $contact = civicrm_contact_search($params);
+    if (!empty($contact['is_error'])) {
+      watchdog('uc_civicrm', 'civicrm_contact_get() returned '. $contact['error_message'], array(), WATCHDOG_ERROR);
+      return false;
+    }
+    $contact = array_shift($contact);
+    $contact['contact_id'] = $cid;
+    $contact['source']     = $contact['contact_source'];
+    unset($contact['contact_source']);
+  }
+
+  if (!empty($order->delivery_last_name) && !empty($order->delivery_first_name)) {
+    $contact['last_name']    = $order->delivery_last_name;
+    $contact['first_name']   = $order->delivery_first_name;
+    $contact['sort_name']    = "{$order->delivery_last_name}, {$order->delivery_first_name}";
+    $contact['display_name'] = "{$order->delivery_first_name} {$order->delivery_last_name}";
+  } else {
+    $contact['last_name']    = $order->billing_last_name;
+    $contact['first_name']   = $order->billing_first_name;
+    $contact['sort_name']    = "{$order->billing_last_name}, {$order->billing_first_name}";
+    $contact['display_name'] = "{$order->billing_first_name} {$order->billing_last_name}";
+  }
+
+  $contact['contact_type'] = 'Individual';
+  $contact['email']        = $order->primary_email;
+  
+  if (empty($contact['source'])) { $contact['source'] = 'Ubercart purchase'; }
+
+  //  Create contact or update existing contact
+  $rc = civicrm_contact_add($contact);
+  if (!empty($rc['is_error'])) {
+    watchdog('uc_civicrm', 'civicrm_contact_add() returned '. $rc['error_message'], array(), WATCHDOG_ERROR);
+    return false;
+  }
+
+  if (!empty($order->delivery_last_name) && !empty($order->delivery_first_name)) {
+    $deliveryPhone = array();
+    if (!empty($order->delivery_phone)) {
+      $deliveryPhone = array(
+        'is_primary' => true,
+        'phone' => $order->delivery_phone,
+        'phone_type_id' => 1,
+        'location_type' => 'Home'
+      );
+    }
+
+    $countries = uc_get_country_data(array('country_id' => $order->delivery_country));
+
+    $address = array(
+      1 => array(
+        'location_type_id'       => 1,
+        'is_primary'             => true,
+        'city'                   => $order->delivery_city,
+        'state_province'         => uc_get_zone_code($order->delivery_zone),
+        'postal_code'            => $order->delivery_postal_code,
+        'street_address'         => $order->delivery_street1,
+        'supplemental_address_1' => $order->delivery_street2,
+        'country'                => $countries[0]['country_iso_code_2']
+      )
+    );
+
+    $phones = array($deliveryPhone);
+    $params = array(
+      'version'    => '3.0',
+      'contact_id' => $cid,
+      'phone'      => $phones,
+      'address'    => $address
+    );
+
+    $newLocation = civicrm_location_update($params);
+    if ($newLocation['is_error'] &&
+        strpos($newLocation['error_message'], "Invalid Location Type(s) : Home") !== false) {
+      $newLocation = civicrm_location_add($params);
+    }
+
+    if (civicrm_error($newLocation)) {
+      watchdog('uc_civicrm', 'civicrm_location_update() returned '. $newLocation['error_message'], array(), WATCHDOG_ERROR);
+    }
+  }
+
+  // Begin adding billing address
+  $billingPhone = array();
+  if (!empty($order->billing_phone)) {
+    $billingPhone = array(
+      'phone' => $order->billing_phone,
+      'is_primary' => false,
+      'phone_type_id' => 1,
+      'location_type' => 'Billing',
+    );
+  }
+
+  $countries = uc_get_country_data(array('country_id' => $order->billing_country));
+
+  $address = array(
+    1 => array(
+      'location_type'          => 'Billing', // assumes the billing address type id == 5
+      'city'                   => $order->billing_city,
+      'state_province'         => uc_get_zone_code($order->billing_zone),
+      'postal_code'            => $order->billing_postal_code,
+      'street_address'         => $order->billing_street1,
+      'supplemental_address_1' => $order->billing_street2,
+      'country'                => $countries[0]['country_iso_code_2']
+    )
+  );
+
+  $phones = array($billingPhone);
+  $params = array(
+    'version'    => '3.0',
+    'contact_id' => $cid,
+    'phone'      => $phones,
+    'address'    => $address
+  );
+
+  $newBillingLocation = civicrm_location_update($params);
+  if ($newBillingLocation['is_error']
+    && strpos($newBillingLocation['error_message'],
+      "Invalid Location Type(s) : Billing") !== false) {
+    $newBillingLocation = civicrm_location_add($params);
+  }
+
+  if (civicrm_error($newBillingLocation)) {
+    watchdog('uc_civicrm', 'civicrm_location_update() returned '. $newBillingLocation['error_message'], array(), WATCHDOG_ERROR);
+  }
+
+  return $cid;
+}
+
+
+/**
+ * Creates required contribution fields if they have nto already been created.
+ */
+function _uc_civicrm_create_custom_contribution_fields() {
+  $groupId = variable_get('uc_civicrm_contribution_group_id', false);
+  if ($groupId != false) { return; }
+
+  require_once 'CRM/Core/Config.php';
+  require_once 'api/v2/CustomGroup.php';
+  // First we need to check if the Sales Tax and Shipping
+  // custom fields have been created
+  $params = array(
+    'title'            => 'Ubercart Purchases',
+    'name'             => 'ubercart_purchases',
+    'extends'          => array('Contribution'),
+    'weight'           => 1,
+    'collapse_display' => 0,
+    'is_active'        => 1,
+  );
+
+  $customGroup = civicrm_custom_group_create($params);
+  variable_set('uc_civicrm_contribution_group_id', $customGroup['id']);
+
+  // Next add the fields
+  $params = array(
+    'custom_group_id' => $customGroup['id'],
+    'label'           => 'Sales Tax',
+    'html_type'       => 'Text',
+    'data_type'       => 'String',
+    'weight'          => 1,
+    'is_required'     => 0,
+    'is_searchable'   => 0,
+    'is_active'       => 1,
+  );
+
+  $taxField = civicrm_custom_field_create($params);
+  variable_set('uc_civicrm_sales_tax_field_id', $taxField['result']['customFieldId']);
+
+  $params = array(
+    'custom_group_id' => $customGroup['id'],
+    'label'           => 'Shipping Cost',
+    'html_type'       => 'Text',
+    'data_type'       => 'String',
+    'weight'          => 2,
+    'is_required'     => 0,
+    'is_searchable'   => 0,
+    'is_active'       => 1,
+  );
+
+  $shippingField = civicrm_custom_field_create($params);
+  variable_set('uc_civicrm_shipping_cost_field_id', $shippingField['result']['customFieldId']);
+}
+
+
+
+/**
+ * Add a contribution record.
+ */
+function _uc_civicrm_add_contribution($cid, &$order) {
+  // check to see if the fields we need have been created, if not, do it.
+  _uc_civicrm_create_custom_contribution_fields( );
+  // get the current order's info for transaction id
+  $payDataAry = uc_payment_load_payments($order->order_id);
+  // this is serialized by ubercart, so we'll undo that
+  $payDataAry[0]->data = unserialize($payDataAry[0]->data);
+  // if a transaction id exists, we want it, else,
+  // fill the field with semi-meaningful hash of the order id
+  $txnId = isset($payDataAry[0]->data['txn_id']) ? $payDataAry[0]->data['txn_id'] : 'Ubercart: ' . md5($order->order_id);
+
+  // @FIXME This is bad, CiviCRM doesn't accept financial values
+  // with precision greater than 2 digits after the decimal as
+  // far as I can tell.
+  // SAP standards dictate this should be 5 digits post-decimal
+  $roundedTotal = round($order->order_total * 100) / 100;
+
+  $salesTaxFieldId = 'custom_' . variable_get('uc_civicrm_sales_tax_field_id', '');
+  $shippingCostFieldId = 'custom_' . variable_get('uc_civicrm_shipping_cost_field_id', '');
+  $taxCost = '';
+  $shippingCost = '';
+
+  foreach ($order->line_items as $item) {
+    if ($item['type'] == 'tax') { $taxCost = $item['amount']; }
+    elseif ($item['type'] == 'shipping') { $shippingCost = $item['amount']; }
+  }
+
+  $params = array(
+    'contact_id' => $cid,
+    'receive_date' => date('Ymd'),
+    'total_amount' => $roundedTotal,
+    'contribution_type_id' => variable_get('uc_civicrm_contribution_type', ''), // @FIXME this needs a sensible default
+    'payment_instrument_id' => _uc_civicrm_map_payment_instrument($order->payment_method),
+    'non_deductible_amount' => 00.00,
+    'fee_amount' => 00.00,
+    'net_amount' => $roundedTotal,
+    'trxn_id' => $txnId,
+    'invoice_id' => $order->order_id . '_uc',
+    'source' => _uc_civicrm_create_detail_string($order),
+    'contribution_status_id' => _uc_civicrm_map_contribution_status($order->order_status),
+    'note' => _uc_civicrm_create_detail_string($order),
+    "$salesTaxFieldId" => $taxCost,
+    "$shippingCostFieldId" => $shippingCost,
+  );
+
+  require_once 'api/v2/Contribute.php';
+  $contribution = civicrm_contribution_add($params);
+
+  if (civicrm_error($contribution)) {
+    watchdog('uc_civicrm', 'civicrm_contribution_add() returned: '. $contribution['error_message'], array(), WATCHDOG_ERROR);
+  }
+
+  return true;
+}
+
+
+/**
+ * Maps an Ubercart payment method to a CiviCRM payment instrument
+ *
+ * @param string $paymentDevice
+ *    An Ubercart payment device
+ * @return int
+ *    The CiviCRM id of the payment processor
+ */
+function _uc_civicrm_map_payment_instrument($paymentDevice) {
+  // Note that the payment methods for Ubercart are hardcoded in
+  // the payment modules under hook_payment_method(), so I'm considering 
+  // anything that's not explicitly a check or cash to be a credit card.
+  $map = array("credit" => 1, "cod" => 3, "check" => 4,);
+
+  if (array_key_exists($paymentDevice, $map)) { $id = $map[$paymentDevice]; }
+  // Another Ubercart payment method - good chance this is credit.
+  else { $id = 1; }
+
+  return $id;
+}
+
+
+/**
+ * Maps an Ubercart order status to a corresponding CiviCRM contribution status.
+ *
+ * @param string $orderStatus
+ *    An Ubercart order status
+ * @return int
+ *    A CiviCRM order status
+ */
+function _uc_civicrm_map_contribution_status($orderStatus) {
+  // NOTE: There may be a more "correct" way to do this.
+  $map = array(
+    "completed"        => 1,
+    "payment_received" => 1,
+    "pending"          => 2,
+    "processing"       => 5,
+    "canceled"         => 3,
+    "in_checkout"      => 5,
+  );
+
+  if (array_key_exists($orderStatus, $map)) { $id = $map[$orderStatus]; }
+  else {
+    $id = 1;
+    watchdog('uc_civicrm', 'There is no status that maps to: '. $orderStatus . ', marking as "Complete"', array(), WATCHDOG_WARNING);
+  }
+
+  return $id;
+}
+
+
+/**
+ * Syncronizes the status of an order from Ubercart to CiviCRM
+ *
+ * @param $order
+ *    Order
+ */
+function uc_civicrm_syncronize_status($order) {
+  if (!module_exists('civicrm')) { return; }
+  civicrm_initialize();
+  require_once 'CRM/Core/Config.php';
+  $config =& CRM_Core_Config::singleton();
+  require_once "api/v2/Contribute.php";
+
+  $searchParams = array('invoice_id' => $order->order_id ."_uc", 'return.contact_id' => 1,);
+
+  $result =& civicrm_contribution_search($searchParams);
+
+  if (civicrm_error ($result)) {
+    watchdog('uc_civicrm', 'uc_civicrm_syncronize_status() returned: '. $result['error_message'], array(), WATCHDOG_ERROR);
+  } else {
+    $contribution = array_shift($result);
+    $setParams = array(
+      'id'                     => $contribution['contribution_id'],
+      'contact_id'             => $contribution['contact_id'],
+      'contribution_status_id' => _uc_civicrm_map_contribution_status($order->order_status),
+    );
+
+    $result =& civicrm_contribution_add($setParams);
+  }
+}
+
+
+/**
+ * Create string to insert for purchase activity details.
+ */
+function _uc_civicrm_create_detail_string($order) {
+  $str = '';
+  $n = 1;
+  foreach ($order->products as $product) {
+    if ($n > 1) { $str .= ', '; }
+    $str .= $product->title;
+    $n++;
+  }
+  return $str;
+}
