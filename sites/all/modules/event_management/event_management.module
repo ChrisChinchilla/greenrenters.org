@@ -1,0 +1,3 @@
+<?php
+
+include_once('event_management.features.inc');
