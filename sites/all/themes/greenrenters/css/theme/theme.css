@@ -1711,32 +1711,39 @@ input.form-text, textarea,
 
 #shares
 {
-margin-left:10px;
+	margin-left:10px;
 	clear: both;	
+	width:130px;
 }
 
-#twitter_share, #fb_like
+#twitter_share, #fb_like, #pin
 {
-float: left;
+	float: left;
     width: 60px;	
+    height:65px;
+    margin:2px;
 }
 
 .pane-civi-workshops 
 {
-float:left;	
+	float:left;	
 }
 
 .adsense
-{
-	
-float:left;
-margin-top:50px;	
+{	
+	float:left;
+	margin-top:50px;	
 }
 
 .type
 {
 /*float:left;
 margin-right:5px;	*/
+}
+#front_page div.views_slideshow_singleframe_slide
+{
+	background:none;
+	background-color: none;
 }
 
 div.views_slideshow_singleframe_slide .views-row .type
