@@ -190,9 +190,9 @@
 	                    {/if}
 	                    <tr>
 	                        <td class="{$lClass} crm-event-label">{$feeBlock.label.$idx}</td>
-                          {if $feeBlock.isDisplayAmount.$idx}
+{*                          {if $feeBlock.isDisplayAmount.$idx} *}
 	                          <td class="fee_amount-value right">{$feeBlock.value.$idx|crmMoney}</td>
-                          {/if}
+                    {*      {/if} *}
 	                    </tr>
 	                {/foreach}
 	            </table>
