@@ -87,12 +87,12 @@ class CRM_Core_BAO_ConfigSetting
         CRM_Core_BAO_Setting::fixAndStoreDirAndURL( $params );
 
         // also skip all Dir Params, we dont need to store those in the DB!
-        foreach ( $params as $name => $val ) {
+        /*foreach ( $params as $name => $val ) {
             if ( substr( $name, -3 ) == 'Dir' ) {
                 unset( $params[$name] );
             }
         }
-        
+        */
         //keep user preferred language upto date, CRM-7746
         $session = CRM_Core_Session::singleton( );
         $lcMessages = CRM_Utils_Array::value( 'lcMessages', $params );
@@ -113,8 +113,10 @@ class CRM_Core_BAO_ConfigSetting
                 $params['lcMessages'] = $lcMessages;
             }
         }
-        
+        print_r($params);
         $domain->config_backend = serialize($params);
+        print_r($domain);
+        //exit('c');
         $domain->save();
     }
 
