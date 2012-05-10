@@ -130,7 +130,7 @@ function node_templates_default_page_manager_handlers() {
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-2';
-    $pane->shown = FALSE;
+    $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
       'override_title' => 1,
