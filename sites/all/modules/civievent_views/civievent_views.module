@@ -1,0 +1,3 @@
+<?php
+
+include_once('civievent_views.features.inc');
