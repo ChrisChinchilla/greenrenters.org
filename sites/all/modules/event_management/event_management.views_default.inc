@@ -508,8 +508,7 @@ function event_management_views_default_views() {
     'type' => 'none',
   ));
   $handler->override_option('items_per_page', 20);
-  $handler->override_option('use_pager', 'mini');
-  $handler->override_option('pager_element', 2);
+  $handler->override_option('use_pager', '1');
   $handler->override_option('style_plugin', 'table');
   $handler->override_option('style_options', array(
     'grouping' => '',
@@ -643,6 +642,28 @@ function event_management_views_default_views() {
       'id' => 'payment_status_83',
       'table' => 'civicrm_value_event_management_16',
       'field' => 'payment_status_83',
+      'override' => array(
+        'button' => 'Use default',
+      ),
+      'relationship' => 'none',
+    ),
+    'start_date' => array(
+      'operator' => '>=',
+      'value' => array(
+        'type' => 'date',
+        'value' => '2010-12-31 00:00:00',
+        'min' => '',
+        'max' => '',
+      ),
+      'group' => '0',
+      'exposed' => FALSE,
+      'expose' => array(
+        'operator' => FALSE,
+        'label' => '',
+      ),
+      'id' => 'start_date',
+      'table' => 'civicrm_event',
+      'field' => 'start_date',
       'override' => array(
         'button' => 'Use default',
       ),
