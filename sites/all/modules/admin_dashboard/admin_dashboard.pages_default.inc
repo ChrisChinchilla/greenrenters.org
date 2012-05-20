@@ -35,7 +35,7 @@ function admin_dashboard_default_page_manager_pages() {
     'relationships' => array(),
   );
   $display = new panels_display;
-  $display->layout = 'twocol_stacked';
+  $display->layout = 'onecol';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
@@ -44,6 +44,7 @@ function admin_dashboard_default_page_manager_pages() {
       'left' => NULL,
       'right' => NULL,
       'bottom' => NULL,
+      'middle' => NULL,
     ),
   );
   $display->cache = array();
@@ -52,7 +53,7 @@ function admin_dashboard_default_page_manager_pages() {
   $display->panels = array();
     $pane = new stdClass;
     $pane->pid = 'new-1';
-    $pane->panel = 'left';
+    $pane->panel = 'middle';
     $pane->type = 'views';
     $pane->subtype = 'uncompleted_orders';
     $pane->shown = TRUE;
@@ -81,7 +82,7 @@ function admin_dashboard_default_page_manager_pages() {
     $pane->extras = array();
     $pane->position = 0;
     $display->content['new-1'] = $pane;
-    $display->panels['left'][0] = 'new-1';
+    $display->panels['middle'][0] = 'new-1';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
