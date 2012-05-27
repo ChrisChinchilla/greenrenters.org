@@ -220,6 +220,8 @@ function admin_dashboard_views_default_views() {
     'order_status' => array(
       'operator' => 'in',
       'value' => array(
+        'pending' => 'pending',
+        'processing' => 'processing',
         'paypal_pending' => 'paypal_pending',
         'payment_received' => 'payment_received',
       ),
