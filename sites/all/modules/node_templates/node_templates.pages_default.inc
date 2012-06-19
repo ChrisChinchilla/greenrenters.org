@@ -5,6 +5,7 @@
  */
 function node_templates_default_page_manager_handlers() {
   $export = array();
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -39,6 +40,7 @@ function node_templates_default_page_manager_handlers() {
               'service' => 'service',
               'story' => 'story',
               'tutorial' => 'tutorial',
+              'webform' => 'webform',
               'workshop' => 'workshop',
             ),
           ),
@@ -128,11 +130,13 @@ function node_templates_default_page_manager_handlers() {
     $pane = new stdClass;
     $pane->pid = 'new-3';
     $pane->panel = 'left';
-    $pane->type = 'block';
-    $pane->subtype = 'block-2';
+    $pane->type = 'node_author';
+    $pane->subtype = 'node_author';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
+      'link' => 1,
+      'context' => 'argument_nid_1',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
@@ -149,7 +153,7 @@ function node_templates_default_page_manager_handlers() {
     $pane->pid = 'new-4';
     $pane->panel = 'left';
     $pane->type = 'block';
-    $pane->subtype = 'service_links-service_links';
+    $pane->subtype = 'block-2';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
@@ -168,6 +172,26 @@ function node_templates_default_page_manager_handlers() {
     $pane = new stdClass;
     $pane->pid = 'new-5';
     $pane->panel = 'left';
+    $pane->type = 'block';
+    $pane->subtype = 'service_links-service_links';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 1,
+      'override_title_text' => '<none>',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 3;
+    $display->content['new-5'] = $pane;
+    $display->panels['left'][3] = 'new-5';
+    $pane = new stdClass;
+    $pane->pid = 'new-6';
+    $pane->panel = 'left';
     $pane->type = 'content_field';
     $pane->subtype = 'field_relatedworkshops';
     $pane->shown = TRUE;
@@ -185,11 +209,11 @@ function node_templates_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 3;
-    $display->content['new-5'] = $pane;
-    $display->panels['left'][3] = 'new-5';
+    $pane->position = 4;
+    $display->content['new-6'] = $pane;
+    $display->panels['left'][4] = 'new-6';
     $pane = new stdClass;
-    $pane->pid = 'new-6';
+    $pane->pid = 'new-7';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-20';
@@ -219,11 +243,11 @@ function node_templates_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 4;
-    $display->content['new-6'] = $pane;
-    $display->panels['left'][4] = 'new-6';
+    $pane->position = 5;
+    $display->content['new-7'] = $pane;
+    $display->panels['left'][5] = 'new-7';
     $pane = new stdClass;
-    $pane->pid = 'new-7';
+    $pane->pid = 'new-8';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-23';
@@ -251,11 +275,11 @@ function node_templates_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 5;
-    $display->content['new-7'] = $pane;
-    $display->panels['left'][5] = 'new-7';
+    $pane->position = 6;
+    $display->content['new-8'] = $pane;
+    $display->panels['left'][6] = 'new-8';
     $pane = new stdClass;
-    $pane->pid = 'new-8';
+    $pane->pid = 'new-9';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-21';
@@ -303,11 +327,11 @@ function node_templates_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 6;
-    $display->content['new-8'] = $pane;
-    $display->panels['left'][6] = 'new-8';
+    $pane->position = 7;
+    $display->content['new-9'] = $pane;
+    $display->panels['left'][7] = 'new-9';
     $pane = new stdClass;
-    $pane->pid = 'new-9';
+    $pane->pid = 'new-10';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'civi_workshops';
@@ -360,10 +384,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $display->content['new-9'] = $pane;
-    $display->panels['right'][0] = 'new-9';
+    $display->content['new-10'] = $pane;
+    $display->panels['right'][0] = 'new-10';
     $pane = new stdClass;
-    $pane->pid = 'new-10';
+    $pane->pid = 'new-11';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'civi_events';
@@ -404,10 +428,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 1;
-    $display->content['new-10'] = $pane;
-    $display->panels['right'][1] = 'new-10';
+    $display->content['new-11'] = $pane;
+    $display->panels['right'][1] = 'new-11';
     $pane = new stdClass;
-    $pane->pid = 'new-11';
+    $pane->pid = 'new-12';
     $pane->panel = 'right';
     $pane->type = 'node_body';
     $pane->subtype = 'node_body';
@@ -426,10 +450,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 2;
-    $display->content['new-11'] = $pane;
-    $display->panels['right'][2] = 'new-11';
+    $display->content['new-12'] = $pane;
+    $display->panels['right'][2] = 'new-12';
     $pane = new stdClass;
-    $pane->pid = 'new-12';
+    $pane->pid = 'new-13';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'pk';
@@ -474,10 +498,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 3;
-    $display->content['new-12'] = $pane;
-    $display->panels['right'][3] = 'new-12';
+    $display->content['new-13'] = $pane;
+    $display->panels['right'][3] = 'new-13';
     $pane = new stdClass;
-    $pane->pid = 'new-13';
+    $pane->pid = 'new-14';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'AvailableWorkshopsBlocks';
@@ -518,10 +542,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 4;
-    $display->content['new-13'] = $pane;
-    $display->panels['right'][4] = 'new-13';
+    $display->content['new-14'] = $pane;
+    $display->panels['right'][4] = 'new-14';
     $pane = new stdClass;
-    $pane->pid = 'new-14';
+    $pane->pid = 'new-15';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'faq_block';
@@ -562,10 +586,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 5;
-    $display->content['new-14'] = $pane;
-    $display->panels['right'][5] = 'new-14';
+    $display->content['new-15'] = $pane;
+    $display->panels['right'][5] = 'new-15';
     $pane = new stdClass;
-    $pane->pid = 'new-15';
+    $pane->pid = 'new-16';
     $pane->panel = 'right';
     $pane->type = 'node_attachments';
     $pane->subtype = 'node_attachments';
@@ -583,10 +607,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 6;
-    $display->content['new-15'] = $pane;
-    $display->panels['right'][6] = 'new-15';
+    $display->content['new-16'] = $pane;
+    $display->panels['right'][6] = 'new-16';
     $pane = new stdClass;
-    $pane->pid = 'new-16';
+    $pane->pid = 'new-17';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'product_block';
@@ -632,10 +656,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 7;
-    $display->content['new-16'] = $pane;
-    $display->panels['right'][7] = 'new-16';
+    $display->content['new-17'] = $pane;
+    $display->panels['right'][7] = 'new-17';
     $pane = new stdClass;
-    $pane->pid = 'new-17';
+    $pane->pid = 'new-18';
     $pane->panel = 'right';
     $pane->type = 'content_field';
     $pane->subtype = 'field_review';
@@ -669,10 +693,45 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 8;
-    $display->content['new-17'] = $pane;
-    $display->panels['right'][8] = 'new-17';
+    $display->content['new-18'] = $pane;
+    $display->panels['right'][8] = 'new-18';
     $pane = new stdClass;
-    $pane->pid = 'new-18';
+    $pane->pid = 'new-19';
+    $pane->panel = 'right';
+    $pane->type = 'views';
+    $pane->subtype = 'panel_tag';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_pager_settings' => 0,
+      'use_pager' => 0,
+      'nodes_per_page' => '1',
+      'pager_id' => '0',
+      'offset' => '0',
+      'more_link' => 0,
+      'feed_icons' => 0,
+      'panel_args' => 1,
+      'link_to_view' => 0,
+      'args' => '',
+      'url' => '',
+      'display' => 'block_1',
+      'context' => array(
+        0 => '',
+      ),
+      'override_title' => 1,
+      'override_title_text' => 'Tags',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 9;
+    $display->content['new-19'] = $pane;
+    $display->panels['right'][9] = 'new-19';
+    $pane = new stdClass;
+    $pane->pid = 'new-20';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'associated_links-1';
@@ -689,11 +748,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 9;
-    $display->content['new-18'] = $pane;
-    $display->panels['right'][9] = 'new-18';
+    $pane->position = 10;
+    $display->content['new-20'] = $pane;
+    $display->panels['right'][10] = 'new-20';
     $pane = new stdClass;
-    $pane->pid = 'new-19';
+    $pane->pid = 'new-21';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'campaign_page';
@@ -733,11 +792,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 10;
-    $display->content['new-19'] = $pane;
-    $display->panels['right'][10] = 'new-19';
+    $pane->position = 11;
+    $display->content['new-21'] = $pane;
+    $display->panels['right'][11] = 'new-21';
     $pane = new stdClass;
-    $pane->pid = 'new-20';
+    $pane->pid = 'new-22';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'service_page';
@@ -777,11 +836,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 11;
-    $display->content['new-20'] = $pane;
-    $display->panels['right'][11] = 'new-20';
+    $pane->position = 12;
+    $display->content['new-22'] = $pane;
+    $display->panels['right'][12] = 'new-22';
     $pane = new stdClass;
-    $pane->pid = 'new-21';
+    $pane->pid = 'new-23';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'webform-client-block-13';
@@ -812,11 +871,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 12;
-    $display->content['new-21'] = $pane;
-    $display->panels['right'][12] = 'new-21';
+    $pane->position = 13;
+    $display->content['new-23'] = $pane;
+    $display->panels['right'][13] = 'new-23';
     $pane = new stdClass;
-    $pane->pid = 'new-22';
+    $pane->pid = 'new-24';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-26';
@@ -832,11 +891,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 13;
-    $display->content['new-22'] = $pane;
-    $display->panels['right'][13] = 'new-22';
+    $pane->position = 14;
+    $display->content['new-24'] = $pane;
+    $display->panels['right'][14] = 'new-24';
     $pane = new stdClass;
-    $pane->pid = 'new-23';
+    $pane->pid = 'new-25';
     $pane->panel = 'top';
     $pane->type = 'block';
     $pane->subtype = 'block-19';
@@ -867,92 +926,13 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $display->content['new-23'] = $pane;
-    $display->panels['top'][0] = 'new-23';
-    $pane = new stdClass;
-    $pane->pid = 'new-24';
-    $pane->panel = 'top';
-    $pane->type = 'node_author';
-    $pane->subtype = 'node_author';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'link' => 1,
-      'context' => 'argument_nid_1',
-      'override_title' => 1,
-      'override_title_text' => '<none>',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 1;
-    $display->content['new-24'] = $pane;
-    $display->panels['top'][1] = 'new-24';
-    $pane = new stdClass;
-    $pane->pid = 'new-25';
-    $pane->panel = 'top';
-    $pane->type = 'node_created';
-    $pane->subtype = 'node_created';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'format' => 'small',
-      'context' => 'argument_nid_1',
-      'override_title' => 1,
-      'override_title_text' => '<none>',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 2;
     $display->content['new-25'] = $pane;
-    $display->panels['top'][2] = 'new-25';
-    $pane = new stdClass;
-    $pane->pid = 'new-26';
-    $pane->panel = 'top';
-    $pane->type = 'views';
-    $pane->subtype = 'panel_tag';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 0,
-      'nodes_per_page' => '10',
-      'pager_id' => '',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 1,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => '',
-      'display' => 'block_1',
-      'context' => array(
-        0 => '',
-      ),
-      'override_title' => 1,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 3;
-    $display->content['new-26'] = $pane;
-    $display->panels['top'][3] = 'new-26';
+    $display->panels['top'][0] = 'new-25';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -1064,11 +1044,13 @@ events',
     $pane = new stdClass;
     $pane->pid = 'new-3';
     $pane->panel = 'left';
-    $pane->type = 'block';
-    $pane->subtype = 'block-2';
+    $pane->type = 'node_author';
+    $pane->subtype = 'node_author';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
+      'link' => 1,
+      'context' => 'argument_nid_1',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
@@ -1085,6 +1067,26 @@ events',
     $pane->pid = 'new-4';
     $pane->panel = 'left';
     $pane->type = 'block';
+    $pane->subtype = 'block-2';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_title' => 1,
+      'override_title_text' => '<none>',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 2;
+    $display->content['new-4'] = $pane;
+    $display->panels['left'][2] = 'new-4';
+    $pane = new stdClass;
+    $pane->pid = 'new-5';
+    $pane->panel = 'left';
+    $pane->type = 'block';
     $pane->subtype = 'print-0';
     $pane->shown = TRUE;
     $pane->access = array();
@@ -1098,11 +1100,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 2;
-    $display->content['new-4'] = $pane;
-    $display->panels['left'][2] = 'new-4';
+    $pane->position = 3;
+    $display->content['new-5'] = $pane;
+    $display->panels['left'][3] = 'new-5';
     $pane = new stdClass;
-    $pane->pid = 'new-5';
+    $pane->pid = 'new-6';
     $pane->panel = 'left';
     $pane->type = 'content_field';
     $pane->subtype = 'field_relatedworkshops';
@@ -1121,11 +1123,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 3;
-    $display->content['new-5'] = $pane;
-    $display->panels['left'][3] = 'new-5';
+    $pane->position = 4;
+    $display->content['new-6'] = $pane;
+    $display->panels['left'][4] = 'new-6';
     $pane = new stdClass;
-    $pane->pid = 'new-6';
+    $pane->pid = 'new-7';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-20';
@@ -1141,11 +1143,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 4;
-    $display->content['new-6'] = $pane;
-    $display->panels['left'][4] = 'new-6';
+    $pane->position = 5;
+    $display->content['new-7'] = $pane;
+    $display->panels['left'][5] = 'new-7';
     $pane = new stdClass;
-    $pane->pid = 'new-7';
+    $pane->pid = 'new-8';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-23';
@@ -1173,11 +1175,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 5;
-    $display->content['new-7'] = $pane;
-    $display->panels['left'][5] = 'new-7';
+    $pane->position = 6;
+    $display->content['new-8'] = $pane;
+    $display->panels['left'][6] = 'new-8';
     $pane = new stdClass;
-    $pane->pid = 'new-8';
+    $pane->pid = 'new-9';
     $pane->panel = 'left';
     $pane->type = 'block';
     $pane->subtype = 'block-21';
@@ -1225,11 +1227,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 6;
-    $display->content['new-8'] = $pane;
-    $display->panels['left'][6] = 'new-8';
+    $pane->position = 7;
+    $display->content['new-9'] = $pane;
+    $display->panels['left'][7] = 'new-9';
     $pane = new stdClass;
-    $pane->pid = 'new-9';
+    $pane->pid = 'new-10';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-8';
@@ -1246,10 +1248,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $display->content['new-9'] = $pane;
-    $display->panels['right'][0] = 'new-9';
+    $display->content['new-10'] = $pane;
+    $display->panels['right'][0] = 'new-10';
     $pane = new stdClass;
-    $pane->pid = 'new-10';
+    $pane->pid = 'new-11';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-24';
@@ -1266,10 +1268,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 1;
-    $display->content['new-10'] = $pane;
-    $display->panels['right'][1] = 'new-10';
+    $display->content['new-11'] = $pane;
+    $display->panels['right'][1] = 'new-11';
     $pane = new stdClass;
-    $pane->pid = 'new-11';
+    $pane->pid = 'new-12';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-25';
@@ -1286,10 +1288,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 2;
-    $display->content['new-11'] = $pane;
-    $display->panels['right'][2] = 'new-11';
+    $display->content['new-12'] = $pane;
+    $display->panels['right'][2] = 'new-12';
     $pane = new stdClass;
-    $pane->pid = 'new-12';
+    $pane->pid = 'new-13';
     $pane->panel = 'right';
     $pane->type = 'node_body';
     $pane->subtype = 'node_body';
@@ -1308,10 +1310,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 3;
-    $display->content['new-12'] = $pane;
-    $display->panels['right'][3] = 'new-12';
+    $display->content['new-13'] = $pane;
+    $display->panels['right'][3] = 'new-13';
     $pane = new stdClass;
-    $pane->pid = 'new-13';
+    $pane->pid = 'new-14';
     $pane->panel = 'right';
     $pane->type = 'node_attachments';
     $pane->subtype = 'node_attachments';
@@ -1329,10 +1331,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 4;
-    $display->content['new-13'] = $pane;
-    $display->panels['right'][4] = 'new-13';
+    $display->content['new-14'] = $pane;
+    $display->panels['right'][4] = 'new-14';
     $pane = new stdClass;
-    $pane->pid = 'new-14';
+    $pane->pid = 'new-15';
     $pane->panel = 'right';
     $pane->type = 'content_field';
     $pane->subtype = 'field_review';
@@ -1366,10 +1368,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 5;
-    $display->content['new-14'] = $pane;
-    $display->panels['right'][5] = 'new-14';
+    $display->content['new-15'] = $pane;
+    $display->panels['right'][5] = 'new-15';
     $pane = new stdClass;
-    $pane->pid = 'new-15';
+    $pane->pid = 'new-16';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'associated_links-1';
@@ -1387,10 +1389,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 6;
-    $display->content['new-15'] = $pane;
-    $display->panels['right'][6] = 'new-15';
+    $display->content['new-16'] = $pane;
+    $display->panels['right'][6] = 'new-16';
     $pane = new stdClass;
-    $pane->pid = 'new-16';
+    $pane->pid = 'new-17';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'campaign_page';
@@ -1431,10 +1433,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 7;
-    $display->content['new-16'] = $pane;
-    $display->panels['right'][7] = 'new-16';
+    $display->content['new-17'] = $pane;
+    $display->panels['right'][7] = 'new-17';
     $pane = new stdClass;
-    $pane->pid = 'new-17';
+    $pane->pid = 'new-18';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-26';
@@ -1451,10 +1453,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 8;
-    $display->content['new-17'] = $pane;
-    $display->panels['right'][8] = 'new-17';
+    $display->content['new-18'] = $pane;
+    $display->panels['right'][8] = 'new-18';
     $pane = new stdClass;
-    $pane->pid = 'new-18';
+    $pane->pid = 'new-19';
     $pane->panel = 'top';
     $pane->type = 'block';
     $pane->subtype = 'block-19';
@@ -1484,54 +1486,10 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $display->content['new-18'] = $pane;
-    $display->panels['top'][0] = 'new-18';
-    $pane = new stdClass;
-    $pane->pid = 'new-19';
-    $pane->panel = 'top';
-    $pane->type = 'node_author';
-    $pane->subtype = 'node_author';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'link' => 1,
-      'context' => 'argument_nid_1',
-      'override_title' => 1,
-      'override_title_text' => '<none>',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 1;
     $display->content['new-19'] = $pane;
-    $display->panels['top'][1] = 'new-19';
+    $display->panels['top'][0] = 'new-19';
     $pane = new stdClass;
     $pane->pid = 'new-20';
-    $pane->panel = 'top';
-    $pane->type = 'node_created';
-    $pane->subtype = 'node_created';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'format' => 'small',
-      'context' => 'argument_nid_1',
-      'override_title' => 1,
-      'override_title_text' => '<none>',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 2;
-    $display->content['new-20'] = $pane;
-    $display->panels['top'][2] = 'new-20';
-    $pane = new stdClass;
-    $pane->pid = 'new-21';
     $pane->panel = 'top';
     $pane->type = 'views';
     $pane->subtype = 'panel_tag';
@@ -1562,14 +1520,14 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 3;
-    $display->content['new-21'] = $pane;
-    $display->panels['top'][3] = 'new-21';
+    $pane->position = 1;
+    $display->content['new-20'] = $pane;
+    $display->panels['top'][1] = 'new-20';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_10'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -2185,8 +2143,8 @@ events',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_11'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -2278,8 +2236,8 @@ events',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_2'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -2371,8 +2329,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_3'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -2623,8 +2581,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_4'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -2877,8 +2835,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_5'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -3108,8 +3066,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_6'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -3199,8 +3157,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_NONE;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_7'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -3290,8 +3248,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_8'] = $handler;
+
   $handler = new stdClass;
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
@@ -4059,8 +4017,8 @@ ecochallenge',
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-
   $export['node_view_panel_context_9'] = $handler;
+
   return $export;
 }
 

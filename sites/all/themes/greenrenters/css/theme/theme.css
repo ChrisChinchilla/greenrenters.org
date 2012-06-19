@@ -586,7 +586,6 @@ float:none;
 {
 	font-size: 12px;
 	float:left;	
-	border-right: 1px solid;
 	margin-right: 4px;
     padding-right: 4px;
 }
@@ -619,12 +618,10 @@ float:none;
 ul.taxonomy,
 .pane-node-terms
  {
-	 width: 375px;
-	float:right;
+ padding:10px;
+
 font-size: 12px;
-text-align: right;
 vertical-align: middle;
-	margin:0;
 }
 ul.taxonomy li {}
 ul.taxonomy li a {}
@@ -1361,7 +1358,6 @@ margin-top: 210px;
 
 /* panels */
 .panel-2col-stacked .panel-col-top .inside {
-    float: left;
     margin-bottom: 0.5em;
     width: 100%;
 }
