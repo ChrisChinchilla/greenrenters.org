@@ -194,6 +194,10 @@ date_default_timezone_set('Australia/Sydney');
 #       ),
 #     ),
 #  );
+
+$options['uri'] = 'greenrenters.local',
+$options['root'] = '/Library/WebServer/Documents/greenrenters.org';
+
 $aliases['local'] = array(
 'uri' => 'greenrenters.local', # CHANGE
 'root' => '/Library/WebServer/Documents/greenrenters.org',
