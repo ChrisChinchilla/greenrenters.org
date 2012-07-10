@@ -5,6 +5,6 @@
  */
 function civievent_views_views_api() {
   return array(
-    'api' => '2',
+    'api' => '3.0',
   );
 }

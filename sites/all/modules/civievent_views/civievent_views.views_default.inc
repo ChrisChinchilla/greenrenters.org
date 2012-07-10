@@ -6,269 +6,222 @@
 function civievent_views_views_default_views() {
   $views = array();
 
+  // Exported view: AvailableWorkshopsBlocks
+  $view = new view;
+  $view->name = 'AvailableWorkshopsBlocks';
+  $view->description = '';
+  $view->tag = '';
+  $view->base_table = 'node';
+  $view->human_name = '';
+  $view->core = 0;
+  $view->api_version = '3.0';
+  $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
+  $handler = $view->new_display('default', 'Defaults', 'default');
+  $handler->display->display_options['css_class'] = 'AvailableWorkshopBlock';
+  $handler->display->display_options['items_per_page'] = 0;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['row_plugin'] = 'fields';
+  /* Field: Node: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'node';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['text'] = '<h3>[title]</h3>';
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_node'] = 0;
+  /* Field: Node: Body */
+  $handler->display->display_options['fields']['body']['id'] = 'body';
+  $handler->display->display_options['fields']['body']['table'] = 'node_revisions';
+  $handler->display->display_options['fields']['body']['field'] = 'body';
+  $handler->display->display_options['fields']['body']['label'] = '';
+  $handler->display->display_options['fields']['body']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['body']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['body']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['body']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['body']['empty_zero'] = 0;
+  /* Sort criterion: Node: Title */
+  $handler->display->display_options['sorts']['title']['id'] = 'title';
+  $handler->display->display_options['sorts']['title']['table'] = 'node';
+  $handler->display->display_options['sorts']['title']['field'] = 'title';
+  /* Filter: Node: Type */
+  $handler->display->display_options['filters']['type']['id'] = 'type';
+  $handler->display->display_options['filters']['type']['table'] = 'node';
+  $handler->display->display_options['filters']['type']['field'] = 'type';
+  $handler->display->display_options['filters']['type']['value'] = array(
+    'workshop' => 'workshop',
+  );
+  $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
+  /* Filter: Node: Published */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'node';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = '1';
+  $handler->display->display_options['filters']['status']['expose']['operator'] = FALSE;
+
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block_1');
+
+  $views[$view->name] = $view;
+
   // Exported view: FrontPageEvents
   $view = new view;
   $view->name = 'FrontPageEvents';
   $view->description = '';
   $view->tag = '';
   $view->base_table = 'civicrm_event';
+  $view->human_name = '';
   $view->core = 0;
-  $view->api_version = '2';
+  $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('fields', array(
-    'start_date' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'absolute' => 0,
-        'link_class' => '',
-        'alt' => '',
-        'rel' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'hide_alter_empty' => 1,
-      'date_format' => 'custom',
-      'custom_date_format' => 'D jS M, g:ia',
-      'exclude' => 1,
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'city' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 1,
-      'id' => 'city',
-      'table' => 'civicrm_address',
-      'field' => 'city',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'nothing' => array(
-      'label' => '',
-      'alter' => array(
-        'text' => '[start_date] in [city]',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'nothing',
-      'table' => 'views',
-      'field' => 'nothing',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_civicrm_event' => 'page',
-      'custom_link' => '',
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'civicrm_event',
-      'field' => 'title',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('sorts', array(
-    'start_date' => array(
-      'order' => 'ASC',
-      'granularity' => 'hour',
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('filters', array(
-    'all_details_confirmed__79' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'all_details_confirmed__79',
-      'table' => 'civicrm_value_event_management_16',
-      'field' => 'all_details_confirmed__79',
-      'relationship' => 'none',
-    ),
-    'is_active' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'is_active',
-      'table' => 'civicrm_event',
-      'field' => 'is_active',
-      'relationship' => 'none',
-    ),
-    'is_public' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'is_public',
-      'table' => 'civicrm_event',
-      'field' => 'is_public',
-      'relationship' => 'none',
-    ),
-    'start_date' => array(
-      'operator' => '>=',
-      'value' => array(
-        'type' => 'offset',
-        'value' => 'now',
-        'min' => '',
-        'max' => '',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'terms_agreed_76' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'terms_agreed_76',
-      'table' => 'civicrm_value_event_management_16',
-      'field' => 'terms_agreed_76',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('footer', 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops</a> and <a href="/events">events</a> pages for more.');
-  $handler->override_option('footer_format', '2');
-  $handler->override_option('footer_empty', 1);
-  $handler->override_option('items_per_page', 5);
-  $handler->override_option('use_pager', '0');
-  $handler->override_option('style_plugin', 'list');
-  $handler->override_option('row_options', array(
-    'inline' => array(),
-    'separator' => '',
-    'hide_empty' => 0,
-  ));
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = 5;
+  $handler->display->display_options['style_plugin'] = 'list';
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['row_options']['hide_empty'] = 0;
+  /* Footer: Global: Text area */
+  $handler->display->display_options['footer']['text']['id'] = 'area';
+  $handler->display->display_options['footer']['text']['table'] = 'views';
+  $handler->display->display_options['footer']['text']['field'] = 'area';
+  $handler->display->display_options['footer']['text']['label'] = '';
+  $handler->display->display_options['footer']['text']['empty'] = TRUE;
+  $handler->display->display_options['footer']['text']['content'] = 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops</a> and <a href="/events">events</a> pages for more.';
+  /* Field: CiviCRM Events: Start Date */
+  $handler->display->display_options['fields']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['fields']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['fields']['start_date']['field'] = 'start_date';
+  $handler->display->display_options['fields']['start_date']['label'] = '';
+  $handler->display->display_options['fields']['start_date']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['start_date']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['start_date']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['start_date']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['start_date']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['start_date']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['start_date']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['start_date']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['start_date']['custom_date_format'] = 'D jS M, g:ia';
+  /* Field: CiviCRM Address: City / Suburb */
+  $handler->display->display_options['fields']['city']['id'] = 'city';
+  $handler->display->display_options['fields']['city']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['city']['field'] = 'city';
+  $handler->display->display_options['fields']['city']['label'] = '';
+  $handler->display->display_options['fields']['city']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['city']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['city']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['city']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['city']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['city']['empty_zero'] = 0;
+  /* Field: Global: Custom text */
+  $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['table'] = 'views';
+  $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
+  $handler->display->display_options['fields']['nothing']['label'] = '';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[start_date] in [city]';
+  $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
+  /* Field: CiviCRM Events: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'civicrm_event';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_civicrm_event'] = 'page';
+  /* Sort criterion: CiviCRM Events: Start Date */
+  $handler->display->display_options['sorts']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['sorts']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['sorts']['start_date']['field'] = 'start_date';
+  $handler->display->display_options['sorts']['start_date']['granularity'] = 'hour';
+  /* Filter: CiviCRM Custom: Event management: All details confirmed? */
+  $handler->display->display_options['filters']['all_details_confirmed__79']['id'] = 'all_details_confirmed__79';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['field'] = 'all_details_confirmed__79';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['value'] = '1';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Is Active */
+  $handler->display->display_options['filters']['is_active']['id'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_active']['field'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['value'] = '1';
+  $handler->display->display_options['filters']['is_active']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Is Public */
+  $handler->display->display_options['filters']['is_public']['id'] = 'is_public';
+  $handler->display->display_options['filters']['is_public']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_public']['field'] = 'is_public';
+  $handler->display->display_options['filters']['is_public']['value'] = '1';
+  $handler->display->display_options['filters']['is_public']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Start Date */
+  $handler->display->display_options['filters']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['start_date']['field'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['operator'] = '>=';
+  $handler->display->display_options['filters']['start_date']['value']['value'] = 'now';
+  $handler->display->display_options['filters']['start_date']['value']['type'] = 'offset';
+  $handler->display->display_options['filters']['start_date']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Custom: Event management: Terms & quote agreed? */
+  $handler->display->display_options['filters']['terms_agreed_76']['id'] = 'terms_agreed_76';
+  $handler->display->display_options['filters']['terms_agreed_76']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['terms_agreed_76']['field'] = 'terms_agreed_76';
+  $handler->display->display_options['filters']['terms_agreed_76']['value'] = '1';
+  $handler->display->display_options['filters']['terms_agreed_76']['expose']['operator'] = FALSE;
+
+  /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
-  $handler->override_option('footer', 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops and events</a> page for more.');
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
+  $handler->display->display_options['defaults']['footer'] = FALSE;
+  /* Footer: Global: Text area */
+  $handler->display->display_options['footer']['text']['id'] = 'area';
+  $handler->display->display_options['footer']['text']['table'] = 'views';
+  $handler->display->display_options['footer']['text']['field'] = 'area';
+  $handler->display->display_options['footer']['text']['label'] = '';
+  $handler->display->display_options['footer']['text']['empty'] = TRUE;
+  $handler->display->display_options['footer']['text']['content'] = 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops and events</a> page for more.';
 
   $views[$view->name] = $view;
 
@@ -278,305 +231,159 @@ function civievent_views_views_default_views() {
   $view->description = '';
   $view->tag = '';
   $view->base_table = 'civicrm_event';
+  $view->human_name = '';
   $view->core = 0;
-  $view->api_version = '2';
+  $view->api_version = '3.0';
   $view->disabled = FALSE; /* Edit this to true to make a default view disabled initially */
+
+  /* Display: Defaults */
   $handler = $view->new_display('default', 'Defaults', 'default');
-  $handler->override_option('fields', array(
+  $handler->display->display_options['use_ajax'] = TRUE;
+  $handler->display->display_options['access']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['query']['type'] = 'views_query';
+  $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['pager']['type'] = 'full';
+  $handler->display->display_options['pager']['options']['items_per_page'] = 15;
+  $handler->display->display_options['pager']['options']['id'] = 2;
+  $handler->display->display_options['style_plugin'] = 'table';
+  $handler->display->display_options['style_options']['columns'] = array(
+    'start_date' => 'start_date',
+    'end_date' => 'end_date',
+    'title' => 'title',
+    'city' => 'city',
+    'state_province' => 'state_province',
+    'registration_link_text' => 'registration_link_text',
+  );
+  $handler->display->display_options['style_options']['default'] = 'start_date';
+  $handler->display->display_options['style_options']['info'] = array(
     'start_date' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'absolute' => 0,
-        'link_class' => '',
-        'alt' => '',
-        'rel' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 0,
-        'ellipsis' => 0,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'hide_alter_empty' => 1,
-      'date_format' => 'custom',
-      'custom_date_format' => 'D jS M, g:ia',
-      'exclude' => 0,
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
+      'sortable' => 0,
+      'separator' => '',
+    ),
+    'end_date' => array(
+      'sortable' => 0,
+      'separator' => '',
     ),
     'title' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 0,
-        'ellipsis' => 0,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 0,
-      'empty_zero' => 0,
-      'link_to_civicrm_event' => 'page',
-      'custom_link' => '',
-      'exclude' => 0,
-      'id' => 'title',
-      'table' => 'civicrm_event',
-      'field' => 'title',
-      'relationship' => 'none',
+      'sortable' => 0,
+      'separator' => '',
     ),
     'city' => array(
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 1,
-        'ellipsis' => 1,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'hide_empty' => 1,
-      'empty_zero' => 0,
-      'exclude' => 0,
-      'id' => 'city',
-      'table' => 'civicrm_address',
-      'field' => 'city',
-      'relationship' => 'none',
+      'sortable' => 0,
+      'separator' => '',
     ),
     'state_province' => array(
-      'id' => 'state_province',
-      'table' => 'civicrm_address',
-      'field' => 'state_province',
-      'exclude' => 0,
-      'relationship' => 'none',
-      'label' => '',
-      'alter' => array(
-        'alter_text' => 0,
-        'text' => '',
-        'make_link' => 0,
-        'path' => '',
-        'link_class' => '',
-        'alt' => '',
-        'prefix' => '',
-        'suffix' => '',
-        'target' => '',
-        'help' => '',
-        'trim' => 0,
-        'max_length' => '',
-        'word_boundary' => 0,
-        'ellipsis' => 0,
-        'html' => 0,
-        'strip_tags' => 0,
-      ),
-      'empty' => '',
-      'empty_zero' => 0,
-      'hide_empty' => 1,
+      'sortable' => 0,
+      'separator' => '',
     ),
-  ));
-  $handler->override_option('sorts', array(
-    'start_date' => array(
-      'order' => 'ASC',
-      'granularity' => 'second',
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'relationship' => 'none',
+    'registration_link_text' => array(
+      'sortable' => 0,
+      'separator' => '',
     ),
-  ));
-  $handler->override_option('filters', array(
-    'start_date' => array(
-      'operator' => '>',
-      'value' => array(
-        'type' => 'offset',
-        'value' => '-2 day',
-        'min' => '',
-        'max' => '',
-      ),
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'start_date',
-      'table' => 'civicrm_event',
-      'field' => 'start_date',
-      'relationship' => 'none',
-      'override' => array(
-        'button' => 'Override',
-      ),
-    ),
-    'is_public' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'is_public',
-      'table' => 'civicrm_event',
-      'field' => 'is_public',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'is_active' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'is_active',
-      'table' => 'civicrm_event',
-      'field' => 'is_active',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'all_details_confirmed__79' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'all_details_confirmed__79',
-      'table' => 'civicrm_value_event_management_16',
-      'field' => 'all_details_confirmed__79',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-    'terms_agreed_76' => array(
-      'operator' => '=',
-      'value' => '1',
-      'group' => '0',
-      'exposed' => FALSE,
-      'expose' => array(
-        'operator' => FALSE,
-        'label' => '',
-      ),
-      'id' => 'terms_agreed_76',
-      'table' => 'civicrm_value_event_management_16',
-      'field' => 'terms_agreed_76',
-      'override' => array(
-        'button' => 'Override',
-      ),
-      'relationship' => 'none',
-    ),
-  ));
-  $handler->override_option('access', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('cache', array(
-    'type' => 'none',
-  ));
-  $handler->override_option('use_ajax', TRUE);
-  $handler->override_option('items_per_page', 15);
-  $handler->override_option('use_pager', 'mini');
-  $handler->override_option('pager_element', 2);
-  $handler->override_option('style_plugin', 'table');
-  $handler->override_option('style_options', array(
-    'grouping' => '',
-    'override' => 1,
-    'sticky' => 0,
-    'order' => 'asc',
-    'columns' => array(
-      'start_date' => 'start_date',
-      'end_date' => 'end_date',
-      'title' => 'title',
-      'city' => 'city',
-      'state_province' => 'state_province',
-      'registration_link_text' => 'registration_link_text',
-    ),
-    'info' => array(
-      'start_date' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'end_date' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'title' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'city' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'state_province' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-      'registration_link_text' => array(
-        'sortable' => 0,
-        'separator' => '',
-      ),
-    ),
-    'default' => 'start_date',
-  ));
-  $handler->override_option('row_options', array(
-    'inline' => array(
-      'start_date' => 'start_date',
-      'end_date' => 'end_date',
-      'city' => 'city',
-      'state_province' => 'state_province',
-    ),
-    'separator' => ',',
-    'hide_empty' => 1,
-  ));
+  );
+  $handler->display->display_options['style_options']['override'] = 1;
+  $handler->display->display_options['style_options']['sticky'] = 0;
+  /* Field: CiviCRM Events: Start Date */
+  $handler->display->display_options['fields']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['fields']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['fields']['start_date']['field'] = 'start_date';
+  $handler->display->display_options['fields']['start_date']['label'] = '';
+  $handler->display->display_options['fields']['start_date']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['start_date']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['start_date']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['start_date']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['start_date']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['start_date']['date_format'] = 'custom';
+  $handler->display->display_options['fields']['start_date']['custom_date_format'] = 'D jS M, g:ia';
+  /* Field: CiviCRM Events: Title */
+  $handler->display->display_options['fields']['title']['id'] = 'title';
+  $handler->display->display_options['fields']['title']['table'] = 'civicrm_event';
+  $handler->display->display_options['fields']['title']['field'] = 'title';
+  $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['title']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['title']['link_to_civicrm_event'] = 'page';
+  /* Field: CiviCRM Address: City / Suburb */
+  $handler->display->display_options['fields']['city']['id'] = 'city';
+  $handler->display->display_options['fields']['city']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['city']['field'] = 'city';
+  $handler->display->display_options['fields']['city']['label'] = '';
+  $handler->display->display_options['fields']['city']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['city']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['city']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['city']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['city']['hide_empty'] = 1;
+  $handler->display->display_options['fields']['city']['empty_zero'] = 0;
+  /* Field: CiviCRM Address: State / Province */
+  $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['state_province']['field'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['label'] = '';
+  $handler->display->display_options['fields']['state_province']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['word_boundary'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['ellipsis'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['state_province']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['state_province']['hide_empty'] = 1;
+  $handler->display->display_options['fields']['state_province']['empty_zero'] = 0;
+  /* Sort criterion: CiviCRM Events: Start Date */
+  $handler->display->display_options['sorts']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['sorts']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['sorts']['start_date']['field'] = 'start_date';
+  /* Filter: CiviCRM Events: Start Date */
+  $handler->display->display_options['filters']['start_date']['id'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['start_date']['field'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['operator'] = '>';
+  $handler->display->display_options['filters']['start_date']['value']['value'] = '-2 day';
+  $handler->display->display_options['filters']['start_date']['value']['type'] = 'offset';
+  $handler->display->display_options['filters']['start_date']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Is Public */
+  $handler->display->display_options['filters']['is_public']['id'] = 'is_public';
+  $handler->display->display_options['filters']['is_public']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_public']['field'] = 'is_public';
+  $handler->display->display_options['filters']['is_public']['value'] = '1';
+  $handler->display->display_options['filters']['is_public']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Is Active */
+  $handler->display->display_options['filters']['is_active']['id'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_active']['field'] = 'is_active';
+  $handler->display->display_options['filters']['is_active']['value'] = '1';
+  $handler->display->display_options['filters']['is_active']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Custom: Event management: All details confirmed? */
+  $handler->display->display_options['filters']['all_details_confirmed__79']['id'] = 'all_details_confirmed__79';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['field'] = 'all_details_confirmed__79';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['value'] = '1';
+  $handler->display->display_options['filters']['all_details_confirmed__79']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Custom: Event management: Terms & quote agreed? */
+  $handler->display->display_options['filters']['terms_agreed_76']['id'] = 'terms_agreed_76';
+  $handler->display->display_options['filters']['terms_agreed_76']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['terms_agreed_76']['field'] = 'terms_agreed_76';
+  $handler->display->display_options['filters']['terms_agreed_76']['value'] = '1';
+  $handler->display->display_options['filters']['terms_agreed_76']['expose']['operator'] = FALSE;
+
+  /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
-  $handler->override_option('block_description', '');
-  $handler->override_option('block_caching', -1);
 
   $views[$view->name] = $view;
 
