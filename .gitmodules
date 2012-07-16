@@ -1,0 +1,6 @@
+[submodule "sites/all/modules/civicrm/api/v3/civistats"]
+	path = sites/all/modules/civicrm/api/v3/civistats
+	url = git://github.com/ChrisChinchilla/CiviStats.git
+[submodule "sites/default/civi_extensions"]
+	path = sites/default/civi_extensions
+	url = git://github.com/dlobo/org.civicrm.module.cividiscount.git
