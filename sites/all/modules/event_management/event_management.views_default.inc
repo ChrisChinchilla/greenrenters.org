@@ -101,6 +101,30 @@ function event_management_views_default_views() {
   );
   $handler->display->display_options['style_options']['override'] = 1;
   $handler->display->display_options['style_options']['sticky'] = 0;
+  /* Field: CiviCRM Events: Event ID */
+  $handler->display->display_options['fields']['id']['id'] = 'id';
+  $handler->display->display_options['fields']['id']['table'] = 'civicrm_event';
+  $handler->display->display_options['fields']['id']['field'] = 'id';
+  $handler->display->display_options['fields']['id']['label'] = '';
+  $handler->display->display_options['fields']['id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['id']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['nl2br'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['id']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['id']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['id']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['id']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['id']['element_default_classes'] = 0;
+  $handler->display->display_options['fields']['id']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['id']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['id']['hide_alter_empty'] = 1;
+  $handler->display->display_options['fields']['id']['format_plural'] = 0;
   /* Field: CiviCRM Events: Start Date */
   $handler->display->display_options['fields']['start_date']['id'] = 'start_date';
   $handler->display->display_options['fields']['start_date']['table'] = 'civicrm_event';
@@ -123,17 +147,24 @@ function event_management_views_default_views() {
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
   $handler->display->display_options['fields']['title']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['title']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['title']['alter']['path'] = 'civicrm/event/manage/settings?reset=1&action=update&id=[id]';
   $handler->display->display_options['fields']['title']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['title']['alter']['target'] = '_blank';
+  $handler->display->display_options['fields']['title']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = 0;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = 0;
   $handler->display->display_options['fields']['title']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['title']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['title']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['title']['element_label_colon'] = 1;
+  $handler->display->display_options['fields']['title']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['title']['link_to_civicrm_event'] = 'config';
   /* Field: CiviCRM Address: City / Suburb */
   $handler->display->display_options['fields']['city']['id'] = 'city';
   $handler->display->display_options['fields']['city']['table'] = 'civicrm_address';
