@@ -1399,7 +1399,7 @@ min-width: 485px;
 clear:both;
 }
 
-.pane-content
+.panel-col-last .pane-content
 {
 	width:485px;
 }
