@@ -15,6 +15,6 @@ function admin_dashboard_ctools_plugin_api() {
  */
 function admin_dashboard_views_api() {
   return array(
-    'api' => '2',
+    'api' => '3.0',
   );
 }
