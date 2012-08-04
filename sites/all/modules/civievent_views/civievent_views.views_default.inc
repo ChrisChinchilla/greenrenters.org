@@ -111,6 +111,7 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['footer']['text']['label'] = '';
   $handler->display->display_options['footer']['text']['empty'] = TRUE;
   $handler->display->display_options['footer']['text']['content'] = 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops</a> and <a href="/events">events</a> pages for more.';
+  $handler->display->display_options['footer']['text']['format'] = '2';
   /* Field: CiviCRM Events: Start Date */
   $handler->display->display_options['fields']['start_date']['id'] = 'start_date';
   $handler->display->display_options['fields']['start_date']['table'] = 'civicrm_event';
@@ -222,6 +223,7 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['footer']['text']['label'] = '';
   $handler->display->display_options['footer']['text']['empty'] = TRUE;
   $handler->display->display_options['footer']['text']['content'] = 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops and events</a> page for more.';
+  $handler->display->display_options['footer']['text']['format'] = '2';
 
   $views[$view->name] = $view;
 
