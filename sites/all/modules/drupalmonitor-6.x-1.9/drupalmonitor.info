@@ -1,0 +1,5 @@
+name = "drupalmonitor.com Connector"
+description = "This module enables drupalmonitor.com to gather data about this Drupal site."
+package = Administration
+version = "6.x-1.9"
+core = 6.x
