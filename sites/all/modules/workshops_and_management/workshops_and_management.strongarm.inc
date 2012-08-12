@@ -75,17 +75,18 @@ function workshops_and_management_strongarm() {
   $strongarm->name = 'content_extra_weights_workshop';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '2',
-    'revision_information' => '5',
-    'author' => '0',
-    'options' => '6',
-    'comment_settings' => '4',
+    'body_field' => '4',
+    'revision_information' => '7',
+    'author' => '1',
+    'options' => '8',
+    'comment_settings' => '6',
     'menu' => '-4',
+    'taxonomy' => '-2',
     'path' => '-3',
-    'attachments' => '1',
-    'path_redirect' => '-2',
-    'xmlsitemap' => '-1',
-    'nodewords' => '3',
+    'attachments' => '3',
+    'path_redirect' => '-1',
+    'xmlsitemap' => '0',
+    'nodewords' => '5',
   );
   $export['content_extra_weights_workshop'] = $strongarm;
 

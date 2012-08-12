@@ -189,10 +189,77 @@ Yes',
       ),
       'default_value_php' => NULL,
       'label' => 'Added to Workshops Enquiry form?',
-      'weight' => '12',
+      'weight' => '10',
       'description' => 'Has the Workshop title been added to the /workshops enquiry form?',
       'type' => 'optionwidgets_onoff',
       'module' => 'optionwidgets',
+    ),
+  );
+
+  // Exported field: field_image
+  $fields['workshop-field_image'] = array(
+    'field_name' => 'field_image',
+    'type_name' => 'workshop',
+    'display_settings' => array(
+      'weight' => '-3',
+      'parent' => '',
+      'label' => array(
+        'format' => 'hidden',
+      ),
+      'teaser' => array(
+        'format' => 'Content_Thumb_linked',
+        'exclude' => 1,
+      ),
+      'full' => array(
+        'format' => 'imagefield__lightbox2__Content_Thumb__LB_Content_thumb',
+        'exclude' => 1,
+      ),
+      '4' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'image_plain',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'filefield',
+    'required' => '0',
+    'multiple' => '5',
+    'module' => 'filefield',
+    'active' => '1',
+    'list_field' => '0',
+    'list_default' => 1,
+    'description_field' => '0',
+    'widget' => array(
+      'file_extensions' => 'png gif jpg jpeg',
+      'file_path' => '',
+      'progress_indicator' => 'bar',
+      'max_filesize_per_file' => '',
+      'max_filesize_per_node' => '',
+      'max_resolution' => '0',
+      'min_resolution' => '0',
+      'alt' => '',
+      'custom_alt' => 0,
+      'title' => '',
+      'custom_title' => 0,
+      'title_type' => 'textfield',
+      'default_image' => NULL,
+      'use_default_image' => 0,
+      'label' => 'Image',
+      'weight' => '2',
+      'description' => '',
+      'type' => 'imagefield_widget',
+      'module' => 'imagefield',
     ),
   );
 
@@ -379,7 +446,7 @@ Yes',
       ),
       'default_value_php' => NULL,
       'label' => 'Views Filter Created?',
-      'weight' => '18',
+      'weight' => '12',
       'description' => '',
       'type' => 'optionwidgets_onoff',
       'module' => 'optionwidgets',
@@ -439,7 +506,7 @@ Yes',
       ),
       'default_value_php' => NULL,
       'label' => 'Added to Workshops flyer?',
-      'weight' => '19',
+      'weight' => '13',
       'description' => '',
       'type' => 'optionwidgets_onoff',
       'module' => 'optionwidgets',
@@ -452,6 +519,7 @@ Yes',
   t('Added to Workshops flyer?');
   t('Budget Completed?');
   t('Budget Link');
+  t('Image');
   t('Template Completed?');
   t('Template Link?');
   t('Views Filter Created?');

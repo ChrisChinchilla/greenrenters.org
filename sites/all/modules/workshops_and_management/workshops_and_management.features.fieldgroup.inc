@@ -46,7 +46,7 @@ function workshops_and_management_fieldgroup_default_groups() {
         ),
       ),
     ),
-    'weight' => '17',
+    'weight' => '11',
     'fields' => array(
       '0' => 'field_budget_complete',
       '1' => 'field_budget_link',
