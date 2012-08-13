@@ -13,7 +13,7 @@ function node_templates_default_page_manager_handlers() {
   $handler->task = 'node_view';
   $handler->subtask = '';
   $handler->handler = 'panel_context';
-  $handler->weight = -26;
+  $handler->weight = -25;
   $handler->conf = array(
     'title' => 'Node Template',
     'no_blocks' => 0,
@@ -364,7 +364,7 @@ events',
       'override_pager_settings' => 0,
       'use_pager' => 1,
       'nodes_per_page' => '15',
-      'pager_id' => '',
+      'pager_id' => '2',
       'offset' => '0',
       'more_link' => 0,
       'feed_icons' => 0,
@@ -375,6 +375,9 @@ events',
       'display' => 'block_1',
       'override_title' => 1,
       'override_title_text' => 'Upcoming',
+      'context' => array(
+        0 => '',
+      ),
     );
     $pane->cache = array();
     $pane->style = array(

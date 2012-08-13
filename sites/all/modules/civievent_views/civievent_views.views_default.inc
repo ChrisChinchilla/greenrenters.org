@@ -358,10 +358,9 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['arguments']['title']['default_action'] = 'default';
   $handler->display->display_options['arguments']['title']['style_plugin'] = 'default_summary';
   $handler->display->display_options['arguments']['title']['default_argument_type'] = 'php';
-  $handler->display->display_options['arguments']['title']['default_argument_options']['code'] = 'if (arg(0) == \'node\' && is_numeric(arg(1))) {
+  $handler->display->display_options['arguments']['title']['default_argument_options']['code'] = 'if (arg(0) == \'node\' && is_numeric(arg(1)) && arg(1) != 13) {
   $node = node_load(arg(1));
   return $node->title;
-} else {
 }';
   $handler->display->display_options['arguments']['title']['default_argument_skip_url'] = 0;
   $handler->display->display_options['arguments']['title']['validate_fail'] = 'ignore';
