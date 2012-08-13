@@ -29,7 +29,6 @@ function node_templates_default_page_manager_handlers() {
           'name' => 'node_type',
           'settings' => array(
             'type' => array(
-              'product' => 'product',
               'campaign' => 'campaign',
               'competition' => 'competition',
               'news' => 'news',
@@ -40,7 +39,7 @@ function node_templates_default_page_manager_handlers() {
               'service' => 'service',
               'story' => 'story',
               'tutorial' => 'tutorial',
-              'webform' => 'webform',
+              'product' => 'product',
               'workshop' => 'workshop',
             ),
           ),

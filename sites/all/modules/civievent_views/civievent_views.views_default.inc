@@ -351,6 +351,20 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['sorts']['start_date']['id'] = 'start_date';
   $handler->display->display_options['sorts']['start_date']['table'] = 'civicrm_event';
   $handler->display->display_options['sorts']['start_date']['field'] = 'start_date';
+  /* Argument: CiviCRM Events: Title */
+  $handler->display->display_options['arguments']['title']['id'] = 'title';
+  $handler->display->display_options['arguments']['title']['table'] = 'civicrm_event';
+  $handler->display->display_options['arguments']['title']['field'] = 'title';
+  $handler->display->display_options['arguments']['title']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['title']['style_plugin'] = 'default_summary';
+  $handler->display->display_options['arguments']['title']['default_argument_type'] = 'php';
+  $handler->display->display_options['arguments']['title']['default_argument_options']['code'] = 'if (arg(0) == \'node\' && is_numeric(arg(1))) {
+  $node = node_load(arg(1));
+  return $node->title;
+} else {
+}';
+  $handler->display->display_options['arguments']['title']['default_argument_skip_url'] = 0;
+  $handler->display->display_options['arguments']['title']['validate_fail'] = 'ignore';
   /* Filter: CiviCRM Events: Start Date */
   $handler->display->display_options['filters']['start_date']['id'] = 'start_date';
   $handler->display->display_options['filters']['start_date']['table'] = 'civicrm_event';
