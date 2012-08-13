@@ -24,18 +24,31 @@ body.admin-menu #container {}
 /**********************************************************
  *                 HTML Elements
  **********************************************************/
-h1 {}
+h1 {
+color: #C61F26;
+    font-weight: bold;
+	font-size:24px;
+
+}
 h2,h2 a {
 	
-color: #243E90;
+color: #003399;
     font-weight: bold;
-	font-size:16px;
+	font-size:18px;
 	
 	}
-h3 {}
-h4 {}
+h3 {
+color: #DE6A26;
+    font-weight: normal;
+	font-size:14px;
+	
+}
+h4 {
+color: #146633;
+    font-weight: normal;
+	font-size:12px;
+}
 h5 {
-	color: #243E90;
 }
 h6 {}
 
@@ -476,10 +489,12 @@ span.search-info-upload  {}
 /**********************************************************
  *                    H1 Page Title
  **********************************************************/
+
 h1#page-title {
+/*
 	font-size: 24px;
 	font-weight: bold;
-	color: #003399;
+	color: #003399;*/
 	padding-top: 20px;
 }
 
@@ -1249,10 +1264,33 @@ margin-top:0;
 {
 float:left;
 }
+
+/* Why's this like this? */
 .view-content .views-row-unformatted
 {
 float:left;
 margin-bottom: 20px;	
+}
+
+.pane-workshops-offered 
+{
+	margin-bottom: 20px;
+}
+
+#workshops .view-content .views-row-unformatted
+{
+float:none;
+margin-bottom: 5px;	
+}
+
+#views-exposed-form-workshops-offered-default .views-widget,
+#views-exposed-form-workshops-offered-default .form-item
+{
+	display:inline;
+}
+
+#views-exposed-form-workshops-offered-default .views-exposed-form .views-exposed-widget .form-submit {
+margin-top: 0;
 }
 
 #magnify
