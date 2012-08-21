@@ -389,6 +389,11 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['start_date']['operator'] = '>=';
   $handler->display->display_options['filters']['start_date']['value']['value'] = '2010-12-31 00:00:00';
   $handler->display->display_options['filters']['start_date']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Events: Include Template */
+  $handler->display->display_options['filters']['is_template']['id'] = 'is_template';
+  $handler->display->display_options['filters']['is_template']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_template']['field'] = 'is_template';
+  $handler->display->display_options['filters']['is_template']['value'] = '0';
   $handler->display->display_options['path'] = 'admin/eventmanagement';
 
   $views[$view->name] = $view;
