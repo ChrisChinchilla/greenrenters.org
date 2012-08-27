@@ -104,17 +104,6 @@ function base_content_types_node_info() {
       'min_word_count' => '0',
       'help' => '',
     ),
-    'project' => array(
-      'name' => t('Project'),
-      'module' => 'features',
-      'description' => t('Projects we\'ve been or involved with.'),
-      'has_title' => '1',
-      'title_label' => t('Title'),
-      'has_body' => '1',
-      'body_label' => t('Body'),
-      'min_word_count' => '0',
-      'help' => '',
-    ),
     'resource' => array(
       'name' => t('Resource'),
       'module' => 'features',
