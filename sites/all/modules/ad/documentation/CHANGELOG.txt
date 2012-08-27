@@ -1,3 +1,7 @@
+May 20th, 2012 (6.x-2.3.1)
+ - Bug #1587578 by MadOverlord: Channel selection regression.
+ - Bug #1585986 by smyleeface: hook_update_N() must return something.
+
 May 15th, 2012 (6.x-2.3)
  - bug #797274 by tacituseu: apply modified version of tacituseu's patch to get charts to appear
  - bug #1252536 by osopolar: fix iframe scrolling options

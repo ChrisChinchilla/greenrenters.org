@@ -559,7 +559,7 @@ function ad_channel_ad_build_cache() {
   $active = db_query("SELECT aid FROM {ads} WHERE adstatus = 'active'");
   while ($ad = db_fetch_object($active)) {
     // cache channel<->node relation
-    $result = db_query('SELECT chid FROM {ad_channel_node} WHERE nid = %d', $ad->nid);
+    $result = db_query('SELECT chid FROM {ad_channel_node} WHERE nid = %d', $ad->aid);
     while ($channel = db_fetch_object($result)) {
       $ads[$ad->aid][$channel->chid] = $channel->chid;
       //$ads[$channel->chid][$ad->aid] = $ad->aid;
