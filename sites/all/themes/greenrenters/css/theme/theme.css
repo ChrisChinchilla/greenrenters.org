@@ -1231,7 +1231,8 @@ margin-bottom: 100%;*/
 }
 
 .page-store .view-content .field-image,
-.page-store .field-image-fid
+.page-store .field-image-fid,
+.views_slideshow_singleframe_slide .field-image-fid
 {
   float: left;
   margin-right: 20px;
