@@ -1230,6 +1230,15 @@ margin-bottom: 100%;*/
   height:150px;
 }
 
+.page-store .view-content .field-image,
+.page-store .field-image-fid
+{
+  float: left;
+  margin-right: 20px;
+  width:auto;
+  height:auto;
+}
+
 .view-content .title
 {
   margin-bottom: 20px;
