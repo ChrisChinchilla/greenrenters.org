@@ -1,0 +1,197 @@
+Jul 17 11:13:49  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:13:49  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:16:24  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:16:24  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:17:08  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:17:08  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:17:14  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:17:14  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:18:06  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:18:06  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:20:02  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:20:02  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 17 11:30:54  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Jul 17 11:30:54  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Jul 28 16:29:26  [info] $Fatal Error Details = Array
+(
+    [callback] => Array
+        (
+            [0] => CRM_Core_Error
+            [1] => handle
+        )
+
+    [code] => -3
+    [message] => DB Error: constraint violation
+    [mode] => 16
+    [debug_info] => INSERT IGNORE INTO civicrm_group_contact_cache (group_id,contact_id) VALUES (13,1008),(13,1015),(13,1016),(13,1017),(13,1018),(13,1020),(13,1021),(13,1022),(13,1023),(13,1027),(13,1028),(13,1031),(13,1033),(13,1037),(13,1042),(13,1044),(13,1050),(13,1052),(13,1057),(13,1065),(13,1071),(13,1073),(13,1075),(13,1076),(13,1080),(13,1130),(13,1190),(13,1191),(13,1193),(13,1235),(13,1237),(13,1238),(13,1485),(13,1486),(13,157),(13,1592),(13,1607),(13,1609),(13,1620),(13,1622),(13,1639),(13,1654),(13,1655),(13,1656),(13,1657),(13,1658),(13,1659),(13,1660),(13,1661),(13,1662),(13,1663),(13,1664),(13,1665),(13,1674),(13,1676),(13,1677),(13,1678),(13,1679),(13,1680),(13,1682),(13,1683),(13,1684),(13,1685),(13,1686),(13,1687),(13,1688),(13,1690),(13,1691),(13,1692),(13,1694),(13,1695),(13,1696),(13,1698),(13,1699),(13,1701),(13,1705),(13,1710),(13,1713),(13,1715),(13,1722),(13,1725),(13,1726),(13,1753),(13,1761),(13,1763),(13,1791),(13,2388),(13,2390),(13,2398),(13,2406),(13,2410),(13,2414),(13,2419),(13,2421),(13,2422),(13,2423),(13,2425),(13,2458),(13,2459),(13,2460),(13,2461),(13,2462),(13,2463),(13,2464),(13,2465),(13,2466),(13,2467),(13,2468),(13,2469),(13,2470),(13,2471),(13,2472),(13,2474),(13,2475),(13,2482),(13,2483),(13,2484),(13,2485),(13,2486),(13,2487),(13,2488),(13,2489),(13,2490),(13,2491),(13,2492),(13,2493),(13,2494),(13,2495),(13,2496),(13,2497),(13,2498),(13,2499),(13,2500),(13,2501),(13,2502),(13,2503),(13,2504),(13,2505),(13,2506),(13,2507),(13,2508),(13,2509),(13,2510),(13,2511),(13,2512),(13,2513),(13,2514),(13,2516),(13,2517),(13,2518),(13,2519),(13,2520),(13,2521),(13,2522),(13,2523),(13,2524),(13,2525),(13,2526),(13,2527),(13,2528),(13,2529),(13,2530),(13,2531),(13,2532),(13,2533),(13,2535),(13,2536),(13,2537),(13,2538),(13,2539),(13,2541),(13,2542),(13,2544),(13,2545),(13,2547),(13,2548),(13,2549),(13,2550),(13,2551),(13,2552),(13,2556),(13,2557),(13,2558),(13,2559),(13,2560),(13,2561),(13,2562),(13,2563),(13,2564),(13,2565),(13,2566),(13,2567),(13,2568),(13,2569),(13,2570),(13,2571),(13,2572),(13,2575),(13,2576),(13,2577); [nativecode=1452 ** Cannot add or update a child row: a foreign key constraint fails (`greenrenters`.`civicrm_group_contact_cache`, CONSTRAINT `FK_civicrm_group_contact_cache_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact` (`id`) ON DELETE CASCADE)]
+    [type] => DB_Error
+    [user_info] => INSERT IGNORE INTO civicrm_group_contact_cache (group_id,contact_id) VALUES (13,1008),(13,1015),(13,1016),(13,1017),(13,1018),(13,1020),(13,1021),(13,1022),(13,1023),(13,1027),(13,1028),(13,1031),(13,1033),(13,1037),(13,1042),(13,1044),(13,1050),(13,1052),(13,1057),(13,1065),(13,1071),(13,1073),(13,1075),(13,1076),(13,1080),(13,1130),(13,1190),(13,1191),(13,1193),(13,1235),(13,1237),(13,1238),(13,1485),(13,1486),(13,157),(13,1592),(13,1607),(13,1609),(13,1620),(13,1622),(13,1639),(13,1654),(13,1655),(13,1656),(13,1657),(13,1658),(13,1659),(13,1660),(13,1661),(13,1662),(13,1663),(13,1664),(13,1665),(13,1674),(13,1676),(13,1677),(13,1678),(13,1679),(13,1680),(13,1682),(13,1683),(13,1684),(13,1685),(13,1686),(13,1687),(13,1688),(13,1690),(13,1691),(13,1692),(13,1694),(13,1695),(13,1696),(13,1698),(13,1699),(13,1701),(13,1705),(13,1710),(13,1713),(13,1715),(13,1722),(13,1725),(13,1726),(13,1753),(13,1761),(13,1763),(13,1791),(13,2388),(13,2390),(13,2398),(13,2406),(13,2410),(13,2414),(13,2419),(13,2421),(13,2422),(13,2423),(13,2425),(13,2458),(13,2459),(13,2460),(13,2461),(13,2462),(13,2463),(13,2464),(13,2465),(13,2466),(13,2467),(13,2468),(13,2469),(13,2470),(13,2471),(13,2472),(13,2474),(13,2475),(13,2482),(13,2483),(13,2484),(13,2485),(13,2486),(13,2487),(13,2488),(13,2489),(13,2490),(13,2491),(13,2492),(13,2493),(13,2494),(13,2495),(13,2496),(13,2497),(13,2498),(13,2499),(13,2500),(13,2501),(13,2502),(13,2503),(13,2504),(13,2505),(13,2506),(13,2507),(13,2508),(13,2509),(13,2510),(13,2511),(13,2512),(13,2513),(13,2514),(13,2516),(13,2517),(13,2518),(13,2519),(13,2520),(13,2521),(13,2522),(13,2523),(13,2524),(13,2525),(13,2526),(13,2527),(13,2528),(13,2529),(13,2530),(13,2531),(13,2532),(13,2533),(13,2535),(13,2536),(13,2537),(13,2538),(13,2539),(13,2541),(13,2542),(13,2544),(13,2545),(13,2547),(13,2548),(13,2549),(13,2550),(13,2551),(13,2552),(13,2556),(13,2557),(13,2558),(13,2559),(13,2560),(13,2561),(13,2562),(13,2563),(13,2564),(13,2565),(13,2566),(13,2567),(13,2568),(13,2569),(13,2570),(13,2571),(13,2572),(13,2575),(13,2576),(13,2577); [nativecode=1452 ** Cannot add or update a child row: a foreign key constraint fails (`greenrenters`.`civicrm_group_contact_cache`, CONSTRAINT `FK_civicrm_group_contact_cache_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact` (`id`) ON DELETE CASCADE)]
+    [to_string] => [db_error: message="DB Error: constraint violation" code=-3 mode=callback callback=CRM_Core_Error::handle prefix="" info="INSERT IGNORE INTO civicrm_group_contact_cache (group_id,contact_id) VALUES (13,1008),(13,1015),(13,1016),(13,1017),(13,1018),(13,1020),(13,1021),(13,1022),(13,1023),(13,1027),(13,1028),(13,1031),(13,1033),(13,1037),(13,1042),(13,1044),(13,1050),(13,1052),(13,1057),(13,1065),(13,1071),(13,1073),(13,1075),(13,1076),(13,1080),(13,1130),(13,1190),(13,1191),(13,1193),(13,1235),(13,1237),(13,1238),(13,1485),(13,1486),(13,157),(13,1592),(13,1607),(13,1609),(13,1620),(13,1622),(13,1639),(13,1654),(13,1655),(13,1656),(13,1657),(13,1658),(13,1659),(13,1660),(13,1661),(13,1662),(13,1663),(13,1664),(13,1665),(13,1674),(13,1676),(13,1677),(13,1678),(13,1679),(13,1680),(13,1682),(13,1683),(13,1684),(13,1685),(13,1686),(13,1687),(13,1688),(13,1690),(13,1691),(13,1692),(13,1694),(13,1695),(13,1696),(13,1698),(13,1699),(13,1701),(13,1705),(13,1710),(13,1713),(13,1715),(13,1722),(13,1725),(13,1726),(13,1753),(13,1761),(13,1763),(13,1791),(13,2388),(13,2390),(13,2398),(13,2406),(13,2410),(13,2414),(13,2419),(13,2421),(13,2422),(13,2423),(13,2425),(13,2458),(13,2459),(13,2460),(13,2461),(13,2462),(13,2463),(13,2464),(13,2465),(13,2466),(13,2467),(13,2468),(13,2469),(13,2470),(13,2471),(13,2472),(13,2474),(13,2475),(13,2482),(13,2483),(13,2484),(13,2485),(13,2486),(13,2487),(13,2488),(13,2489),(13,2490),(13,2491),(13,2492),(13,2493),(13,2494),(13,2495),(13,2496),(13,2497),(13,2498),(13,2499),(13,2500),(13,2501),(13,2502),(13,2503),(13,2504),(13,2505),(13,2506),(13,2507),(13,2508),(13,2509),(13,2510),(13,2511),(13,2512),(13,2513),(13,2514),(13,2516),(13,2517),(13,2518),(13,2519),(13,2520),(13,2521),(13,2522),(13,2523),(13,2524),(13,2525),(13,2526),(13,2527),(13,2528),(13,2529),(13,2530),(13,2531),(13,2532),(13,2533),(13,2535),(13,2536),(13,2537),(13,2538),(13,2539),(13,2541),(13,2542),(13,2544),(13,2545),(13,2547),(13,2548),(13,2549),(13,2550),(13,2551),(13,2552),(13,2556),(13,2557),(13,2558),(13,2559),(13,2560),(13,2561),(13,2562),(13,2563),(13,2564),(13,2565),(13,2566),(13,2567),(13,2568),(13,2569),(13,2570),(13,2571),(13,2572),(13,2575),(13,2576),(13,2577); [nativecode=1452 ** Cannot add or update a child row: a foreign key constraint fails (`greenrenters`.`civicrm_group_contact_cache`, CONSTRAINT `FK_civicrm_group_contact_cache_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact` (`id`) ON DELETE CASCADE)]"]
+)
+
+
+Jul 28 16:29:26  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 205
+, handle, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/PEAR.php, call_user_func, 931
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB.php, PEAR_Error, 968
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/PEAR.php, DB_Error, 564
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/common.php, raiseError, 1903
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/mysql.php, raiseError, 898
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/mysql.php, mysqlRaiseError, 327
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/common.php, simpleQuery, 1216
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/DataObject.php, query, 2428
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/DB/DataObject.php, _query, 1614
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/DAO.php, query, 166
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/DAO.php, query, 903
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/GroupContactCache.php, executeQuery, 128
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/GroupContactCache.php, store, 335
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, load, 2471
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, addGroupContactCache, 2447
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, savedSearch, 2424
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, group, 1314
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, whereClauseSingle, 1506
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, whereClause, 479
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/BAO/Query.php, initialize, 438
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Selector.php, __construct, 222
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Form/Search.php(816) : eval()'d code, __construct, 9
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Form/Search.php, eval, 816
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Form/Search/Basic.php, postProcess, 235
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Form/Search.php, postProcess, 715
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Form/Search/Basic.php, preProcess, 182
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Form.php, preProcess, 329
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/QuickForm/Action/Display.php, buildForm, 99
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/HTML/QuickForm/Controller.php, perform, 203
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/packages/HTML/QuickForm/Page.php, handle, 103
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Controller.php, handle, 284
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+

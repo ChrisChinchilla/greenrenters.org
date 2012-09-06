@@ -1,0 +1,166 @@
+Aug 05 21:22:19  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Aug 05 21:22:19  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 05 21:25:27  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/civi_extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Aug 05 21:25:27  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 05 21:27:19  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Aug 05 21:27:19  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 05 21:28:39  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Aug 05 21:28:39  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 05 21:36:51  [info] $Fatal Error Details = Array
+(
+    [message] => Extension file /Library/WebServer/Documents/greenrenters.org/sites/default/extensions//./info.xml does not exist.
+    [code] => 
+)
+
+
+Aug 05 21:36:51  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, fatal, 172
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _parseXMLFile, 130
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, readXMLInfo, 316
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, _discoverInstalled, 257
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, getExtensions, 68
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Admin/Page/Extensions.php, preProcess, 141
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 31 11:12:45  [info] $Fatal Error Details = Array
+(
+    [message] => This civiModule is not registered.
+    [code] => 
+)
+
+
+Aug 31 11:12:45  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, fatal, 71
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, uninstall, 83
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, disable, 260
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _setActiveByType, 251
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, disable, 535
+, setIsActive, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Page/AJAX.php, call_user_func_array, 617
+, enableDisable, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, call_user_func, 194
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 31 11:13:24  [info] $Fatal Error Details = Array
+(
+    [message] => This civiModule is not registered.
+    [code] => 
+)
+
+
+Aug 31 11:13:24  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, fatal, 71
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, uninstall, 83
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, disable, 260
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _setActiveByType, 251
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, disable, 535
+, setIsActive, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Page/AJAX.php, call_user_func_array, 617
+, enableDisable, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, call_user_func, 194
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+
+Aug 31 11:20:24  [info] $Fatal Error Details = Array
+(
+    [message] => This civiModule is not registered.
+    [code] => 
+)
+
+
+Aug 31 11:20:24  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, fatal, 71
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Module.php, uninstall, 83
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, disable, 260
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions/Extension.php, _setActiveByType, 251
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Extensions.php, disable, 535
+, setIsActive, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Contact/Page/AJAX.php, call_user_func_array, 617
+, enableDisable, 
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, call_user_func, 194
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 372
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+

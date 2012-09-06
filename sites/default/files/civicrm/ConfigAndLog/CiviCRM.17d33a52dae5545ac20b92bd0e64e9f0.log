@@ -1,0 +1,15 @@
+Apr 15 19:22:47  [info] $Fatal Error Details = Array
+(
+    [message] => Database check failed - the database looks to have been partially upgraded. You may want to reload the database with the backup and try the upgrade process again.
+    [code] => 
+)
+
+
+Apr 15 19:22:47  [info] $backTrace = /Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Error.php, backtrace, 303
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Upgrade/Page/Upgrade.php, fatal, 58
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/CRM/Core/Invoke.php, run, 227
+/Library/WebServer/Documents/greenrenters.org/sites/all/modules/civicrm/drupal/civicrm.module, invoke, 352
+, civicrm_invoke, 
+/Library/WebServer/Documents/greenrenters.org/includes/menu.inc, call_user_func_array, 350
+/Library/WebServer/Documents/greenrenters.org/index.php, menu_execute_active_handler, 17
+

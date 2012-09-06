@@ -1,0 +1,3 @@
+<?php /* Smarty version 2.6.26, created on 2012-08-31 11:52:55
+         compiled from string:%3Cp%3EResearching%2C+writing+and+producing+articles+on+the+Green+Renters+website+takes+time+and+resources.+If+you+enjoy+reading+them+%3Ca+href%3D%22/civicrm/contribute/transact%3Freset%3D1%26amp%3Bid%3D7%22%3Econsider+making+a+small+donation%3C/a%3E+so+we+can+continue+to+produce+more+for+you+to+read.%3C/p%3E%0A */ ?>
+<p>Researching, writing and producing articles on the Green Renters website takes time and resources. If you enjoy reading them <a href="/civicrm/contribute/transact?reset=1&amp;id=7">consider making a small donation</a> so we can continue to produce more for you to read.</p>

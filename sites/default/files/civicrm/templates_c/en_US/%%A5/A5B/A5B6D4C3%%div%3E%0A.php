@@ -1,0 +1,3 @@
+<?php /* Smarty version 2.6.26, created on 2012-08-31 11:52:55
+         compiled from string:%3Cdiv+style%3D%22float:right%3Bmargin-right:10px%3Bmargin-top:40px%3Bclear:both%3B%22%3E%3Ca+href%3D%22http://creativecommons.org/licenses/by-nc/3.0/%22%3E%3Cimg+src%3D%22http://i.creativecommons.org/l/by-nc/3.0/88x31.png%22+/%3E%3C/a%3E%3C/div%3E%0A */ ?>
+<div style="float:right;margin-right:10px;margin-top:40px;clear:both;"><a href="http://creativecommons.org/licenses/by-nc/3.0/"><img src="http://i.creativecommons.org/l/by-nc/3.0/88x31.png" /></a></div>
