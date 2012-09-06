@@ -271,30 +271,24 @@ function event_management_views_default_views() {
   $handler->display->display_options['fields']['promoted_on_facebook_73']['id'] = 'promoted_on_facebook_73';
   $handler->display->display_options['fields']['promoted_on_facebook_73']['table'] = 'civicrm_value_event_marketing_15';
   $handler->display->display_options['fields']['promoted_on_facebook_73']['field'] = 'promoted_on_facebook_73';
-  $handler->display->display_options['fields']['promoted_on_facebook_73']['label'] = 'Facebook?';
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['label'] = 'SocMed?';
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['absolute'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['replace_spaces'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['trim_whitespace'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['nl2br'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['word_boundary'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['ellipsis'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['element_label_colon'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['element_default_classes'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['hide_empty'] = 0;
   $handler->display->display_options['fields']['promoted_on_facebook_73']['empty_zero'] = 0;
-  /* Field: Broken/missing handler */
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['id'] = 'promoted_on_twitter__74';
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['table'] = 'civicrm_value_event_marketing_15';
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['field'] = 'promoted_on_twitter__74';
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['label'] = 'Twitter?';
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['alter_text'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['word_boundary'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['ellipsis'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['strip_tags'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['trim'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['alter']['html'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['hide_empty'] = 0;
-  $handler->display->display_options['fields']['promoted_on_twitter__74']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['promoted_on_facebook_73']['hide_alter_empty'] = 0;
   /* Field: CiviCRM Custom: Event promotion: Sent to press list? */
   $handler->display->display_options['fields']['sent_to_press_list__75']['id'] = 'sent_to_press_list__75';
   $handler->display->display_options['fields']['sent_to_press_list__75']['table'] = 'civicrm_value_event_marketing_15';
@@ -340,12 +334,41 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['payment_status_83']['id'] = 'payment_status_83';
   $handler->display->display_options['filters']['payment_status_83']['table'] = 'civicrm_value_event_management_16';
   $handler->display->display_options['filters']['payment_status_83']['field'] = 'payment_status_83';
-  $handler->display->display_options['filters']['payment_status_83']['operator'] = 'not in';
   $handler->display->display_options['filters']['payment_status_83']['value'] = array(
+    'To quote' => 'To quote',
+    'Quoted' => 'Quoted',
+    'To invoice' => 'To invoice',
+    'Invoiced' => 'Invoiced',
+    'Paid' => 'Paid',
     'Presenter paid' => 'Presenter paid',
+    'Attached to grant' => 'Attached to grant',
     'Attached to grant - Complete' => 'Attached to grant - Complete',
+    'Cancelled' => 'Cancelled',
+    'Internal' => 'Internal',
+    'Unpaid' => 'Unpaid',
   );
-  $handler->display->display_options['filters']['payment_status_83']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['payment_status_83']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['payment_status_83']['expose']['operator'] = 'payment_status_83_op';
+  $handler->display->display_options['filters']['payment_status_83']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['payment_status_83']['expose']['label'] = 'Payment status';
+  $handler->display->display_options['filters']['payment_status_83']['expose']['identifier'] = 'payment_status_83';
+  $handler->display->display_options['filters']['payment_status_83']['expose']['reduce'] = 1;
+  /* Filter: CiviCRM Custom: Event promotion: Assigned to PR Team? */
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['id'] = 'assigned_to_pr_team__88';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['table'] = 'civicrm_value_event_marketing_15';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['field'] = 'assigned_to_pr_team__88';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['value'] = 'All';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['label'] = 'Assigned to PR Team?';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['use_operator'] = FALSE;
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['identifier'] = 'assigned_to_pr_team__88';
+  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['single'] = TRUE;
+  /* Filter: CiviCRM Events: Include Template */
+  $handler->display->display_options['filters']['is_template']['id'] = 'is_template';
+  $handler->display->display_options['filters']['is_template']['table'] = 'civicrm_event';
+  $handler->display->display_options['filters']['is_template']['field'] = 'is_template';
+  $handler->display->display_options['filters']['is_template']['value'] = '0';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
