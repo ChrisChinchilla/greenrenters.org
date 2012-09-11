@@ -9,7 +9,7 @@ function menus_block_context_default_contexts() {
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
-  $context->name = 'site-menus';
+  $context->name = 'sitemenus';
   $context->description = '';
   $context->tag = '';
   $context->conditions = array(
@@ -74,7 +74,7 @@ function menus_block_context_default_contexts() {
     ),
   );
   $context->condition_mode = 0;
-  $export['site-menus'] = $context;
+  $export['sitemenus'] = $context;
 
   return $export;
 }
