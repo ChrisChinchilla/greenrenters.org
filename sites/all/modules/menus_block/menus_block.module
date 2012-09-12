@@ -1,3 +1,5 @@
 <?php
 
 // Drupal needs this blank file.
+
+include_once('menus_block.features.inc');
