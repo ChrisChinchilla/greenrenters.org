@@ -157,6 +157,7 @@ function front_page_ticker_views_default_views() {
     'story' => 'story',
     'tutorial' => 'tutorial',
     'webform' => 'webform',
+    'workshop' => 'workshop',
   );
   $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
   /* Filter: Node: Promoted to front page */
