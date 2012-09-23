@@ -1569,11 +1569,11 @@ padding:15px;
 
 }
 
-.pane-latest-articles
-{
-margin-bottom:5px;
+.pane-latest-articles {
+	width: 400px;
+	height: 300px;
+	margin-bottom: 5px;
 }
-
 .pane-frontpageevents ul
 {
 margin:0;
