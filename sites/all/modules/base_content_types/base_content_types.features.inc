@@ -63,7 +63,7 @@ function base_content_types_node_info() {
     'event' => array(
       'name' => t('Event'),
       'module' => 'features',
-      'description' => t('Interesting events that aren\'t run by Green renters.'),
+      'description' => t('Submit your events that are sustainability or community related.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
@@ -74,7 +74,7 @@ function base_content_types_node_info() {
     'news' => array(
       'name' => t('News'),
       'module' => 'features',
-      'description' => t('News… Much like normal news really, internal, external, interesting tidbits.'),
+      'description' => t('News items, community announcements…'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
@@ -85,7 +85,7 @@ function base_content_types_node_info() {
     'opinion' => array(
       'name' => t('Opinion'),
       'module' => 'features',
-      'description' => t('Articles that express an opinion on a topic or topic(s)'),
+      'description' => t('Articles that express an opinion on a topic or topic(s), could also include reviews, thoughts on events and news etc.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
@@ -107,7 +107,7 @@ function base_content_types_node_info() {
     'resource' => array(
       'name' => t('Resource'),
       'module' => 'features',
-      'description' => t('Helpful resources for Green Renters (WIP)'),
+      'description' => t('Helpful resources for Green Renters, things like community resources, books, websites etc…'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',
@@ -129,7 +129,7 @@ function base_content_types_node_info() {
     'story' => array(
       'name' => t('Story'),
       'module' => 'features',
-      'description' => t('Content that doesn\'t really fit anywhere else…'),
+      'description' => t('Content that doesn\'t really fit anywhere else… Personal tales perhaps.'),
       'has_title' => '1',
       'title_label' => t('Title'),
       'has_body' => '1',

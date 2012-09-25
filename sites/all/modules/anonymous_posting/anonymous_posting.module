@@ -1,0 +1,513 @@
+<?php
+
+/**
+ * @file
+ */
+/**
+ * Anonyous field name
+ */
+define('ANONYMOUS_POSTING_FIELD_NAME', 'field_anonymous_author');
+
+/**
+ * Anonymous posters cannot enter their contact information.
+ */
+define('ANONYMOUS_POSTING_MAYNOT_CONTACT', 0);
+
+/**
+ * Anonymous posters may leave their contact information.
+ */
+define('ANONYMOUS_POSTING_MAY_CONTACT', 1);
+
+/**
+ * Anonymous posters are required to leave their contact information.
+ */
+define('ANONYMOUS_POSTING_MUST_CONTACT', 2);
+
+/**
+ * Implements hook_menu().
+ */
+function anonymous_posting_menu() {
+
+  $access = array('administer anonymous posting settings');
+
+  $items['admin/user/anonymous-posting'] = array(
+    'title' => 'Anonymous Posting',
+    'description' => 'Allow anonymous user to submit their contact informations while posting contents.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('anonymous_posting_admin_form'),
+    'access arguments' => $access,
+    'file' => 'anonymous_posting.admin.inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_perm().
+ */
+function anonymous_posting_perm() {
+
+  $out = array();
+
+  // Admin page permission
+  $out[] = 'administer anonymous posting settings';
+
+  return $out;
+}
+
+/**
+ * Implements hook_help().
+ */
+function anonymous_posting_help($path, $arg) {
+  switch ($path) {
+    case 'admin/help#anonymous_posting':
+      $output = '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('The <em>Anonymous Posting</em> module allows anonymous users to submit their contact informations (name, mail and homepage) while posting content.</p>');
+      $output .= '<h3>' . t('Uses') . '</h3>';
+      $output .= '<dl>';
+      $output .= '<dt>' . t('Allow anonymous users to submit their <em>contact informations</em>') . '</dt>';
+      $output .= '<dd>' . t('You must enable this feature on a content type basis. To do so go to the admin page of !l', array(
+          '!l' => l(t('Anonymous Posting'), 'admin/user/anonymous-posting'))) . '.</dd>';
+      $output .= '<dt>' . t('Caution when uninstalling the module') . '</dt>';
+      $output .= '<dd>' . t('Uninstalling the module will delete any data related to the Anonymous Posting module, including the author\'s field columns (name, mail, homepage and hostname).') . '</dd>';
+      $output .= '<dt>' . t('Caution about the core Node module and its permissions') . '</dt>';
+      $output .= '<dd>' . t('The following is unrelated to what bring the Anonymous Posting module but it is a reminder of how the core Node module works: When setting the "edit/delete own content" permissions to anonymous users you allow them to edit/delete any anonymous content.') . '</dd>';
+      $output .= '</dl>';
+      return $output;
+  }
+}
+
+/**
+ * Implements hook_field_info().
+ */
+function anonymous_posting_field_info() {
+  return array(
+    'anonymous_author' => array(
+      'label' => t('Contact informations (Anonymous Posting)'),
+      'description' => t('Contact information to be filled by anonymous users'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_settings().
+ */
+function anonymous_posting_field_settings($op, $field) {
+  switch ($op) {
+    case 'database columns':
+      return array(
+        'name' => array(
+          'type' => 'varchar',
+          'length' => 60,
+          'not null' => FALSE,
+          'description' => "The anonymous author's name. Uses {users}.name if the user is logged in, otherwise uses the value typed into the posting form.",
+        ),
+        'mail' => array(
+          'type' => 'varchar',
+          'length' => 64,
+          'not null' => FALSE,
+          'description' => "The anonymous author's e-mail address from the posting form, if user is anonymous, and the 'Anonymous users may/must leave their contact information' setting is turned on.",
+        ),
+        'homepage' => array(
+          'type' => 'varchar',
+          'length' => 255,
+          'not null' => FALSE,
+          'description' => "The anonymous author's home page address from the posting form, if user is anonymous, and the 'Anonymous users may/must leave their contact information' setting is turned on.",
+        ),
+        'hostname' => array(
+          'type' => 'varchar',
+          'length' => 128,
+          'not null' => FALSE,
+          'description' => "The author's host name.",
+        ),
+      );
+  }
+}
+
+/**
+ * Implementation of hook_content_is_empty().
+ */
+function anonymous_posting_content_is_empty($item, $field) {
+  // Consider the field empty only if all columns are empty
+  $out = TRUE;
+  foreach ($item as $column_name => $columns_value) {
+    $out = $out && $item[$column_name] === '';
+  }
+  return $out;
+}
+
+/**
+ * Implementation of hook_field_formatter_info().
+ */
+function anonymous_posting_field_formatter_info() {
+  return array(
+    'anonymous_author_all' => array(
+      'label' => t('Anonymous author field (name, mail and home)'),
+      'field types' => array('anonymous_author'),
+      'description' => t('Displays the anonymous author field'),
+    ),
+    'anonymous_author_name' => array(
+      'label' => t('Anonymous author field (name)'),
+      'field types' => array('anonymous_author'),
+      'description' => t('Displays the anonymous author field'),
+    ),
+    'anonymous_author_mail' => array(
+      'label' => t('Anonymous author field (mail)'),
+      'field types' => array('anonymous_author'),
+      'description' => t('Displays the anonymous author field'),
+    ),
+    'anonymous_author_homepage' => array(
+      'label' => t('Anonymous author field (homepage)'),
+      'field types' => array('anonymous_author'),
+      'description' => t('Displays the anonymous author field'),
+    ),
+    'anonymous_author_hostname' => array(
+      'label' => t('Anonymous author field (hostname)'),
+      'field types' => array('anonymous_author'),
+      'description' => t('Displays the anonymous author field'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_widget_info().
+ */
+function anonymous_posting_widget_info() {
+  return array(
+    'anonymous_author' => array(
+      'label' => t('Anonymous author fields widget'),
+      'field types' => array('anonymous_author'),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_widget().
+ */
+function anonymous_posting_widget(&$form, &$form_state, $field, $items, $delta = 0) {
+
+  if (!_anonymous_posting_is_enabled($form['#node']->type)) {
+    return NULL;
+  }
+
+  // Hide fields to registered user.
+  if (!user_access('administer anonymous_posting') && (!user_is_anonymous())) {
+    return NULL;
+  }
+
+  $value = $items[$delta];
+
+  $element = array();
+
+  $anonymous_posting = variable_get('anonymous_posting_setting_type_' . $form['#node']->type, ANONYMOUS_POSTING_MAYNOT_CONTACT);
+
+  if (!user_is_anonymous()) {
+    $element = array(
+      '#type' => 'fieldset',
+      '#collapsed' => TRUE,
+      '#collapsible' => TRUE,
+    );
+  }
+  else {
+    // fill contact fields with cookie values:
+    drupal_add_js(drupal_get_path('module', 'anonymous_posting') . '/anonymous_posting.form.js');
+  }
+
+  // Build our field elements:
+  $element['name'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Your name'),
+    '#size' => 64,
+    '#maxlength' => 60,
+    '#default_value' => isset($value['name']) ? $value['name'] : '',
+    '#required' => ($anonymous_posting == ANONYMOUS_POSTING_MUST_CONTACT) && user_is_anonymous(),
+    '#description' => user_is_anonymous() ? '' : t('The filled string will be displayed in favor of the %aname string.', array('%aname' => variable_get('anonymous', t('Anonymous')))),
+  );
+  if ($anonymous_posting >= ANONYMOUS_POSTING_MAY_CONTACT) {
+    $element['mail'] = array(
+      '#type' => 'textfield',
+      '#title' => t('E-Mail'),
+      '#description' => t('The content of this field is kept private and will not be shown publicly.'),
+      '#size' => 64,
+      '#maxlength' => 64,
+      '#default_value' => isset($value['mail']) ? $value['mail'] : '',
+      '#required' => ($anonymous_posting == ANONYMOUS_POSTING_MUST_CONTACT) && user_is_anonymous(),
+    );
+    $element['homepage'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Homepage'),
+      '#size' => 64,
+      '#maxlength' => 255,
+      '#default_value' => isset($value['homepage']) ? $value['homepage'] : '',
+      '#required' => FALSE,
+    );
+  }
+  if (empty($form['#node']->nid) && user_is_anonymous()) {
+    // Record hostname while creating new node:
+    $element['hostname'] = array(
+      '#type' => 'hidden',
+      '#value' => ip_address(),
+    );
+  }
+  return $element;
+}
+
+/**
+ * Implementation of hook_field().
+ */
+function anonymous_posting_field($op, &$node, $field, &$items, $teaser, $page) {
+  switch ($op) {
+    case 'validate':
+      if (!_anonymous_posting_is_enabled($node->type)) {
+        return $items;
+      }
+      if (is_array($items)) {
+        $author_name = $items[0]['name'];
+        $author_mail = $items[0]['mail'];
+        $author_homepage = $items[0]['homepage'];
+
+        //save cookie
+        global $user;
+        if ($user->uid === 0) {
+          foreach (array('name', 'homepage', 'mail') as $field) {
+            // Set cookie for 365 days.
+            if (isset($items[0][$field])) {
+              setcookie('comment_info_' . $field, $items[0][$field], time() + 31536000, '/');
+            }
+          }
+        }
+        //TODO: add check username exist
+
+        if ($author_mail && !valid_email_address($author_mail)) {
+          form_set_error(ANONYMOUS_POSTING_FIELD_NAME . '][0][mail', t("The e-mail address you specified is not valid."));
+        }
+
+        if ($author_homepage && !valid_url($author_homepage, TRUE)) {
+          form_set_error(ANONYMOUS_POSTING_FIELD_NAME . '][0][homepage', t('The URL of your homepage is not valid. Remember that it must be fully qualified, i.e. of the form <code>http://example.com/directory</code>.'));
+        }
+      }
+      return $items;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function anonymous_posting_form_node_type_form_alter(&$form, &$form_state) {
+  // Add the field 'Anonymous <node type> posting' in the node content type form
+  if (_anonymous_posting_is_enabled($form['#node_type']->type)) {
+    $form['anonymous_posting'] = array(
+      '#type' => 'fieldset',
+      '#tree' => TRUE,
+      '#title' => t('Anonymous Posting settings'),
+      '#collapsible' => TRUE,
+      '#collapsed' => TRUE,
+      'anonymous_posting_setting_type' => array(
+        '#tree' => FALSE,
+        '#type' => 'radios',
+        '#title' => t('%ntype posting', array('%ntype' => $form['#node_type']->name)),
+        '#default_value' => variable_get('anonymous_posting_setting_type_' . $form['#node_type']->type, ANONYMOUS_POSTING_MAYNOT_CONTACT),
+        '#options' => array(
+          ANONYMOUS_POSTING_MAYNOT_CONTACT => t('Anonymous posters may not enter their contact information'),
+          ANONYMOUS_POSTING_MAY_CONTACT => t('Anonymous posters may leave their contact information'),
+          ANONYMOUS_POSTING_MUST_CONTACT => t('Anonymous posters must leave their contact information'),
+        ),
+        '#description' => t('This option is enabled when anonymous users have permission to post %ntype contents on the <a href="@url">permissions page</a>.', array('%ntype' => $form['#node_type']->name, '@url' => url('admin/user/permissions', array('fragment' =>
+            $form['#node_type']->type == 'forum' ? 'module-forum' : 'module-node')))),
+//      '#access' => user_access('post topics', drupal_anonymous_user()),
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_nodeapi(&$node, $op, $a3 = NULL, $a4 = NULL).
+ *
+ * The purpose is to override the orginal anonymous data with the anonymous
+ * user submitted contact informations.
+ */
+function anonymous_posting_nodeapi(&$node, $op, $teaser, $page) {
+  switch ($op) {
+    case 'load':
+      if (property_exists($node, ANONYMOUS_POSTING_FIELD_NAME) && _anonymous_posting_is_enabled($node->type) && $node->uid == 0) {
+        $columns = current($node->{ANONYMOUS_POSTING_FIELD_NAME});
+        if ($columns['name']) {
+          // return the <key,value> array to be merged with the $node object:
+          return array(
+            'name' => check_plain($columns['name']),
+            'mail' => check_plain($columns['mail']),
+            'homepage' => check_plain($columns['homepage']),
+          );
+        }
+      }
+      break;
+  }
+}
+
+/**
+ * Implements template_preprocess_forum_submitted(&$variables).
+ *
+ * The purpose is to override the original 'anonymous' string with the anonymous
+ * user submitted value.
+ */
+function anonymous_posting_preprocess_forum_submitted(&$variables) {
+  if (isset($variables['topic']) && $variables['topic']->uid == 0 && _anonymous_posting_is_enabled('forum')) {
+    // Query field table name and columns:
+    module_load_include('inc', 'content', 'includes/content.crud');
+    $field = content_field_instance_read(array('field_name' => ANONYMOUS_POSTING_FIELD_NAME, 'type_name' => 'forum'));
+    $db_field = content_database_info(current($field));
+
+    // Query field datas:
+    $result = db_query('SELECT'
+      . ' t.' . $db_field['columns']['name']['column'] . ','
+      . ' t.' . $db_field['columns']['mail']['column'] . ','
+      . ' t.' . $db_field['columns']['homepage']['column']
+      . ' FROM {' . $db_field['table'] . '} t'
+      . ' WHERE t.nid = %d', $variables['topic']->nid);
+    $data = db_fetch_object($result);
+
+    // Update topic values:
+    $variables['topic']->name = check_plain($data->{ANONYMOUS_POSTING_FIELD_NAME . '_name'});
+    $variables['topic']->mail = check_plain($data->{ANONYMOUS_POSTING_FIELD_NAME . '_mail'});
+    $variables['topic']->homepage = check_plain($data->{ANONYMOUS_POSTING_FIELD_NAME . '_homepage'});
+
+    // Update author view:
+    $variables['author'] = isset($variables['topic']->uid) ? theme('username', $variables['topic']) : '';
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function anonymous_posting_form_alter(&$form, &$form_state, $form_id) {
+
+  // Put the anonymous author fields on top of the subject field.
+  if (isset($form['#node'])) {
+    if ($form_id == $form['#node']->type . '_node_form' && _anonymous_posting_is_enabled($form['#node']->type)) {
+
+      // Put the anonymous author fields on top of the subject field.
+      if (user_is_anonymous()) {
+        $form[ANONYMOUS_POSTING_FIELD_NAME]['#weight'] = $form['title']['#weight'] - 1;
+      }
+
+      // Unset author/name default value when editing an anonymous node.
+      // If not the anonymous author name get filled (see anonymous_posting_nodeapi()/load).
+      if ($form['#node']->uid == 0) {
+        unset($form['author']['name']['#default_value']);
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme($existing, $type, $theme, $path).
+ */
+function anonymous_posting_theme($existing, $type, $theme, $path) {
+
+  $out = array();
+  
+  // Do some theme do display the anonymous_author cck field columns
+  $out['anonymous_posting_formatter_anonymous_author_all'] = array(
+    'arguments' => array('element' => NULL),
+  );
+  $out['anonymous_posting_formatter_anonymous_author_name'] = array(
+    'arguments' => array('element' => NULL),
+  );
+  $out['anonymous_posting_formatter_anonymous_author_mail'] = array(
+    'arguments' => array('element' => NULL),
+  );
+  $out['anonymous_posting_formatter_anonymous_author_homepage'] = array(
+    'arguments' => array('element' => NULL),
+  );
+  $out['anonymous_posting_formatter_anonymous_author_hostname'] = array(
+    'arguments' => array('element' => NULL),
+  );
+
+  /* Do a 'node_preview' function wrapper so that we can set our famous anonymous name.
+   * @see anonymous_posting_node_preview_function_wrapper()
+   */
+  if ($existing['node_preview']['function']) {
+    $out['node_preview'] = array(
+      'function' => 'anonymous_posting_node_preview_function_wrapper',
+      'function_wrapped' => $existing['node_preview']['function']
+    );
+  }
+
+  return $out;
+}
+
+/**
+ * Theming function the anonymous_author field which display the name, mail and 
+ * homepage.
+ */
+function theme_anonymous_posting_formatter_anonymous_author_all($element) {
+  $out = '';
+  $name = $element['#item']['name']? check_plain($element['#item']['name']): NULL;
+  $mail = $element['#item']['mail']? check_plain($element['#item']['mail']): NULL;
+  $hompage = $element['#item']['homepage']? check_plain($element['#item']['homepage']): NULL;
+  
+  if ($mail) {
+    $out = '<a href="mailto:'. $mail . '">' . $name . '</a>';
+  }
+  else {
+    $out = $name;
+  }  
+  if ($hompage) {
+    $out .= ' - <a href="' . $hompage . '" reL="nofollow">' . $hompage . '</a>';
+  }
+
+  return $out;
+}
+
+/**
+ * Theming function the anonymous_author field which display the name.
+ */
+function theme_anonymous_posting_formatter_anonymous_author_name($element) {
+  return $element['#item']['name']? check_plain($element['#item']['name']): NULL;
+}
+
+/**
+ * Theming function the anonymous_author field which display the mail.
+ */
+function theme_anonymous_posting_formatter_anonymous_author_mail($element) {
+  return $element['#item']['mail']? check_plain($element['#item']['mail']): NULL;
+}
+
+/**
+ * Theming function the anonymous_author field which display the mail.
+ */
+function theme_anonymous_posting_formatter_anonymous_author_homepage($element) {
+  return $element['#item']['homepage']? check_plain($element['#item']['homepage']): NULL;
+}
+
+/**
+ * Theming function the anonymous_author field which display the mail.
+ */
+function theme_anonymous_posting_formatter_anonymous_author_hostname($element) {
+  return $element['#item']['hostname']? check_plain($element['#item']['hostname']): NULL;
+}
+
+/**
+ * Theme 'node_preview' function wrapper.
+ * Purpose: assign submitted anonymous username to $node->name so that it get
+ * displayed in the preview instead of the 'Anonymous' string.
+ */
+function anonymous_posting_node_preview_function_wrapper($node) {
+
+  // assign anonymous submitted name to $node->name
+  if (property_exists($node, ANONYMOUS_POSTING_FIELD_NAME) && _anonymous_posting_is_enabled($node->type) && $node->uid == 0) {
+    $columns = current($node->{ANONYMOUS_POSTING_FIELD_NAME});
+    $node->name = check_plain($columns['name']);
+  }
+
+  // execute wrapped function
+  $hooks = theme_get_registry();
+  return call_user_func($hooks['node_preview']['function_wrapped'], $node);
+}
+
+/**
+ * Tell if a given node type has the Anonymous Posting feature enabled.
+ */
+function _anonymous_posting_is_enabled($node_type) {
+  return in_array($node_type, variable_get('anonymous_posting_enabled_node_types', array()));
+}
