@@ -2113,3 +2113,29 @@ margin-left:-10px;
     display: inline-block !important;
     width: 100%;
 }
+
+.page-blog .body
+{
+	float: left;
+	width: 450px;
+}
+
+.page-blog .view-node {
+	float: left;
+	padding: 20px 30px 0px 0px;
+}
+
+.page-blog .disqus-comments
+{
+	float: right;
+	padding: 20px 30px 0px 0px;
+}
+
+.page-blog .nothing
+{
+	font-size: 10px;
+	float: right;
+	text-align: right;
+	width: 70px;
+	height:150px
+}

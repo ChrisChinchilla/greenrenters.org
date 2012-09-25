@@ -6,6 +6,21 @@
 function menus_block_menu_default_menu_links() {
   $menu_links = array();
 
+  // Exported menu link: menu-block-one:blog
+  $menu_links['menu-block-one:blog'] = array(
+    'menu_name' => 'menu-block-one',
+    'link_path' => 'blog',
+    'router_path' => 'blog',
+    'link_title' => 'Blog',
+    'options' => array(),
+    'module' => 'system',
+    'hidden' => '0',
+    'external' => '0',
+    'has_children' => '0',
+    'expanded' => '0',
+    'weight' => '-50',
+    'parent_path' => 'node/1108',
+  );
   // Exported menu link: menu-block-one:node/11
   $menu_links['menu-block-one:node/11'] = array(
     'menu_name' => 'menu-block-one',
@@ -38,7 +53,7 @@ function menus_block_menu_default_menu_links() {
     'module' => 'menu',
     'hidden' => '0',
     'external' => '0',
-    'has_children' => '0',
+    'has_children' => '1',
     'expanded' => '0',
     'weight' => '0',
   );
@@ -172,6 +187,7 @@ function menus_block_menu_default_menu_links() {
   // Translatables
   // Included for use with string extractors like potx.
   t('About Us');
+  t('Blog');
   t('Campaigns');
   t('Contact Us');
   t('Donate');
