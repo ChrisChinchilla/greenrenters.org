@@ -267,7 +267,7 @@ function event_management_views_default_views() {
   $handler->display->display_options['fields']['included_in_newsletter__72']['alter']['html'] = 0;
   $handler->display->display_options['fields']['included_in_newsletter__72']['hide_empty'] = 0;
   $handler->display->display_options['fields']['included_in_newsletter__72']['empty_zero'] = 0;
-  /* Field: CiviCRM Custom: Event promotion: Promoted on Social Media */
+  /* Field: CiviCRM Custom: Event promotion: Promoted on Social media? */
   $handler->display->display_options['fields']['promoted_on_facebook_73']['id'] = 'promoted_on_facebook_73';
   $handler->display->display_options['fields']['promoted_on_facebook_73']['table'] = 'civicrm_value_event_marketing_15';
   $handler->display->display_options['fields']['promoted_on_facebook_73']['field'] = 'promoted_on_facebook_73';
@@ -353,7 +353,7 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['payment_status_83']['expose']['label'] = 'Payment status';
   $handler->display->display_options['filters']['payment_status_83']['expose']['identifier'] = 'payment_status_83';
   $handler->display->display_options['filters']['payment_status_83']['expose']['reduce'] = 1;
-  /* Filter: CiviCRM Custom: Event promotion: Assigned to PR Team? */
+  /* Filter: Broken/missing handler */
   $handler->display->display_options['filters']['assigned_to_pr_team__88']['id'] = 'assigned_to_pr_team__88';
   $handler->display->display_options['filters']['assigned_to_pr_team__88']['table'] = 'civicrm_value_event_marketing_15';
   $handler->display->display_options['filters']['assigned_to_pr_team__88']['field'] = 'assigned_to_pr_team__88';
@@ -418,16 +418,16 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['is_template']['field'] = 'is_template';
   $handler->display->display_options['filters']['is_template']['value'] = '0';
   /* Filter: CiviCRM Custom: Event promotion: Assigned to PR Team? */
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['id'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['table'] = 'civicrm_value_event_marketing_15';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['field'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['value'] = 'All';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['limit_operators'] = array();
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['label'] = 'Assigned to PR Team?';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['use_operator'] = FALSE;
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['identifier'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['single'] = TRUE;
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['id'] = 'assigned_to_pr_team__108';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['table'] = 'civicrm_value_event_marketing_15';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['field'] = 'assigned_to_pr_team__108';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['value'] = 'All';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['expose']['label'] = 'Assigned to PR Team?';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['expose']['use_operator'] = FALSE;
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['expose']['identifier'] = 'assigned_to_pr_team__108';
+  $handler->display->display_options['filters']['assigned_to_pr_team__108']['expose']['single'] = TRUE;
   $handler->display->display_options['path'] = 'admin/eventmanagement';
 
   $views[$view->name] = $view;
