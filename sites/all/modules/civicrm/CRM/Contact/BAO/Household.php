@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,47 +29,50 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-class CRM_Contact_BAO_Household extends CRM_Contact_DAO_Contact {
 
-  /**
-   * This is a contructor of the class.
-   */
-  function __construct() {
-    parent::__construct();
-  }
+require_once 'CRM/Contact/DAO/Contact.php';
 
-  /**
-   * function to update the household with primary contact id
-   *
-   * @param integer $primaryContactId     null if deleting primary contact
-   * @param integer $contactId            contact id
-   *
-   * @return Object     DAO object on success
-   * @access public
-   * @static
-   */
-  static
-  function updatePrimaryContact($primaryContactId, $contactId) {
-    $queryString = "UPDATE civicrm_contact
+class CRM_Contact_BAO_Household extends CRM_Contact_DAO_Contact
+{
+    /**
+     * This is a contructor of the class.
+     */
+    function __construct() 
+    {
+        parent::__construct();
+    }
+    
+    /**
+     * function to update the household with primary contact id
+     *
+     * @param integer $primaryContactId     null if deleting primary contact
+     * @param integer $contactId            contact id
+     *
+     * @return Object     DAO object on success
+     * @access public
+     * @static
+     */
+    static function updatePrimaryContact( $primaryContactId, $contactId ) 
+    {
+        $queryString    = "UPDATE civicrm_contact
                            SET primary_contact_id = ";
-
-    $params = array();
-    if ($primaryContactId) {
-      $queryString .= '%1';
-      $params[1] = array($primaryContactId, 'Integer');
+        
+        $params = array( );
+        if ( $primaryContactId ) {
+            $queryString .= '%1';
+            $params[1] = array( $primaryContactId, 'Integer' );
+        } else {
+            $queryString .= "null";
+        }
+        
+        $queryString .=  " WHERE id = %2";
+        $params[2] = array( $contactId, 'Integer' );
+        
+        return  CRM_Core_DAO::executeQuery( $queryString, $params );
     }
-    else {
-      $queryString .= "null";
-    }
-
-    $queryString .= " WHERE id = %2";
-    $params[2] = array($contactId, 'Integer');
-
-    return CRM_Core_DAO::executeQuery($queryString, $params);
-  }
 }
 

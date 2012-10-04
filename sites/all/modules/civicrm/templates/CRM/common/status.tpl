@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -46,6 +46,6 @@
 {if ! $urlIsPublic AND $config->debug}
     <div class="messages status">
       <div class="icon inform-icon"></div>
-        &nbsp;{ts}WARNING: Debug is currently enabled in Global Settings.{/ts} {docURL page="developer/development-environment/debugging"}
+        &nbsp;{ts}WARNING: Debug is currently enabled in Global Settings.{/ts} {docURL page="Debugging"}
     </div>
 {/if}

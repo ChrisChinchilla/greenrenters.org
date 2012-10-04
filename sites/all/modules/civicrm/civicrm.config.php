@@ -107,6 +107,4 @@ function civicrm_conf_init() {
     return $conf;
 }
 
-$settingsFile = civicrm_conf_init( ) . '/civicrm.settings.php';
-define('CIVICRM_SETTINGS_PATH', $settingsFile);
-include_once $settingsFile;
+include_once civicrm_conf_init( ) . '/civicrm.settings.php';

@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,42 +29,53 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-class CRM_Import_DataSource_SQL extends CRM_Import_DataSource {
 
-  public function getInfo() {
-    return array('title' => ts('SQL Query'));
-  }
+require_once 'CRM/Import/DataSource.php';
 
-  public function preProcess(&$form) {}
+class CRM_Import_DataSource_SQL extends CRM_Import_DataSource
+{
 
-  public function buildQuickForm(&$form) {
-    $form->add('hidden', 'hidden_dataSource', 'CRM_Import_DataSource_SQL');
-    $form->add('textarea', 'sqlQuery', ts('Specify SQL Query'), 'rows=10 cols=45', TRUE);
-    $form->addFormRule(array('CRM_Import_DataSource_SQL', 'formRule'), $form);
-  }
-
-  static
-  function formRule($fields, $files, $form) {
-    $errors = array();
-
-    // poor man's query validation (case-insensitive regex matching on word boundaries)
-    $forbidden = array('ALTER', 'CREATE', 'DELETE', 'DESCRIBE', 'DROP', 'SHOW', 'UPDATE', 'information_schema');
-    foreach ($forbidden as $pattern) {
-      if (preg_match("/\\b$pattern\\b/i", $fields['sqlQuery'])) {
-        $errors['sqlQuery'] = ts('The query contains the forbidden %1 command.', array(1 => $pattern));
-      }
+    public function getInfo()
+    {
+        return array('title' => ts('SQL Query'));
     }
 
-    return $errors ? $errors : TRUE;
-  }
+    public function preProcess(&$form)
+    {
+    }
+
+    public function buildQuickForm(&$form)
+    {
+        $form->add('hidden', 'hidden_dataSource', 'CRM_Import_DataSource_SQL');
+        $form->add('textarea', 'sqlQuery', ts('Specify SQL Query'), 'rows=10 cols=45', true );
+        $form->addFormRule(array('CRM_Import_DataSource_SQL', 'formRule'), $form);
+    }
+
+    static function formRule( $fields, $files, $form)
+    {
+        $errors = array();
+
+        // poor man's query validation (case-insensitive regex matching on word boundaries)
+        $forbidden = array('ALTER', 'CREATE', 'DELETE', 'DESCRIBE', 'DROP', 'SHOW', 'UPDATE', 'information_schema');
+        foreach ($forbidden as $pattern) {
+            if (preg_match("/\\b$pattern\\b/i", $fields['sqlQuery'])) {
+                $errors['sqlQuery'] = ts('The query contains the forbidden %1 command.', array(1 => $pattern));
+            }
+        }
+
+        return $errors ? $errors : true;
+    }
 
 
-  public function postProcess(&$params, &$db) {
-    // This function is never called.
-  }
+    public function postProcess(&$params, &$db)
+    {
+        require_once 'CRM/Import/ImportJob.php';
+        $importJob = new CRM_Import_ImportJob( CRM_Utils_Array::value( 'import_table_name', $params ), 
+                                               $params['sqlQuery'], true );
+        $this->set('importTableName', $importJob->getTableName());
+    }
 }
-

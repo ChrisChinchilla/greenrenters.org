@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
@@ -41,7 +42,8 @@
  *
  * @return string       only the first alternative found (or the text without alternatives)
  */
-function smarty_modifier_crmStripAlternatives($full) {
-  return CRM_Utils_String::stripAlternatives($full);
+function smarty_modifier_crmStripAlternatives($full)
+{
+    require_once 'CRM/Utils/String.php';
+    return CRM_Utils_String::stripAlternatives($full);
 }
-

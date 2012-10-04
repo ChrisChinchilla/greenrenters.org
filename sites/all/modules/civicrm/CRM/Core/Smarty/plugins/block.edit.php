@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,11 +35,11 @@
  * @package CRM
  * @author Piotr Szotkowski <shot@caltha.pl>
  * @author Michal Mach <mover@artnet.org>
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  */
 
-/**
+/** 
  * Smarty block function providing edit-only display support
  *
  * @param array $params   template call's parameters
@@ -47,8 +48,10 @@
  *
  * @return string  the string, translated by gettext
  */
-function smarty_block_edit($params, $text, &$smarty) {
-  $action = $smarty->_tpl_vars['action'];
-  return ($action & 3) ? $text : NULL;
+function smarty_block_edit($params, $text, &$smarty)
+{
+    $action = $smarty->_tpl_vars['action'];
+    return ( $action & 3 ) ? $text : null;
 }
+
 

@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,66 +29,69 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/OptionGroup.php';
+require_once 'CRM/Core/PseudoConstant.php';
 
 /**
  * This class holds all the Pseudo constants that are specific to PCP. This avoids
  * polluting the core class and isolates the Event
  */
-class CRM_PCP_PseudoConstant extends CRM_Core_PseudoConstant {
-
-  /**
-   * pcp types
-   *
-   * @var array
-   * @static
-   */
-  private static $pcpType;
-
-  /**
-   * pcp status
-   *
-   * @var array
-   * @static
-   */
-  private static $pcpStatus;
-
-  /**
-   * Get all the PCP types
-   *
-   * @access public
-   *
-   * @return array - array reference of all PCP types
-   * @static
-   */
-  public static function &pcpType() {
-    self::$pcpType = array();
-    if (!self::$pcpType) {
-      self::$pcpType = array(
-        'contribute' => 'Contribution',
-        'event' => 'Event',
-      );
+class CRM_PCP_PseudoConstant extends CRM_Core_PseudoConstant 
+{
+    /**
+     * pcp types 
+     *
+     * @var array
+     * @static
+     */
+    private static $pcpType;
+  
+    /**
+     * pcp status 
+     *
+     * @var array
+     * @static
+     */
+    private static $pcpStatus;
+    
+    /**
+     * Get all the PCP types
+     *
+     * @access public
+     * @return array - array reference of all PCP types
+     * @static
+     */
+    public static function &pcpType( )
+    {
+        self::$pcpType = array();
+        if ( ! self::$pcpType ) {
+          self::$pcpType = array(
+            'contribute' => 'Contribution',
+            'event' => 'Event',
+          );
+        }
+        return self::$pcpType;
     }
-    return self::$pcpType;
-  }
 
-  /**
-   * Get all the PCP status
-   *
-   * @access public
-   *
-   * @return array - array reference of all PCP status
-   * @static
-   */
-  public static function &pcpStatus() {
-    self::$pcpStatus = array();
-    if (!self::$pcpStatus) {
-      self::$pcpStatus = CRM_Core_OptionGroup::values("pcp_status");
+    /**
+     * Get all the PCP status
+     *
+     * @access public
+     * @return array - array reference of all PCP status
+     * @static
+     */
+    public static function &pcpStatus( )
+    {
+        self::$pcpStatus = array();
+        if ( ! self::$pcpStatus ) {
+            self::$pcpStatus = CRM_Core_OptionGroup::values("pcp_status");
+        }
+        return self::$pcpStatus;
     }
-    return self::$pcpStatus;
-  }
+
 }
-

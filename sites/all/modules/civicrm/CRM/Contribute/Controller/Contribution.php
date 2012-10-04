@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,10 +29,13 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/Controller.php';
+require_once 'CRM/Core/Session.php';
 
 /**
  * This class is used by the Search functionality.
@@ -44,28 +48,32 @@
  * The second form is used to process search results with the asscociated actions
  *
  */
+
 class CRM_Contribute_Controller_Contribution extends CRM_Core_Controller {
 
-  /**
-   * class constructor
-   */
-  function __construct($title = NULL, $action = CRM_Core_Action::NONE, $modal = TRUE) {
-    parent::__construct($title, $modal);
+    /**
+     * class constructor
+     */
+    function __construct( $title = null, $action = CRM_Core_Action::NONE, $modal = true ) {
+        parent::__construct( $title, $modal );
 
-    $this->_stateMachine = new CRM_Contribute_StateMachine_Contribution($this, $action);
+        require_once 'CRM/Contribute/StateMachine/Contribution.php';
+        $this->_stateMachine = new CRM_Contribute_StateMachine_Contribution( $this, $action );
 
-    // create and instantiate the pages
-    $this->addPages($this->_stateMachine, $action);
+        // create and instantiate the pages
+        $this->addPages( $this->_stateMachine, $action );
 
-    // add all the actions
-    $uploadNames = $this->get('uploadNames');
-    if (!empty($uploadNames)) {
-      $config = CRM_Core_Config::singleton();
-      $this->addActions($config->customFileUploadDir, $uploadNames);
+        // add all the actions
+        $uploadNames = $this->get( 'uploadNames' );
+        if ( ! empty( $uploadNames ) ) {
+            $config = CRM_Core_Config::singleton( );
+            $this->addActions( $config->customFileUploadDir, $uploadNames );
+        } else {
+            $this->addActions( );
+        }
+
     }
-    else {
-      $this->addActions();
-    }
-  }
+
 }
+
 

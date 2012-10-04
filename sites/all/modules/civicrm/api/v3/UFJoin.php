@@ -1,11 +1,10 @@
 <?php
-// $Id$
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +32,7 @@
  * @package CiviCRM_APIv3
  * @subpackage API_UF
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * @version $Id: UFJoin.php 30171 2010-10-14 09:11:27Z mover $
  *
  */
@@ -54,11 +53,13 @@ require_once 'CRM/Core/BAO/UFJoin.php';
  *  {@getfields UFJoin_create}
  *
  */
-function civicrm_api3_uf_join_create($params) {
+function civicrm_api3_uf_join_create($params)
+{
 
-  $ufJoin = CRM_Core_BAO_UFJoin::create($params);
-  _civicrm_api3_object_to_array($ufJoin, $ufJoinArray[]);
-  return civicrm_api3_create_success($ufJoinArray, $params, 'uf_join', 'create');
+    $ufJoin = CRM_Core_BAO_UFJoin::create($params);
+    _civicrm_api3_object_to_array( $ufJoin, $ufJoinArray[]);
+    return civicrm_api3_create_success($ufJoinArray,$params,'uf_join','create');
+
 }
 /*
  * Adjust Metadata for Create action
@@ -66,12 +67,11 @@ function civicrm_api3_uf_join_create($params) {
  * @param array $params array or parameters determined by getfields
  * @todo - suspect module, weight don't need to be required - need to test 
  */
-function _civicrm_api3_uf_join_create_spec(&$params) {
+function _civicrm_api3_uf_join_create_spec(&$params){
   $params['module']['api.required'] = 1;
-  $params['weight']['api.required'] = 1;
-  $params['uf_group_id']['api.required'] = 1;
+  $params['weight']['api.required'] = 1;  
+  $params['uf_group_id']['api.required'] = 1; 
 }
-
 /**
  * Get CiviCRM UF_Joins (ie joins between CMS user records & CiviCRM user record
  *
@@ -82,7 +82,11 @@ function _civicrm_api3_uf_join_create_spec(&$params) {
  * @access public
  * {getfields UFJoin_get}
  */
-function civicrm_api3_uf_join_get($params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+
+function civicrm_api3_uf_join_get($params)
+{ 
+	  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+
+
 }
 

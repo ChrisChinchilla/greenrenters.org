@@ -114,7 +114,7 @@ class Log
      * @access private
      * @since Log 1.9.13
      */
-    static function _classExists($class)
+    function _classExists($class)
     {
         if (version_compare(PHP_VERSION, '5.0.0', 'ge')) {
             return class_exists($class, false);
@@ -148,7 +148,7 @@ class Log
      * @access public
      * @since Log 1.0
      */
-    static function &factory($handler, $name = '', $ident = '', $conf = array(),
+    function &factory($handler, $name = '', $ident = '', $conf = array(),
                       $level = PEAR_LOG_DEBUG)
     {
         $handler = strtolower($handler);
@@ -210,7 +210,7 @@ class Log
      * @access public
      * @since Log 1.0
      */
-    static function &singleton($handler, $name = '', $ident = '', $conf = array(),
+    function &singleton($handler, $name = '', $ident = '', $conf = array(),
                         $level = PEAR_LOG_DEBUG)
     {
         static $instances;

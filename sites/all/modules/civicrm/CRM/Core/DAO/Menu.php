@@ -1,9 +1,9 @@
 <?php
 /*
 +--------------------------------------------------------------------+
-| CiviCRM version 4.2                                                |
+| CiviCRM version 4.1                                                |
 +--------------------------------------------------------------------+
-| Copyright CiviCRM LLC (c) 2004-2012                                |
+| Copyright CiviCRM LLC (c) 2004-2011                                |
 +--------------------------------------------------------------------+
 | This file is a part of CiviCRM.                                    |
 |                                                                    |
@@ -27,7 +27,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
@@ -213,7 +213,6 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      */
     function __construct()
     {
-        $this->__table = 'civicrm_menu';
         parent::__construct();
     }
     /**
@@ -222,7 +221,7 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      * @access public
      * @return array
      */
-    function links()
+    function &links()
     {
         if (!(self::$_links)) {
             self::$_links = array(
@@ -238,7 +237,7 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      * @access public
      * @return array
      */
-    static function &fields()
+    function &fields()
     {
         if (!(self::$_fields)) {
             self::$_fields = array(
@@ -370,10 +369,9 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      * returns the names of this table
      *
      * @access public
-     * @static
      * @return string
      */
-    static function getTableName()
+    function getTableName()
     {
         return self::$_tableName;
     }
@@ -392,9 +390,8 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      *
      * @access public
      * return array
-     * @static
      */
-    static function &import($prefix = false)
+    function &import($prefix = false)
     {
         if (!(self::$_import)) {
             self::$_import = array();
@@ -416,9 +413,8 @@ class CRM_Core_DAO_Menu extends CRM_Core_DAO
      *
      * @access public
      * return array
-     * @static
      */
-    static function &export($prefix = false)
+    function &export($prefix = false)
     {
         if (!(self::$_export)) {
             self::$_export = array();

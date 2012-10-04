@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -86,7 +86,7 @@ cj(function() {
 
 {literal}
 cj(function() {
-   cj('#start_date_display').change( function( ) { 
+   cj('#start_date').change( function( ) { 
        if ( cj(this).val( ) ) {
           cj('#now').attr( 'checked', false );
        }

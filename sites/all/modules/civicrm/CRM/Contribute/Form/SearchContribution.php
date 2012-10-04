@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,58 +29,63 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-class CRM_Contribute_Form_SearchContribution extends CRM_Core_Form {
 
-  /**
-   * Build the form
-   *
-   * @access public
-   *
-   * @return void
-   */
-  public function buildQuickForm() {
-    $attributes = CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'title');
-    $attributes['style'] = 'width: 90%';
+require_once 'CRM/Core/Form.php';
+require_once 'CRM/Contribute/PseudoConstant.php';
 
-    $this->add('text', 'title', ts('Find'), $attributes);
+class CRM_Contribute_Form_SearchContribution extends CRM_Core_Form 
+{
 
-    $contribution_type = CRM_Contribute_PseudoConstant::contributionType();
-    foreach ($contribution_type as $contributionId => $contributionName) {
-      $this->addElement('checkbox', "contribution_type_id[$contributionId]", 'Contribution Type', $contributionName);
+    /**
+     * Build the form
+     *
+     * @access public
+     * @return void
+     */
+    public function buildQuickForm( ) 
+    {
+        $attributes = CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'title');
+        $attributes['style'] = 'width: 90%';
+        
+        $this->add( 'text', 'title', ts( 'Find' ), $attributes );
+        
+        $contribution_type = CRM_Contribute_PseudoConstant::contributionType( );
+        foreach($contribution_type as $contributionId => $contributionName) {
+            $this->addElement('checkbox', "contribution_type_id[$contributionId]", 'Contribution Type', $contributionName);
+        }
+        
+        require_once 'CRM/Campaign/BAO/Campaign.php';
+        CRM_Campaign_BAO_Campaign::addCampaignInComponentSearch( $this );
+        
+        $this->addButtons(array( 
+                                array ('type'      => 'refresh', 
+                                       'name'      => ts('Search'), 
+                                       'isDefault' => true ), 
+                                ) ); 
     }
 
-    CRM_Campaign_BAO_Campaign::addCampaignInComponentSearch($this);
 
-    $this->addButtons(array(
-        array(
-          'type' => 'refresh',
-          'name' => ts('Search'),
-          'isDefault' => TRUE,
-        ),
-      ));
-  }
-
-  function postProcess() {
-    $params = $this->controller->exportValues($this->_name);
-    $parent = $this->controller->getParent();
-    $parent->set('searchResult', 1);
-    if (!empty($params)) {
-      $fields = array('title', 'contribution_type_id', 'campaign_id');
-      foreach ($fields as $field) {
-        if (isset($params[$field]) &&
-          !CRM_Utils_System::isNull($params[$field])
-        ) {
-          $parent->set($field, $params[$field]);
+    function postProcess( ) 
+    {
+        $params = $this->controller->exportValues( $this->_name );
+        $parent = $this->controller->getParent( );
+        $parent->set( 'searchResult', 1 );
+        if ( ! empty( $params ) ) {
+            $fields = array( 'title', 'contribution_type_id', 'campaign_id' );
+            foreach ( $fields as $field ) {
+                if ( isset( $params[$field] ) &&
+                     ! CRM_Utils_System::isNull( $params[$field] ) ) {
+                    $parent->set( $field, $params[$field] );
+                } else {
+                    $parent->set( $field, null );
+                }
+            }
         }
-        else {
-          $parent->set($field, NULL);
-        }
-      }
     }
-  }
 }
+
 

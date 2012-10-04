@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,41 +29,44 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/Page.php';
 
 /**
  * Main page for Cases dashlet
  *
  */
-class CRM_Dashlet_Page_AllCases extends CRM_Core_Page {
+class CRM_Dashlet_Page_AllCases extends CRM_Core_Page 
+{
+    /**
+     * List activities as dashlet
+     *
+     * @return none
+     *
+     * @access public
+     */
+    function run( ) {
+        $context = CRM_Utils_Request::retrieve( 'context', 'String', $this, false, 'dashlet' );
+        $this->assign('context', $context );
+ 
+        require_once 'CRM/Case/BAO/Case.php';
+        //check for civicase access.
+        if ( !CRM_Case_BAO_Case::accessCiviCase( ) ) {
+            CRM_Core_Error::fatal( ts( 'You are not authorized to access this page.' ) );
+        }
 
-  /**
-   * List activities as dashlet
-   *
-   * @return none
-   *
-   * @access public
-   */
-  function run() {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this, FALSE, 'dashlet');
-    $this->assign('context', $context);
+        require_once 'CRM/Core/OptionGroup.php';
+        $session  = CRM_Core_Session::singleton();
+        $userID   = $session->get('userID');        
+        $upcoming = CRM_Case_BAO_Case::getCases( true, $userID, 'upcoming', $context );
 
-    //check for civicase access.
-    if (!CRM_Case_BAO_Case::accessCiviCase()) {
-      CRM_Core_Error::fatal(ts('You are not authorized to access this page.'));
+        if ( !empty( $upcoming ) ) {
+            $this->assign('AllCases', $upcoming);
+        }
+        return parent::run( );
     }
-
-    $session  = CRM_Core_Session::singleton();
-    $userID   = $session->get('userID');
-    $upcoming = CRM_Case_BAO_Case::getCases(TRUE, $userID, 'upcoming', $context);
-
-    if (!empty($upcoming)) {
-      $this->assign('AllCases', $upcoming);
-    }
-    return parent::run();
-  }
 }
-

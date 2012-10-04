@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,8 +26,12 @@
 <div id="demographics" class="form-item">
     <table class="form-layout">
        <tr>
-       	  <tr><td><label>{ts}Birth Dates{/ts}</label></td></tr>
-	  {include file="CRM/Core/DateRange.tpl" fieldName="birth_date" from='_low' to='_high'}
+        <td>
+            {$form.birth_date_low.label|replace:'-':'<br />'}&nbsp;&nbsp; 
+	        {include file="CRM/common/jcalendar.tpl" elementName=birth_date_low}&nbsp;&nbsp;&nbsp;
+            {$form.birth_date_high.label}&nbsp;&nbsp;
+            {include file="CRM/common/jcalendar.tpl" elementName=birth_date_high}
+        </td>
        </tr>
        <tr>
 	 <td>
@@ -37,8 +41,12 @@
          </td>
       </tr>
       <tr>
-          <tr><td><label>{ts}Deceased Dates{/ts}</label></td></tr>
-	  {include file="CRM/Core/DateRange.tpl" fieldName="deceased_date" from='_low' to='_high'}
+        <td>
+           {$form.deceased_date_low.label|replace:'-':'<br />'}&nbsp;&nbsp;
+           {include file="CRM/common/jcalendar.tpl" elementName=deceased_date_low}&nbsp;&nbsp;&nbsp;
+           {$form.deceased_date_high.label}&nbsp;&nbsp;
+           {include file="CRM/common/jcalendar.tpl" elementName=deceased_date_high}
+        </td>    
       </tr>
       <tr>
          <td>

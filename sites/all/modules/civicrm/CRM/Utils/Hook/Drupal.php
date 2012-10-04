@@ -1,10 +1,10 @@
-<?php
+<?php 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,40 +29,35 @@
 /**
  *
  * @package CiviCRM_Hook
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id: $
  *
  */
+
+require_once 'CRM/Utils/Hook.php';
+
 class CRM_Utils_Hook_Drupal extends CRM_Utils_Hook {
 
-  /**
-   * @var bool
-   */
-  private $first = FALSE;
+    function invoke( $numParams,
+                     &$arg1, &$arg2, &$arg3, &$arg4, &$arg5,
+                     $fnSuffix ) {
+        static $first = false;
+        static $allModules = array( );
 
-  /**
-   * @var array(string)
-   */
-  private $allModules = array();
+        if ( ! $first ||
+             empty( $allModules ) ) {
+            $first = true;
 
-  function invoke($numParams,
-    &$arg1, &$arg2, &$arg3, &$arg4, &$arg5,
-    $fnSuffix
-  ) {
-    if (!$this->first || empty($this->allModules)) {
-      $this->first = TRUE;
+            // copied from user_module_invoke
+            if (function_exists('module_list')) {
+                $allModules =  module_list();
+            }
+            
+            $this->requireCiviModules( $allModules );
+        }
 
-      // copied from user_module_invoke
-      if (function_exists('module_list')) {
-        $this->allModules = module_list();
-      }
+        return $this->runHooks( $allModules, $fnSuffix,
+                                $numParams, $arg1, $arg2, $arg3, $arg4, $arg5 );
+   }
 
-      $this->requireCiviModules($this->allModules);
-    }
-
-    return $this->runHooks($this->allModules, $fnSuffix,
-      $numParams, $arg1, $arg2, $arg3, $arg4, $arg5
-    );
-  }
 }
-

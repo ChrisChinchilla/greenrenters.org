@@ -29,12 +29,12 @@ function address_get_expectedresult(){
   'is_error' => 0,
   'version' => 3,
   'count' => 1,
-  'id' => 10,
+  'id' => 9,
   'values' => array( 
       '0' => array( 
-          'id' => '10',
+          'id' => '9',
           'contact_id' => '1',
-          'location_type_id' => '15',
+          'location_type_id' => '13',
           'is_primary' => '1',
           'is_billing' => 0,
           'street_address' => 'Ambachtstraat 23',

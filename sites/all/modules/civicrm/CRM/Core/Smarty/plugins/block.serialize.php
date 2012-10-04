@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,11 +31,11 @@
  *
  * @package CRM
  * @author Donald Lobo <lobo@civicrm.org>
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  */
 
-/**
+/** 
  * Smarty block function providing serialization support
  *
  * See CRM_Core_I18n class documentation for details.
@@ -45,7 +46,9 @@
  *
  * @return string  the string, translated by gettext
  */
-function smarty_block_serialize($params, $text, &$smarty) {
-  return serialize($text);
+function smarty_block_serialize($params, $text, &$smarty)
+{
+    return serialize( $text );
 }
+
 

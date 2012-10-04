@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,10 +29,12 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/Page.php';
 
 /**
  * This is a dummy class that does nothing at the moment.
@@ -40,16 +43,18 @@
  * and then subjected to Tasks/Actions.
  *
  */
-class CRM_Contact_Page_Task extends CRM_Core_Page {
 
-  /**
-   * returns the page title
-   *
-   * @return string the title of the page
-   * @access public
-   */
-  function getTitle() {
-    return "Task Results";
-  }
+class CRM_Contact_Page_Task extends CRM_Core_Page {
+    /**
+     * returns the page title
+     *
+     * @return string the title of the page
+     * @access public
+     */
+    function getTitle()
+    {
+        return "Task Results";
+    }
+
 }
 

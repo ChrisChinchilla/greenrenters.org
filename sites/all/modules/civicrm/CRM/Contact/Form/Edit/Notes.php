@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,25 +29,28 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-Class CRM_Contact_Form_Edit_Notes {
 
-  /**
-   * This function is to build form elements
-   * params object $form object of the form
-   *
-   * @static
-   * @access public
-   */
+Class CRM_Contact_Form_Edit_Notes
+{
+    /**
+     * This function is to build form elements
+     * params object $form object of the form
+     *
+     * @static
+     * @access public
+     */
+    
+    static function buildQuickForm(&$form) {
+        $form->applyFilter('__ALL__','trim');
+        $form->add('text', 'subject', ts('Subject'), array('size' => 60, 'maxlength' => 254)); 
+        $form->add('textarea', 'note', ts('Notes') , array('cols' => '60', 'rows' => '3'));    
+    }
 
-  static
-  function buildQuickForm(&$form) {
-    $form->applyFilter('__ALL__', 'trim');
-    $form->add('text', 'subject', ts('Subject'), array('size' => 60, 'maxlength' => 254));
-    $form->add('textarea', 'note', ts('Notes'), array('cols' => '60', 'rows' => '3'));
-  }
 }
+
+
 

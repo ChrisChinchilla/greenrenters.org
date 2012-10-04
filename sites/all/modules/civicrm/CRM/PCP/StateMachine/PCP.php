@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,10 +29,12 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/StateMachine.php';
 
 /**
  * State machine for managing different states of the Import process.
@@ -39,26 +42,28 @@
  */
 class CRM_PCP_StateMachine_PCP extends CRM_Core_StateMachine {
 
-  /**
-   * class constructor
-   *
-   * @param object  CRM_Import_Controller
-   * @param int     $action
-   *
-   * @return object CRM_Import_StateMachine
-   */
-  function __construct($controller, $action = CRM_Core_Action::NONE) {
-    parent::__construct($controller, $action);
+    /**
+     * class constructor
+     *
+     * @param object  CRM_Import_Controller
+     * @param int     $action
+     *
+     * @return object CRM_Import_StateMachine
+     */
+    function __construct( $controller, $action = CRM_Core_Action::NONE ) {
+        parent::__construct( $controller, $action );
 
-    $session = CRM_Core_Session::singleton();
-    $session->set('singleForm', FALSE);
+        $session = CRM_Core_Session::singleton();
+        $session->set('singleForm', false);
 
-    $this->_pages = array(
-      'CRM_PCP_Form_PCPAccount' => NULL,
-      'CRM_PCP_Form_Campaign' => NULL,
-    );
+        $this->_pages = array(
+                              'CRM_PCP_Form_PCPAccount' => null,
+                              'CRM_PCP_Form_Campaign'   => null
+                              );
+        
+        $this->addSequentialPages( $this->_pages, $action );
+    }
 
-    $this->addSequentialPages($this->_pages, $action);
-  }
 }
+
 

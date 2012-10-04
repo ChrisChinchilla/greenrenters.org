@@ -25,12 +25,11 @@ function constant_get_expectedresult(){
   $expectedResult = array( 
   'is_error' => 0,
   'version' => 3,
-  'count' => 5,
+  'count' => 4,
   'values' => array( 
       '5' => 'Billing',
       '1' => 'Home',
       '3' => 'Main',
-      '4' => 'Other',
       '2' => 'Work',
     ),
 );

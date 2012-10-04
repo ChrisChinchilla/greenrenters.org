@@ -1,9 +1,9 @@
 <?php
 /*
 +--------------------------------------------------------------------+
-| CiviCRM version 4.2                                                |
+| CiviCRM version 4.1                                                |
 +--------------------------------------------------------------------+
-| Copyright CiviCRM LLC (c) 2004-2012                                |
+| Copyright CiviCRM LLC (c) 2004-2011                                |
 +--------------------------------------------------------------------+
 | This file is a part of CiviCRM.                                    |
 |                                                                    |
@@ -27,7 +27,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
@@ -97,7 +97,7 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      *
      * @var string
      */
-    public $title;
+    public $label;
     /**
      * Description of this batch set.
      *
@@ -129,42 +129,6 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      */
     public $modified_date;
     /**
-     * FK to Saved Search ID
-     *
-     * @var int unsigned
-     */
-    public $saved_search_id;
-    /**
-     * fk to Batch Status options in civicrm_option_values
-     *
-     * @var int unsigned
-     */
-    public $status_id;
-    /**
-     * fk to Batch Type options in civicrm_option_values
-     *
-     * @var int unsigned
-     */
-    public $type_id;
-    /**
-     * fk to Batch mode options in civicrm_option_values
-     *
-     * @var int unsigned
-     */
-    public $mode_id;
-    /**
-     * Total amount for this batch.
-     *
-     * @var float
-     */
-    public $total;
-    /**
-     * Number of items in a batch.
-     *
-     * @var int unsigned
-     */
-    public $item_count;
-    /**
      * class constructor
      *
      * @access public
@@ -172,7 +136,6 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      */
     function __construct()
     {
-        $this->__table = 'civicrm_batch';
         parent::__construct();
     }
     /**
@@ -181,13 +144,12 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      * @access public
      * @return array
      */
-    function links()
+    function &links()
     {
         if (!(self::$_links)) {
             self::$_links = array(
                 'created_id' => 'civicrm_contact:id',
                 'modified_id' => 'civicrm_contact:id',
-                'saved_search_id' => 'civicrm_saved_search:id',
             );
         }
         return self::$_links;
@@ -198,7 +160,7 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      * @access public
      * @return array
      */
-    static function &fields()
+    function &fields()
     {
         if (!(self::$_fields)) {
             self::$_fields = array(
@@ -214,10 +176,10 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
                     'maxlength' => 64,
                     'size' => CRM_Utils_Type::BIG,
                 ) ,
-                'title' => array(
-                    'name' => 'title',
+                'label' => array(
+                    'name' => 'label',
                     'type' => CRM_Utils_Type::T_STRING,
-                    'title' => ts('Title') ,
+                    'title' => ts('Label') ,
                     'maxlength' => 64,
                     'size' => CRM_Utils_Type::BIG,
                 ) ,
@@ -248,36 +210,6 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
                     'type' => CRM_Utils_Type::T_DATE + CRM_Utils_Type::T_TIME,
                     'title' => ts('Modified Date') ,
                 ) ,
-                'saved_search_id' => array(
-                    'name' => 'saved_search_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'FKClassName' => 'CRM_Contact_DAO_SavedSearch',
-                ) ,
-                'status_id' => array(
-                    'name' => 'status_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'required' => true,
-                ) ,
-                'type_id' => array(
-                    'name' => 'type_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'required' => true,
-                ) ,
-                'mode_id' => array(
-                    'name' => 'mode_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                ) ,
-                'total' => array(
-                    'name' => 'total',
-                    'type' => CRM_Utils_Type::T_MONEY,
-                    'title' => ts('Total') ,
-                ) ,
-                'item_count' => array(
-                    'name' => 'item_count',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'title' => ts('Item Count') ,
-                    'required' => true,
-                ) ,
             );
         }
         return self::$_fields;
@@ -286,10 +218,9 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      * returns the names of this table
      *
      * @access public
-     * @static
      * @return string
      */
-    static function getTableName()
+    function getTableName()
     {
         return CRM_Core_DAO::getLocaleTableName(self::$_tableName);
     }
@@ -308,9 +239,8 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      *
      * @access public
      * return array
-     * @static
      */
-    static function &import($prefix = false)
+    function &import($prefix = false)
     {
         if (!(self::$_import)) {
             self::$_import = array();
@@ -332,9 +262,8 @@ class CRM_Core_DAO_Batch extends CRM_Core_DAO
      *
      * @access public
      * return array
-     * @static
      */
-    static function &export($prefix = false)
+    function &export($prefix = false)
     {
         if (!(self::$_export)) {
             self::$_export = array();

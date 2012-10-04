@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
@@ -36,28 +37,30 @@
 /**
  * This class contains all the function that are called using AJAX
  */
-class CRM_Mailing_Page_AJAX {
+class CRM_Mailing_Page_AJAX
+{
+    /**
+     * Function to fetch the template text/html messages
+     */
+    function template(  ) 
+    {
+        require_once 'CRM/Utils/Type.php';
+        $templateId = CRM_Utils_Type::escape( $_POST['tid'], 'Integer' );
 
-  /**
-   * Function to fetch the template text/html messages
-   */
-  function template() {
-    $templateId = CRM_Utils_Type::escape($_POST['tid'], 'Integer');
+        require_once "CRM/Core/DAO/MessageTemplates.php";
+        $messageTemplate = new CRM_Core_DAO_MessageTemplates( );
+        $messageTemplate->id = $templateId;
+        $messageTemplate->selectAdd( );
+        $messageTemplate->selectAdd( 'msg_text, msg_html, msg_subject, pdf_format_id' );
+        $messageTemplate->find( true );
+        $messages = array( 'subject'  => $messageTemplate->msg_subject,
+                           'msg_text' =>  $messageTemplate->msg_text,
+                           'msg_html' =>  $messageTemplate->msg_html,
+                           'pdf_format_id' => $messageTemplate->pdf_format_id,
+                           );
+                            
+        echo json_encode( $messages );
+        CRM_Utils_System::civiExit( );
+    }
 
-    $messageTemplate = new CRM_Core_DAO_MessageTemplates();
-    $messageTemplate->id = $templateId;
-    $messageTemplate->selectAdd();
-    $messageTemplate->selectAdd('msg_text, msg_html, msg_subject, pdf_format_id');
-    $messageTemplate->find(TRUE);
-    $messages = array(
-      'subject' => $messageTemplate->msg_subject,
-      'msg_text' => $messageTemplate->msg_text,
-      'msg_html' => $messageTemplate->msg_html,
-      'pdf_format_id' => $messageTemplate->pdf_format_id,
-    );
-
-    echo json_encode($messages);
-    CRM_Utils_System::civiExit();
-  }
 }
-

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -60,16 +60,39 @@
     </td> 
 </tr>
 <tr> 
-        <tr><td><label>{ts}Member Since{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="member_join_date" from='_low' to='_high'}  
+    <td> 
+     {$form.member_join_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_join_date_low}
+    </td>
+    <td> 
+     {$form.member_join_date_high.label} <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_join_date_high}
+    </td> 
 </tr> 
 <tr> 
-        <tr><td><label>{ts}Start Date{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="member_start_date" from='_low' to='_high'}  
+    <td> 
+     {$form.member_start_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_start_date_low}
+    </td>
+    <td>
+     {$form.member_start_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_start_date_high}
+    </td> 
 </tr> 
 <tr> 
-        <tr><td><label>{ts}End Date{/ts}</label></td></tr>
-        {include file="CRM/Core/DateRange.tpl" fieldName="member_end_date" from='_low' to='_high'} 
+    <td>  
+     {$form.member_end_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_end_date_low}
+    </td>
+    <td> 
+     {$form.member_end_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=member_end_date_high}
+    </td> 
 </tr> 
 
 {* campaign in membership search *}

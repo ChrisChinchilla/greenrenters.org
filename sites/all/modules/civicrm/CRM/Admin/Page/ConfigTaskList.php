@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,35 +29,42 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Core/Page.php';
 
 /**
  * Page for displaying list of site configuration tasks with links to each setting form
  */
 class CRM_Admin_Page_ConfigTaskList extends CRM_Core_Page {
-  function run() {
+    
+    function run() {
+        
+        CRM_Utils_System::setTitle(ts("Configuration Checklist"));
+        $this->assign('recentlyViewed', false);
 
-    CRM_Utils_System::setTitle(ts("Configuration Checklist"));
-    $this->assign('recentlyViewed', FALSE);
+        $destination = CRM_Utils_System::url( 'civicrm/admin/configtask',
+                                              'reset=1',
+                                              false, null, false );
 
-    $destination = CRM_Utils_System::url('civicrm/admin/configtask',
-      'reset=1',
-      FALSE, NULL, FALSE
-    );
+        $destination = urlencode( $destination );
+        $this->assign( 'destination', $destination );
 
-    $destination = urlencode($destination);
-    $this->assign('destination', $destination);
-
-    CRM_Core_OptionValue::getValues(array('name' => 'from_email_address'), $optionValue);
-    if (!empty($optionValue)) {
-      list($id) = array_keys($optionValue);
-      $this->assign('fromEmailId', $id);
-    }
-
-    return parent::run();
-  }
+        require_once 'CRM/Core/OptionValue.php';
+        CRM_Core_OptionValue::getValues( array( 'name' => 'from_email_address'), $optionValue );
+        if( !empty( $optionValue ) ) {
+            list( $id ) = array_keys( $optionValue );
+            $this->assign( 'fromEmailId', $id );
+        }
+        
+        return parent::run();
+    }   
 }
-
+    
+    
+    
+    
+    

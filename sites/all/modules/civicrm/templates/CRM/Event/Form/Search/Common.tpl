@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,8 +29,12 @@
 </tr>     
  
 <tr> 
-    <tr><td><label>{ts}Event Dates{/ts}</label></td></tr>
-    {include file="CRM/Core/DateRange.tpl" fieldName="event" from='_start_date_low' to='_end_date_high'}
+    <td class="crm-event-form-block-event_start_date_low">  
+       {$form.event_start_date_low.label}<br />{include file="CRM/common/jcalendar.tpl" elementName=event_start_date_low}
+    </td>
+    <td class="crm-event-form-block-event_end_date_high"> 
+       {$form.event_end_date_high.label}<br />{include file="CRM/common/jcalendar.tpl" elementName=event_end_date_high}
+    </td> 
 </tr>
 
 <tr>

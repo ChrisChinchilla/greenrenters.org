@@ -27,11 +27,12 @@ function group_contact_create_expectedresult(){
   $expectedResult = array( 
   'is_error' => 0,
   'version' => 3,
-  'count' => 1,
-  'values' => 1,
-  'total_count' => 2,
-  'added' => 1,
-  'not_added' => 1,
+  'count' => 3,
+  'values' => array( 
+      'not_added' => 1,
+      'added' => 1,
+      'total_count' => 2,
+    ),
 );
 
   return $expectedResult  ;

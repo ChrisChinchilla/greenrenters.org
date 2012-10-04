@@ -7,7 +7,7 @@
  */
 function activity_type_delete_example(){
 $params = array( 
-  'activity_type_id' => 682,
+  'activity_type_id' => 659,
   'version' => 3,
 );
 
@@ -24,8 +24,7 @@ function activity_type_delete_expectedresult(){
 
   $expectedResult = array( 
   'is_error' => 1,
-  'error_message' => 'DB_DataObject Error: delete: No condition specifed for query',
-  'tip' => 'add debug=1 to your API call to have more info about the error',
+  'error_message' => 'Mandatory key(s) missing from params array: id',
 );
 
   return $expectedResult  ;

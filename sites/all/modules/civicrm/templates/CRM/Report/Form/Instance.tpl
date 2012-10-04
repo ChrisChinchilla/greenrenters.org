@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -83,17 +83,11 @@
             <td>{$form.grouprole.html|crmReplace:class:huge}</td>
         </tr>
     {/if}
-    <tr class="crm-report-instanceForm-form-block-isReserved">
-	    <td class="report-label">{$form.is_reserved.label} {help id="id-is_reserved" file="CRM/Report/Form/Settings.hlp"}</td>
-      <td>{$form.is_reserved.html}
-        <span class="description">{ts}If reserved, only users with 'administer reserved reports' permission can modify this report instance.{/ts}</span>
-      </td>
-    </tr>
     <tr class="crm-report-instanceForm-form-block-addToDashboard">
 	    <td class="report-label">{$form.addToDashboard.label} {help id="id-dash_avail" file="CRM/Report/Form/Settings.hlp"}</td>
-      <td>{$form.addToDashboard.html}
-      	<span class="description">{ts}Users with appropriate permissions can add this report to their dashboard.{/ts}</span>
-      </td>
+        <td>{$form.addToDashboard.html}
+            <span class="description">{ts}Users with appropriate permissions can add this report to their dashboard.{/ts}</span>
+        </td>
     </tr>
 </table>
 

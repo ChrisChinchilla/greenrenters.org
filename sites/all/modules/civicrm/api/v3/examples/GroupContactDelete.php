@@ -26,11 +26,12 @@ function group_contact_delete_expectedresult(){
   $expectedResult = array( 
   'is_error' => 0,
   'version' => 3,
-  'count' => 1,
-  'values' => 1,
-  'total_count' => 1,
-  'removed' => 1,
-  'not_removed' => 0,
+  'count' => 3,
+  'values' => array( 
+      'not_removed' => 0,
+      'removed' => 1,
+      'total_count' => 1,
+    ),
 );
 
   return $expectedResult  ;

@@ -48,7 +48,6 @@ function group_get_expectedresult(){
           'parents' => '',
           'children' => '',
           'is_hidden' => 0,
-          'is_reserved' => 0,
         ),
     ),
 );

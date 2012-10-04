@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -46,7 +46,7 @@ Please check your email inbox for the confirmation email. If you don't find it, 
 {/if}
 {if $duplicate}
 <p>{ts}Thank you for your support.{/ts}</p>
-{include file="CRM/Campaign/Page/Petition/SocialNetwork.tpl" petition_id=$survey_id petitionTitle=$petitionTitle}
+{include file="CRM/Campaign/Page/Petition/SocialNetwork.tpl" petition_id=$survey_id}
 {else}
 	<div class="crm-section crm-petition-contact-profile">
 		{include file="CRM/Campaign/Form/Petition/Block.tpl" fields=$petitionContactProfile} 	

@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,74 +29,84 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
 
+require_once 'CRM/Core/Page/Basic.php';
+require_once 'CRM/Core/DAO/Navigation.php';
+
 /**
  * Page for displaying list of location types
  */
-class CRM_Admin_Page_Navigation extends CRM_Core_Page_Basic {
+class CRM_Admin_Page_Navigation extends CRM_Core_Page_Basic 
+{
+    /**
+     * The action links that we need to display for the browse screen
+     *
+     * @var array
+     * @static
+     */
+    static $_links = null;
 
-  /**
-   * The action links that we need to display for the browse screen
-   *
-   * @var array
-   * @static
-   */
-  static $_links = NULL;
+    /**
+     * Get BAO Name
+     *
+     * @return string Classname of BAO.
+     */
+    function getBAOName() 
+    {
+        return 'CRM_Core_BAO_Navigation';
+    }
 
-  /**
-   * Get BAO Name
-   *
-   * @return string Classname of BAO.
-   */
-  function getBAOName() {
-    return 'CRM_Core_BAO_Navigation';
-  }
+    /**
+     * Get action Links
+     *
+     * @return array (reference) of action links
+     */
+    function &links()
+    {
+    }
 
-  /**
-   * Get action Links
-   *
-   * @return array (reference) of action links
-   */
-  function &links() {}
-
-  /**
-   * Get name of edit form
-   *
-   * @return string Classname of edit form.
-   */
-  function editForm() {
-    return 'CRM_Admin_Form_Navigation';
-  }
-
-  /**
-   * Get edit form name
-   *
-   * @return string name of this page.
-   */
-  function editName() {
-    return 'CiviCRM Navigation';
-  }
-
-  /**
-   * Get user context.
-   *
-   * @return string user context.
-   */
-  function userContext($mode = NULL) {
-    return 'civicrm/admin/menu';
-  }
-
-  /**
-   * Browse all menus
-   */
-  function browse() {
-    // assign home id to the template
-    $homeMenuId = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Navigation', 'Home', 'id', 'name');
-    $this->assign('homeMenuId', $homeMenuId);
-  }
+    /**
+     * Get name of edit form
+     *
+     * @return string Classname of edit form.
+     */
+    function editForm() 
+    {
+        return 'CRM_Admin_Form_Navigation';
+    }
+    
+    /**
+     * Get edit form name
+     *
+     * @return string name of this page.
+     */
+    function editName() 
+    {
+        return 'CiviCRM Navigation';
+    }
+    
+    /**
+     * Get user context.
+     *
+     * @return string user context.
+     */
+    function userContext($mode = null) 
+    {
+        return 'civicrm/admin/menu';
+    }
+    
+    /**
+     * Browse all menus
+     */
+     function browse(  ) {
+         // assign home id to the template 
+         $homeMenuId = CRM_Core_DAO::getFieldValue( 'CRM_Core_DAO_Navigation', 'Home', 'id', 'name' );
+         $this->assign( 'homeMenuId', $homeMenuId );
+     }
 }
+
 

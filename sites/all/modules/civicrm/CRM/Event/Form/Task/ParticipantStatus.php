@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,34 +29,39 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-class CRM_Event_Form_Task_ParticipantStatus extends CRM_Event_Form_Task_Batch {
-  function buildQuickForm() {
-    // CRM_Event_Form_Task_Batch::buildQuickForm() gets ufGroupId
-    // from the form, so set it here to the id of the reserved profile
-    $dao = new CRM_Core_DAO_UFGroup;
-    $dao->name = 'participant_status';
-    $dao->find(TRUE);
-    $this->set('ufGroupId', $dao->id);
 
-    $statuses = CRM_Event_PseudoConstant::participantStatus(NULL, NULL, 'label');
-    asort($statuses, SORT_STRING);
-    $this->add('select', 'status_change', ts('Change All Statuses'),
-      array(
-        '' => ts('- select status -')) + $statuses
-    );
+require_once 'CRM/Event/Form/Task/Batch.php';
 
-    $this->assign('context', 'statusChange');
+class CRM_Event_Form_Task_ParticipantStatus extends CRM_Event_Form_Task_Batch
+{
+    function buildQuickForm()
+    {
+        // CRM_Event_Form_Task_Batch::buildQuickForm() gets ufGroupId 
+        // from the form, so set it here to the id of the reserved profile
+        require_once 'CRM/Core/DAO/UFGroup.php';
+        $dao = new CRM_Core_DAO_UFGroup;
+        $dao->name = 'participant_status';
+        $dao->find(true);
+        $this->set('ufGroupId', $dao->id);
 
-    # CRM-4321: display info on users being notified if any of the below statuses is enabled
-    $notifyingStatuses = array('Pending from waitlist', 'Pending from approval', 'Expired', 'Cancelled');
-    $notifyingStatuses = array_intersect($notifyingStatuses, CRM_Event_PseudoConstant::participantStatus());
-    $this->assign('notifyingStatuses', implode(', ', $notifyingStatuses));
+        require_once 'CRM/Event/PseudoConstant.php';
+        $statuses = CRM_Event_PseudoConstant::participantStatus(null, null, 'label');
+        asort($statuses, SORT_STRING);
+        $this->add('select', 'status_change', ts('Change All Statuses'),  
+                    array( '' => ts('- select status -')) + $statuses );
 
-    parent::buildQuickForm();
-  }
+        $this->assign('context', 'statusChange');
+
+        # CRM-4321: display info on users being notified if any of the below statuses is enabled
+        require_once 'CRM/Event/PseudoConstant.php';
+        $notifyingStatuses = array('Pending from waitlist', 'Pending from approval', 'Expired', 'Cancelled');
+        $notifyingStatuses = array_intersect($notifyingStatuses, CRM_Event_PseudoConstant::participantStatus());
+        $this->assign('notifyingStatuses', implode(', ', $notifyingStatuses));
+
+        parent::buildQuickForm();
+    }
 }
-

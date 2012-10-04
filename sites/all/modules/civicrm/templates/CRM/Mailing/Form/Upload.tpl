@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -69,7 +69,7 @@
 {include file="CRM/Contact/Form/Task/EmailCommon.tpl" upload=1 noAttach=1}
 </fieldset>
 
-  {capture assign=docLink}{docURL page="Sample CiviMail Messages" text="More information and sample messages..." resource="wiki"}{/capture}
+  {capture assign=docLink}{docURL page="Sample CiviMail Messages" text="More information and sample messages..."}{/capture}
   <fieldset id="upload_id"><legend>{ts}Upload Content{/ts}</legend>
     <table class="form-layout-compressed">
         <tr class="crm-mailing-upload-form-block-textFile">

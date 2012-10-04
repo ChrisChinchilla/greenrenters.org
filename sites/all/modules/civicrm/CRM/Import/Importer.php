@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,31 +29,32 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Import/ImportJob.php';
 
 /**
  * This class mainly exists to allow imports to be triggered synchronously (i.e.
  *  via a form post) and asynchronously (i.e. by the workflow system)
  */
 class CRM_Import_Importer {
-  public function __construct() {
-    // may not need this
-  }
-
-  public function runIncompleteImportJobs($timeout = 55) {
-    $startTime = time();
-    $incompleteImportTables = CRM_Import_ImportJob::getIncompleteImportTables();
-    foreach ($incompleteImportTables as $importTable) {
-      $importJob = new CRM_Import_ImportJob($importTable);
-      $importJob->runImport(NULL, $timeout);
-      $currentTime = time();
-      if (($currentTime - $startTime) >= $timeout) {
-        break;
-      }
+    public function __construct() {
+        // may not need this
     }
-  }
+    
+    public function runIncompleteImportJobs( $timeout = 55 ) {
+        $startTime = time();
+        $incompleteImportTables = CRM_Import_ImportJob::getIncompleteImportTables();
+        foreach ($incompleteImportTables as $importTable) {
+            $importJob = new CRM_Import_ImportJob( $importTable );
+            $importJob->runImport(null, $timeout);
+            $currentTime = time();
+            if ( ( $currentTime - $startTime ) >= $timeout) {
+                break;
+            }
+        }
+    }
 }
-

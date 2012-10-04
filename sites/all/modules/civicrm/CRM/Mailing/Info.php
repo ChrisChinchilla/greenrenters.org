@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -25,109 +26,117 @@
  +--------------------------------------------------------------------+
 */
 
+require_once 'CRM/Core/Component/Info.php';
+
 /**
- * This class introduces component to the system and provides all the
+ * This class introduces component to the system and provides all the 
  * information about it. It needs to extend CRM_Core_Component_Info
  * abstract class.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
-class CRM_Mailing_Info extends CRM_Core_Component_Info {
+class CRM_Mailing_Info extends CRM_Core_Component_Info
+{
 
-  // docs inherited from interface
-  protected $keyword = 'mailing';
+    // docs inherited from interface
+    protected $keyword = 'mailing';
+        
 
-
-  // docs inherited from interface
-  public function getInfo() {
-    return array(
-      'name' => 'CiviMail',
-      'translatedName' => ts('CiviMail'),
-      'title' => 'CiviCRM Mailing Engine',
-      'search' => 1,
-      'showActivitiesInCore' => 1,
-    );
-  }
-
-
-  static
-  function workflowEnabled() {
-    $config = CRM_Core_Config::singleton();
-
-    // early exit, since not true for most
-    if (!$config->userSystem->is_drupal ||
-      !function_exists('module_exists')
-    ) {
-      return FALSE;
+    // docs inherited from interface
+    public function getInfo()
+    {
+        return array( 'name'                 => 'CiviMail',
+                      'translatedName'       => ts('CiviMail'),
+                      'title'                => 'CiviCRM Mailing Engine',
+                      'search'               => 1,
+                      'showActivitiesInCore' => 1 
+                      );
     }
 
-    if (!module_exists('rules')) {
-      return FALSE;
+
+    static function workflowEnabled( ) {
+        $config = CRM_Core_Config::singleton( );
+        
+        // early exit, since not true for most
+        if ( ! $config->userSystem->is_drupal ||
+             ! function_exists( 'module_exists' ) ) {
+            return false;
+        }
+        
+        if ( ! module_exists( 'rules' ) ) {
+            return false;
+        }
+
+        require_once 'CRM/Core/BAO/Setting.php';
+        $enableWorkflow = CRM_Core_BAO_Setting::getItem( CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
+                                                         'civimail_workflow',
+                                                         null,
+                                                         false );
+        
+        return ( $enableWorkflow &&
+                 $config->userSystem->is_drupal ) ?
+            true :
+            false;
+             
     }
 
-    $enableWorkflow = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
-      'civimail_workflow',
-      NULL,
-      FALSE
-    );
+    // docs inherited from interface
+    public function getPermissions()
+    {
+        $permissions = array( 'access CiviMail', 
+                              'access CiviMail subscribe/unsubscribe pages',
+                              'delete in CiviMail',
+                              'view public CiviMail content');
 
-    return ($enableWorkflow &&
-      $config->userSystem->is_drupal
-    ) ? TRUE : FALSE;
-  }
+        if ( self::workflowEnabled( ) ) {
+            $permissions[] = 'create mailings';
+            $permissions[] = 'schedule mailings';
+            $permissions[] = 'approve mailings';
+        }
 
-  // docs inherited from interface
-  public function getPermissions() {
-    $permissions = array(
-      'access CiviMail',
-      'access CiviMail subscribe/unsubscribe pages',
-      'delete in CiviMail',
-      'view public CiviMail content',
-    );
-
-    if (self::workflowEnabled()) {
-      $permissions[] = 'create mailings';
-      $permissions[] = 'schedule mailings';
-      $permissions[] = 'approve mailings';
+        return $permissions;
     }
 
-    return $permissions;
-  }
 
+    // docs inherited from interface
+    public function getUserDashboardElement()
+    {
+        // no dashboard element for this component
+        return null;
+    }
 
-  // docs inherited from interface
-  public function getUserDashboardElement() {
-    // no dashboard element for this component
-    return NULL;
-  }
+    public function getUserDashboardObject( )
+    {
+        // no dashboard element for this component
+        return null;
+    }
+    
+    // docs inherited from interface  
+    public function registerTab()
+    {
+        // this component doesn't use contact record tabs
+        return null;
+    }
+    
+    // docs inherited from interface  
+    public function registerAdvancedSearchPane()
+    {
+        return array( 'title'   => ts( 'Mailings' ),
+                      'weight'  => 20 );
+    }    
+    
+    // docs inherited from interface    
+    public function getActivityTypes()
+    {
+        return null;
+    }
 
-  public function getUserDashboardObject() {
-    // no dashboard element for this component
-    return NULL;
-  }
+    // add shortcut to Create New
+    public function creatNewShortcut( &$shortCuts ) {
 
-  // docs inherited from interface
-  public function registerTab() {
-    // this component doesn't use contact record tabs
-    return NULL;
-  }
-
-  // docs inherited from interface
-  public function registerAdvancedSearchPane() {
-    return array('title' => ts('Mailings'),
-      'weight' => 20,
-    );
-  }
-
-  // docs inherited from interface
-  public function getActivityTypes() {
-    return NULL;
-  }
-
-  // add shortcut to Create New
-  public function creatNewShortcut(&$shortCuts) {}
+    }
+    
 }
-

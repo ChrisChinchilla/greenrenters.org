@@ -8,7 +8,7 @@
 function relationship_get_example(){
 $params = array( 
   'version' => 3,
-  'id' => 1,
+  'id' => 5,
 );
 
   require_once 'api/api.php';
@@ -26,13 +26,13 @@ function relationship_get_expectedresult(){
   'is_error' => 0,
   'version' => 3,
   'count' => 1,
-  'id' => 1,
+  'id' => 5,
   'values' => array( 
-      '1' => array( 
-          'id' => '1',
+      '5' => array( 
+          'id' => '5',
           'contact_id_a' => '1',
           'contact_id_b' => '2',
-          'relationship_type_id' => '20',
+          'relationship_type_id' => '19',
           'start_date' => '2008-12-20',
           'is_active' => '1',
           'is_permission_a_b' => 0,

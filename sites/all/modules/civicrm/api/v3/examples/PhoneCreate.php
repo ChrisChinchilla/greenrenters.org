@@ -29,18 +29,13 @@ function phone_create_expectedresult(){
   'is_error' => 0,
   'version' => 3,
   'count' => 1,
-  'id' => 1,
+  'id' => 2,
   'values' => array( 
-      '1' => array( 
-          'id' => 1,
+      '2' => array( 
+          'id' => 2,
           'contact_id' => 1,
-          'location_type_id' => 6,
           'is_primary' => 1,
-          'is_billing' => '',
-          'mobile_provider_id' => '',
           'phone' => '021 512 755',
-          'phone_ext' => '',
-          'phone_type_id' => '',
         ),
     ),
 );

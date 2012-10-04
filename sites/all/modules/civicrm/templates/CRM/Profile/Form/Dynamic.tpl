@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -57,9 +57,7 @@
     {foreach from=$fields item=field key=fieldName}
         {assign var="profileID" value=$field.group_id}
         {assign var=n value=$field.name}
-        {if $field.field_type eq "Formatting"}
-            {$field.help_pre}
-        {elseif $form.$n}
+        {if $form.$n}
             {if $field.groupTitle != $fieldset}
                 {if $fieldset != $zeroField}
                    {if $groupHelpPost}
@@ -261,7 +259,6 @@ cj(document).ready(function(){
         queryString = queryString + '&snippet=5&gid=' + {/literal}"{$profileID}"{literal};
         var postUrl = {/literal}"{crmURL p='civicrm/profile/create' h=0 }"{literal}; 
         var blockNo = {/literal}{$blockNo}{literal};
-        var prefix  = {/literal}"{$prefix}"{literal};
         var response = cj.ajax({
            type: "POST",
            url: postUrl,
@@ -270,23 +267,27 @@ cj(document).ready(function(){
            dataType: "json",
            success: function( response ) {
                if ( response.newContactSuccess ) {
-                   cj('#' + prefix + 'contact_' + blockNo ).val( response.sortName ).focus( );
+                   cj('#contact_' + blockNo ).val( response.sortName ).focus( );
                    if ( typeof(allowMultiClient) != "undefined" ) {
                        if ( allowMultiClient ) {
                            var newToken = '{"name":"'+response.sortName+'","id":"'+response.contactID+'"},';
                            cj('ul.token-input-list-facebook, div.token-input-dropdown-facebook' ).remove();
-                           //we are having multiple instances, CRM-6932
-                           eval( 'addMultiClientOption' + blockNo + "( newToken,  blockNo, prefix )" );
+			   	//we are having multiple instances, CRM-6932
+				eval( 'addMultiClientOption' + blockNo + "( newToken,  blockNo )" );
                        }
                    }
-                   cj('input[name="' + prefix + 'contact_select_id[' + blockNo +']"]').val( response.contactID );
-                   cj('#contact-success-' + prefix + blockNo ).show( );
-                   cj('#contact-dialog-' + prefix + blockNo ).dialog('close');
+                   cj('input[name="contact_select_id[' + blockNo +']"]').val( response.contactID );
+                   cj('#contact-success-' + blockNo ).show( );
+                   cj('#contact-dialog-' + blockNo ).dialog('close');
+
+		   {/literal}{ if $createCallback}{literal}
+        	       profileCreateCallback( blockNo );
+		   {/literal}{/if}{literal}			     
                }
            }
          }).responseText;
 
-         cj('#contact-dialog-' + prefix + blockNo).html( response );
+         cj('#contact-dialog-' + blockNo).html( response );
 
         // here we could return false to prevent the form from being submitted; 
         // returning anything other than false will allow the form submit to continue 

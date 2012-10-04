@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,15 +29,19 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Event/Page/ParticipantListing/Simple.php';
+
 class CRM_Event_Page_ParticipantListing_NameAndEmail extends CRM_Event_Page_ParticipantListing_Simple {
-  function preProcess() {
-    $this->_participantListingType = 'Name and Email';
 
-    parent::preProcess();
-  }
+    function preProcess( ) {
+        $this->_participantListingType = 'Name and Email';
+
+        parent::preProcess( );
+    }
+
 }
-

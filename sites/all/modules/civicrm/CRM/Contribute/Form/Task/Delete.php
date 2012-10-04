@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,10 +29,13 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  * $Id$
  *
  */
+
+require_once 'CRM/Contribute/Form/Task.php';
+require_once 'CRM/Contribute/BAO/Contribution.php';
 
 /**
  * This class provides the functionality to delete a group of
@@ -40,58 +44,61 @@
  */
 class CRM_Contribute_Form_Task_Delete extends CRM_Contribute_Form_Task {
 
-  /**
-   * Are we operating in "single mode", i.e. deleting one
-   * specific contribution?
-   *
-   * @var boolean
-   */
-  protected $_single = FALSE;
+    /**
+     * Are we operating in "single mode", i.e. deleting one
+     * specific contribution?
+     *
+     * @var boolean
+     */
+    protected $_single = false;
 
-  /**
-   * build all the data structures needed to build the form
-   *
-   * @return void
-   * @access public
-   */ function preProcess() {
-    //check for delete
-    if (!CRM_Core_Permission::checkActionPermission('CiviContribute', CRM_Core_Action::DELETE)) {
-      CRM_Core_Error::fatal(ts('You do not have permission to access this page'));
-    }
-    parent::preProcess();
-  }
-
-  /**
-   * Build the form
-   *
-   * @access public
-   *
-   * @return void
-   */
-  function buildQuickForm() {
-    $this->addDefaultButtons(ts('Delete Contributions'), 'done');
-  }
-
-  /**
-   * process the form after the input has been submitted and validated
-   *
-   * @access public
-   *
-   * @return None
-   */
-  public function postProcess() {
-    $deletedContributions = 0;
-    foreach ($this->_contributionIds as $contributionId) {
-      if (CRM_Contribute_BAO_Contribution::deleteContribution($contributionId)) {
-        $deletedContributions++;
-      }
+    /**
+     * build all the data structures needed to build the form
+     *
+     * @return void
+     * @access public
+     */
+    function preProcess() {
+        //check for delete
+        if ( !CRM_Core_Permission::checkActionPermission( 'CiviContribute', CRM_Core_Action::DELETE ) ) {
+            CRM_Core_Error::fatal( ts( 'You do not have permission to access this page' ) );  
+        }
+        parent::preProcess();
     }
 
-    $status = array(
-      ts('Deleted Contribution(s): %1', array(1 => $deletedContributions)),
-      ts('Total Selected Contribution(s): %1', array(1 => count($this->_contributionIds))),
-    );
-    CRM_Core_Session::setStatus($status);
-  }
+    /**
+     * Build the form
+     *
+     * @access public
+     * @return void
+     */
+    function buildQuickForm() {
+        $this->addDefaultButtons(ts('Delete Contributions'), 'done');
+    }
+
+    /**
+     * process the form after the input has been submitted and validated
+     *
+     * @access public
+     * @return None
+     */
+    public function postProcess( ) 
+    {
+        $deletedContributions = 0;
+        foreach ($this->_contributionIds as $contributionId) {
+            if (CRM_Contribute_BAO_Contribution::deleteContribution($contributionId)) {
+                $deletedContributions++;
+            }
+        }
+
+        $status = array(
+                        ts('Deleted Contribution(s): %1', array(1 => $deletedContributions)),
+                        ts('Total Selected Contribution(s): %1', array(1 => count($this->_contributionIds))),
+                        );
+        CRM_Core_Session::setStatus($status);
+    }
+
+
 }
+
 

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,17 +30,13 @@
           {$form.changed_by.label}<br />
           {$form.changed_by.html}
         </td>
-	<td width="100%">
+	<td>
 	  {$form.log_date.html}<span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('log_date', '{$form.formName}'); return false;" >{ts}clear{/ts}</a>)</span><br />
         </td>
-     </tr>
-     <tr>
 	<td>
-	   <label>{ts}Modified Between{/ts}</label>
-	</td>
+          <br />
+	   {$form.log_date_low.label}&nbsp;{include file="CRM/common/jcalendar.tpl" elementName=log_date_low}&nbsp;{$form.log_date_high.label}&nbsp;{include file="CRM/common/jcalendar.tpl" elementName=log_date_high}
+        </td>
      </tr>
-     <tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="log_date" from='_low' to='_high'}
-     </tr>
-   </table>
+    </table>
  </div>

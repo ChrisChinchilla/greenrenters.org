@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -24,8 +24,16 @@
  +--------------------------------------------------------------------+
 *}
  <tr>
-    	<tr><td><label>{ts}Payment Scheduled{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="pledge_payment_date" from='_low' to='_high'} 
+    <td>
+     {$form.pledge_payment_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_payment_date_low}
+    </td>
+    <td>
+     {$form.pledge_payment_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_payment_date_high}
+    </td> 
  </tr>
  <tr>
     <td colspan="2">
@@ -45,16 +53,40 @@
     </td>
  </tr>
  <tr>
-    	<tr><td><label>{ts}Pledge Made{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="pledge_create_date" from='_low' to='_high'} 
+    <td>
+     {$form.pledge_create_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_create_date_low}
+    </td>
+    <td>
+     {$form.pledge_create_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_create_date_high}
+    </td> 
  </tr>
  <tr>
-      	<tr><td><label>{ts}Payments Start Date{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="pledge_start_date" from='_low' to='_high'} 
+    <td>
+     {$form.pledge_start_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_start_date_low}
+    </td>
+    <td>
+     {$form.pledge_start_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_start_date_high}
+    </td> 
  </tr>
  <tr> 
-  	<tr><td><label>{ts}Payments Ended Date{/ts}</label></td></tr>
-	{include file="CRM/Core/DateRange.tpl" fieldName="pledge_end_date" from='_low' to='_high'} 
+    <td>  
+     {$form.pledge_end_date_low.label} 
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_end_date_low}
+    </td>
+    <td> 
+     {$form.pledge_end_date_high.label}
+     <br />
+     {include file="CRM/common/jcalendar.tpl" elementName=pledge_end_date_high}
+    </td> 
  </tr>
  <tr>
     <td>

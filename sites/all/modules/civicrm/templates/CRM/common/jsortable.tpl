@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -116,7 +116,7 @@ eval('tableId =[' + tableId + ']');
   	    }
 	}
 
-    var noRecordFoundMsg  = {/literal}'{ts escape="js"}There are no records.{/ts}'{literal};
+    var noRecordFoundMsg  = {/literal}'{ts}There are no records.{/ts}'{literal};
  
     oTable = null;
     if ( useAjax ) {

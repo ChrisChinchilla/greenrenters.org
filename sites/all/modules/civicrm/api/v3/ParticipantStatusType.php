@@ -1,11 +1,9 @@
 <?php
-// $Id$
-
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -32,7 +30,7 @@
  *
  * @package CiviCRM_APIv3
  * @subpackage API_Event
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2011
  */
 
 require_once 'CRM/Event/BAO/ParticipantStatusType.php';
@@ -43,7 +41,7 @@ require_once 'api/v3/utils.php';
  *
  * This API is used to create new participant_status or update any of the existing
  * In case of updating existing participant_status, id of that particular participant_status must
- * be in $params array.
+ * be in $params array. 
  *
  * @param array $params  (referance) Associative array of property
  *                       name/value pairs to insert in new 'participant_status'
@@ -53,8 +51,10 @@ require_once 'api/v3/utils.php';
  * @example ParticipantStatusTypeCreate.php
  * @access public
  */
-function civicrm_api3_participant_status_type_create($params) {
-  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+function civicrm_api3_participant_status_type_create( $params )
+{
+    return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+
 }
 
 /**
@@ -69,8 +69,10 @@ function civicrm_api3_participant_status_type_create($params) {
  * @example ParticipantStatusTypeGet.php
  * @access public
  */
-function civicrm_api3_participant_status_type_get($params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+function civicrm_api3_participant_status_type_get( $params )
+{
+      return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+
 }
 
 /**
@@ -88,11 +90,11 @@ function civicrm_api3_participant_status_type_get($params) {
  * @example ParticipantStatusTypeDelete.php
  * @access public
  */
-function civicrm_api3_participant_status_type_delete($params) {
-  if (CRM_Event_BAO_ParticipantStatusType::deleteParticipantStatusType($params['id'])) {
-    return civicrm_api3_create_success(TRUE);
-  }
-
-  return civicrm_api3_create_error(TRUE);
+function civicrm_api3_participant_status_type_delete( $params )
+{
+    if (CRM_Event_BAO_ParticipantStatusType::deleteParticipantStatusType($params['id'])){
+      return civicrm_api3_create_success( true ); 
+    }
+  
+    return civicrm_api3_create_error( true ); 
 }
-

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.1                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2011                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
   {assign var=height value="600px"}
   {assign var=width  value="100%"}
 {/if}
-{assign var=defaultZoom value=16}  
+{assign var=defaultZoom value=12}  
 {literal}
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
 <script type="text/javascript">
@@ -59,18 +59,17 @@
 	    {/literal}
 	    {if $location.lat}
 		var point  = new google.maps.LatLng({$location.lat},{$location.lng});
-		var image  = null;
 		{if $location.image && ( $location.marker_class neq 'Event' ) }
- 		  image = '{$location.image}';
+ 		  var image = '{$location.image}';
 		{else}
                  {if $location.marker_class eq 'Individual'}
- 		      image = "{$config->resourceBase}i/contact_ind.gif";
+ 		      var image = "{$config->resourceBase}i/contact_ind.gif";
  		  {/if}
  		  {if $location.marker_class eq 'Household'}
- 		      image = "{$config->resourceBase}i/contact_house.png";
+ 		      var image = "{$config->resourceBase}i/contact_house.png";
  		  {/if}
- 		  {if $location.marker_class eq 'Organization'}
-  		      image = "{$config->resourceBase}i/contact_org.gif";
+ 		  {if $location.marker_class eq 'Organization' || $location.marker_class eq 'Event'}
+  		      var image = "{$config->resourceBase}i/contact_org.gif";
  		  {/if}
                 {/if}
  	        {literal}
