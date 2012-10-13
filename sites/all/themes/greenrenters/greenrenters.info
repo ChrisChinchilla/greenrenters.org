@@ -31,6 +31,10 @@
   ; Theme CSS - use this stylesheet to build your custom theme.
   stylesheets[all][] = css/theme/theme.css
   
+  ; Campaign themes
+  stylesheets[all][] = css/theme/rsr.css
+
+  
 
 ;----------// IE Conditional Stylesheets
 

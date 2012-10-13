@@ -1,0 +1,37 @@
+.rsr #sidebar-first
+{
+    width: 350px !important;
+}
+
+.rsr #content-column {
+	width: 600px;
+	max-width: 600px;
+	min-width: 600px;
+	margin-left:10px;
+	margin-top: 20px;
+}
+
+#block-block-27
+{
+	padding-bottom: 0;
+}
+
+.rsr #sidebar-first .block {
+	width: 350px;
+}
+
+.rsr #sidebar-first .block p {
+	margin:0;
+}
+
+.rsr #branding {
+	display: none;
+}
+
+.rsr .content-inner {
+	border: 2px dashed #0a0a32;
+}
+
+.rsr #sidebar-first .block-inner {
+	padding:0px;
+}

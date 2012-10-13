@@ -1,0 +1,3 @@
+<?php
+
+include_once('members_map.features.inc');
