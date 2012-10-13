@@ -10,9 +10,9 @@ function publishing_workflow_uuid_features_default_content() {
     'type' => 'page',
     'language' => '',
     'uid' => '1',
-    'status' => '1',
+    'status' => '0',
     'created' => '1348544407',
-    'changed' => '1348544407',
+    'changed' => '1348545763',
     'comment' => '2',
     'promote' => '0',
     'moderate' => '0',
@@ -30,7 +30,7 @@ function publishing_workflow_uuid_features_default_content() {
     'teaser' => '<p>We&#39;re keen to make this site a community resource, for a community that is disparate, varied and wide spread.</p>
   <p>We don&#39;t have the resources to do it all ourselves, so if you have something you want to add here, go ahead. You will be asked to add your name and email so we can get in touch with you if need be and you will be asked to prove your human so we don&#39;t get inundated with spam, but apart from that, go crazy, write whatever you feel.</p>',
     'log' => '',
-    'revision_timestamp' => '1348544407',
+    'revision_timestamp' => '1348545763',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
@@ -38,7 +38,6 @@ function publishing_workflow_uuid_features_default_content() {
     'path' => 'contribute-site',
     'field_image' => array(),
     'has_body' => '1',
-    '_workflow' => FALSE,
     'webform' => array(
       'confirmation' => '',
       'confirmation_format' => '6',
@@ -71,7 +70,7 @@ function publishing_workflow_uuid_features_default_content() {
     'probability' => 100,
     'page_title' => '',
     'uuid' => 'b332a202-06c2-11e2-825f-121c575fd617',
-    'revision_uuid' => 'b332ab58-06c2-11e2-825f-121c575fd617',
+    'revision_uuid' => 'db7902e4-06c5-11e2-825f-121c575fd617',
     'nodewords' => array(
       'abstract' => array(
         'value' => 'Sustainable living in rental accommodation',
