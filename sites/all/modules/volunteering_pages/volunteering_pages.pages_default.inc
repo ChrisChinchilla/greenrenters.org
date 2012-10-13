@@ -320,6 +320,41 @@ function volunteering_pages_default_page_manager_handlers() {
     $pane = new stdClass;
     $pane->pid = 'new-10';
     $pane->panel = 'right';
+    $pane->type = 'views';
+    $pane->subtype = 'vol_socials';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'override_pager_settings' => 0,
+      'use_pager' => 1,
+      'nodes_per_page' => '15',
+      'pager_id' => '2',
+      'offset' => '0',
+      'more_link' => 0,
+      'feed_icons' => 0,
+      'panel_args' => 0,
+      'link_to_view' => 0,
+      'args' => '',
+      'url' => '',
+      'display' => 'block_1',
+      'context' => array(
+        0 => '',
+      ),
+      'override_title' => 0,
+      'override_title_text' => '',
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 0;
+    $display->content['new-10'] = $pane;
+    $display->panels['right'][0] = 'new-10';
+    $pane = new stdClass;
+    $pane->pid = 'new-11';
+    $pane->panel = 'right';
     $pane->type = 'node_body';
     $pane->subtype = 'node_body';
     $pane->shown = TRUE;
@@ -336,11 +371,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 0;
-    $display->content['new-10'] = $pane;
-    $display->panels['right'][0] = 'new-10';
+    $pane->position = 1;
+    $display->content['new-11'] = $pane;
+    $display->panels['right'][1] = 'new-11';
     $pane = new stdClass;
-    $pane->pid = 'new-11';
+    $pane->pid = 'new-12';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'webform-client-block-1127';
@@ -356,11 +391,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 1;
-    $display->content['new-11'] = $pane;
-    $display->panels['right'][1] = 'new-11';
+    $pane->position = 2;
+    $display->content['new-12'] = $pane;
+    $display->panels['right'][2] = 'new-12';
     $pane = new stdClass;
-    $pane->pid = 'new-12';
+    $pane->pid = 'new-13';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'pk';
@@ -404,11 +439,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 2;
-    $display->content['new-12'] = $pane;
-    $display->panels['right'][2] = 'new-12';
+    $pane->position = 3;
+    $display->content['new-13'] = $pane;
+    $display->panels['right'][3] = 'new-13';
     $pane = new stdClass;
-    $pane->pid = 'new-13';
+    $pane->pid = 'new-14';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'AvailableWorkshopsBlocks';
@@ -448,11 +483,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 3;
-    $display->content['new-13'] = $pane;
-    $display->panels['right'][3] = 'new-13';
+    $pane->position = 4;
+    $display->content['new-14'] = $pane;
+    $display->panels['right'][4] = 'new-14';
     $pane = new stdClass;
-    $pane->pid = 'new-14';
+    $pane->pid = 'new-15';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'faq_block';
@@ -492,11 +527,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 4;
-    $display->content['new-14'] = $pane;
-    $display->panels['right'][4] = 'new-14';
+    $pane->position = 5;
+    $display->content['new-15'] = $pane;
+    $display->panels['right'][5] = 'new-15';
     $pane = new stdClass;
-    $pane->pid = 'new-15';
+    $pane->pid = 'new-16';
     $pane->panel = 'right';
     $pane->type = 'node_attachments';
     $pane->subtype = 'node_attachments';
@@ -513,11 +548,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 5;
-    $display->content['new-15'] = $pane;
-    $display->panels['right'][5] = 'new-15';
+    $pane->position = 6;
+    $display->content['new-16'] = $pane;
+    $display->panels['right'][6] = 'new-16';
     $pane = new stdClass;
-    $pane->pid = 'new-16';
+    $pane->pid = 'new-17';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'product_block';
@@ -562,11 +597,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 6;
-    $display->content['new-16'] = $pane;
-    $display->panels['right'][6] = 'new-16';
+    $pane->position = 7;
+    $display->content['new-17'] = $pane;
+    $display->panels['right'][7] = 'new-17';
     $pane = new stdClass;
-    $pane->pid = 'new-17';
+    $pane->pid = 'new-18';
     $pane->panel = 'right';
     $pane->type = 'content_field';
     $pane->subtype = 'field_review';
@@ -599,11 +634,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 7;
-    $display->content['new-17'] = $pane;
-    $display->panels['right'][7] = 'new-17';
+    $pane->position = 8;
+    $display->content['new-18'] = $pane;
+    $display->panels['right'][8] = 'new-18';
     $pane = new stdClass;
-    $pane->pid = 'new-18';
+    $pane->pid = 'new-19';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'panel_tag';
@@ -634,11 +669,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 8;
-    $display->content['new-18'] = $pane;
-    $display->panels['right'][8] = 'new-18';
+    $pane->position = 9;
+    $display->content['new-19'] = $pane;
+    $display->panels['right'][9] = 'new-19';
     $pane = new stdClass;
-    $pane->pid = 'new-19';
+    $pane->pid = 'new-20';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'associated_links-1';
@@ -655,11 +690,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 9;
-    $display->content['new-19'] = $pane;
-    $display->panels['right'][9] = 'new-19';
+    $pane->position = 10;
+    $display->content['new-20'] = $pane;
+    $display->panels['right'][10] = 'new-20';
     $pane = new stdClass;
-    $pane->pid = 'new-20';
+    $pane->pid = 'new-21';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'campaign_page';
@@ -699,11 +734,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 10;
-    $display->content['new-20'] = $pane;
-    $display->panels['right'][10] = 'new-20';
+    $pane->position = 11;
+    $display->content['new-21'] = $pane;
+    $display->panels['right'][11] = 'new-21';
     $pane = new stdClass;
-    $pane->pid = 'new-21';
+    $pane->pid = 'new-22';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'service_page';
@@ -743,11 +778,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 11;
-    $display->content['new-21'] = $pane;
-    $display->panels['right'][11] = 'new-21';
+    $pane->position = 12;
+    $display->content['new-22'] = $pane;
+    $display->panels['right'][12] = 'new-22';
     $pane = new stdClass;
-    $pane->pid = 'new-22';
+    $pane->pid = 'new-23';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'webform-client-block-13';
@@ -778,11 +813,11 @@ function volunteering_pages_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 12;
-    $display->content['new-22'] = $pane;
-    $display->panels['right'][12] = 'new-22';
+    $pane->position = 13;
+    $display->content['new-23'] = $pane;
+    $display->panels['right'][13] = 'new-23';
     $pane = new stdClass;
-    $pane->pid = 'new-23';
+    $pane->pid = 'new-24';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-26';
@@ -790,41 +825,6 @@ function volunteering_pages_default_page_manager_handlers() {
     $pane->access = array();
     $pane->configuration = array(
       'override_title' => 1,
-      'override_title_text' => '',
-    );
-    $pane->cache = array();
-    $pane->style = array(
-      'settings' => NULL,
-    );
-    $pane->css = array();
-    $pane->extras = array();
-    $pane->position = 13;
-    $display->content['new-23'] = $pane;
-    $display->panels['right'][13] = 'new-23';
-    $pane = new stdClass;
-    $pane->pid = 'new-24';
-    $pane->panel = 'right';
-    $pane->type = 'views';
-    $pane->subtype = 'vol_socials';
-    $pane->shown = TRUE;
-    $pane->access = array();
-    $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 1,
-      'nodes_per_page' => '15',
-      'pager_id' => '2',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 0,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => '',
-      'display' => 'block_1',
-      'context' => array(
-        0 => '',
-      ),
-      'override_title' => 0,
       'override_title_text' => '',
     );
     $pane->cache = array();
