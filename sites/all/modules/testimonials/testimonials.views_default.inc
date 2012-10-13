@@ -126,6 +126,9 @@ function testimonials_views_default_views() {
   $handler->display->display_options['filters']['testimonial_111']['value'] = '1';
   $handler->display->display_options['filters']['testimonial_111']['case'] = 1;
 
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block_1');
+
   $views[$view->name] = $view;
 
   return $views;
