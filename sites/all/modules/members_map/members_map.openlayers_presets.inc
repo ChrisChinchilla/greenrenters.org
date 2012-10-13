@@ -13,8 +13,8 @@ function members_map_openlayers_presets() {
   $openlayers_presets->title = 'Members Map';
   $openlayers_presets->description = 'Members Map';
   $openlayers_presets->data = array(
-    'width' => 'auto',
-    'height' => '400px',
+    'width' => '350px',
+    'height' => '350px',
     'image_path' => '',
     'css_path' => '',
     'proxy_host' => '',
@@ -31,12 +31,12 @@ function members_map_openlayers_presets() {
     ),
     'behaviors' => array(
       'openlayers_behavior_attribution' => array(),
-      'openlayers_behavior_keyboarddefaults' => array(),
-      'openlayers_behavior_layerswitcher' => array(
-        'ascending' => 1,
-        'roundedCorner' => 0,
-        'roundedCornerColor' => 'darkblue',
+      'openlayers_behavior_tooltip' => array(
+        'layers' => array(
+          'members_map_openlayers_2' => 'members_map_openlayers_2',
+        ),
       ),
+      'openlayers_behavior_keyboarddefaults' => array(),
       'openlayers_behavior_navigation' => array(
         'zoomWheelEnabled' => 1,
       ),
@@ -45,20 +45,20 @@ function members_map_openlayers_presets() {
     'default_layer' => 'google_normal',
     'layers' => array(
       'google_normal' => 'google_normal',
-      'testimonials_openlayers_2' => 'testimonials_openlayers_2',
+      'members_map_openlayers_2' => 'members_map_openlayers_2',
     ),
     'layer_styles' => array(
-      'testimonials_openlayers_2' => array(
+      'members_map_openlayers_2' => array(
         'default' => 'Members Map',
         'select' => 'Members Map',
         'temporary' => 'Members Map',
       ),
     ),
     'layer_activated' => array(
-      'testimonials_openlayers_2' => 'testimonials_openlayers_2',
+      'members_map_openlayers_2' => 'members_map_openlayers_2',
     ),
     'layer_switcher' => array(
-      'testimonials_openlayers_2' => 'testimonials_openlayers_2',
+      'members_map_openlayers_2' => 'members_map_openlayers_2',
     ),
     'projection' => '900913',
     'displayProjection' => '4326',

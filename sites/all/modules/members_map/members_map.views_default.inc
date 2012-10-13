@@ -25,8 +25,8 @@ function members_map_views_default_views() {
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['style_plugin'] = 'default';
-  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['style_plugin'] = 'openlayers_map';
+  $handler->display->display_options['style_options']['preset'] = 'members_map';
   /* Field: CiviCRM Address: ZIP / Postal Code */
   $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
   $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
@@ -142,7 +142,7 @@ function members_map_views_default_views() {
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[first_name] [last_name], [postal_code]';
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '[first_name], [postal_code]';
   $handler->display->display_options['fields']['nothing']['alter']['make_link'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['absolute'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['external'] = 0;
@@ -174,7 +174,7 @@ function members_map_views_default_views() {
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
-  $handler->display->display_options['path'] = 'testimonials';
+  $handler->display->display_options['path'] = 'members';
 
   /* Display: OpenLayers Data */
   $handler = $view->new_display('openlayers', 'OpenLayers Data', 'openlayers_2');
@@ -192,12 +192,15 @@ function members_map_views_default_views() {
     'other_left' => 'postal_code',
     'name_field' => 'nothing',
     'keep_orig_name_field' => 1,
-    'description_field' => 'nothing',
-    'keep_orig_desc_field' => 1,
+    'description_field' => '',
+    'keep_orig_desc_field' => 0,
   );
   $handler->display->display_options['defaults']['style_options'] = FALSE;
   $handler->display->display_options['defaults']['row_plugin'] = FALSE;
   $handler->display->display_options['defaults']['row_options'] = FALSE;
+
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block_1');
 
   $views[$view->name] = $view;
 
