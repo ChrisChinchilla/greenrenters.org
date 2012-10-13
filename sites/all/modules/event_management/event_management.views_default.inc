@@ -326,10 +326,14 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['start_date']['id'] = 'start_date';
   $handler->display->display_options['filters']['start_date']['table'] = 'civicrm_event';
   $handler->display->display_options['filters']['start_date']['field'] = 'start_date';
-  $handler->display->display_options['filters']['start_date']['operator'] = '>=';
-  $handler->display->display_options['filters']['start_date']['value']['value'] = '-4 months';
-  $handler->display->display_options['filters']['start_date']['value']['type'] = 'offset';
-  $handler->display->display_options['filters']['start_date']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['start_date']['operator'] = 'between';
+  $handler->display->display_options['filters']['start_date']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['start_date']['expose']['operator'] = 'start_date_op';
+  $handler->display->display_options['filters']['start_date']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['start_date']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['start_date']['expose']['identifier'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['expose']['single'] = TRUE;
+  $handler->display->display_options['filters']['start_date']['allow_null'] = 1;
   /* Filter: CiviCRM Custom: Event management: Payment status */
   $handler->display->display_options['filters']['payment_status_83']['id'] = 'payment_status_83';
   $handler->display->display_options['filters']['payment_status_83']['table'] = 'civicrm_value_event_management_16';
@@ -353,17 +357,6 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['payment_status_83']['expose']['label'] = 'Payment status';
   $handler->display->display_options['filters']['payment_status_83']['expose']['identifier'] = 'payment_status_83';
   $handler->display->display_options['filters']['payment_status_83']['expose']['reduce'] = 1;
-  /* Filter: Broken/missing handler */
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['id'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['table'] = 'civicrm_value_event_marketing_15';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['field'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['value'] = 'All';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['exposed'] = TRUE;
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['limit_operators'] = array();
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['label'] = 'Assigned to PR Team?';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['use_operator'] = FALSE;
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['identifier'] = 'assigned_to_pr_team__88';
-  $handler->display->display_options['filters']['assigned_to_pr_team__88']['expose']['single'] = TRUE;
   /* Filter: CiviCRM Events: Include Template */
   $handler->display->display_options['filters']['is_template']['id'] = 'is_template';
   $handler->display->display_options['filters']['is_template']['table'] = 'civicrm_event';
@@ -409,9 +402,15 @@ function event_management_views_default_views() {
   $handler->display->display_options['filters']['start_date']['id'] = 'start_date';
   $handler->display->display_options['filters']['start_date']['table'] = 'civicrm_event';
   $handler->display->display_options['filters']['start_date']['field'] = 'start_date';
-  $handler->display->display_options['filters']['start_date']['operator'] = '>=';
+  $handler->display->display_options['filters']['start_date']['operator'] = 'between';
   $handler->display->display_options['filters']['start_date']['value']['value'] = '2010-12-31 00:00:00';
-  $handler->display->display_options['filters']['start_date']['expose']['operator'] = FALSE;
+  $handler->display->display_options['filters']['start_date']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['start_date']['expose']['operator'] = 'start_date_op';
+  $handler->display->display_options['filters']['start_date']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['start_date']['expose']['label'] = 'Date';
+  $handler->display->display_options['filters']['start_date']['expose']['identifier'] = 'start_date';
+  $handler->display->display_options['filters']['start_date']['expose']['single'] = TRUE;
+  $handler->display->display_options['filters']['start_date']['allow_null'] = 1;
   /* Filter: CiviCRM Events: Include Template */
   $handler->display->display_options['filters']['is_template']['id'] = 'is_template';
   $handler->display->display_options['filters']['is_template']['table'] = 'civicrm_event';
