@@ -13,9 +13,10 @@ function menus_block_context_default_contexts() {
   $context->description = '';
   $context->tag = '';
   $context->conditions = array(
-    'sitewide' => array(
+    'path' => array(
       'values' => array(
-        1 => 1,
+        '~rentalsweetrental' => '~rentalsweetrental',
+        '~rentalsweetrental/*' => '~rentalsweetrental/*',
       ),
     ),
   );
