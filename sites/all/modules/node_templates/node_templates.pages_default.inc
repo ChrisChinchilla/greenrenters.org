@@ -46,8 +46,18 @@ function node_templates_default_page_manager_handlers() {
           'context' => 'argument_nid_1',
           'not' => FALSE,
         ),
+        1 => array(
+          'name' => 'path_visibility',
+          'settings' => array(
+            'visibility_setting' => '0',
+            'paths' => 'rentalsweetrental
+rentalsweetrental/*',
+          ),
+          'context' => 'empty',
+          'not' => FALSE,
+        ),
       ),
-      'logic' => 'or',
+      'logic' => 'and',
     ),
   );
   $display = new panels_display;
