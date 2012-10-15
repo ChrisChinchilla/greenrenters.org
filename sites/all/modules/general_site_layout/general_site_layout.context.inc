@@ -19,6 +19,8 @@ function general_site_layout_context_default_contexts() {
         '~rentalsweetrental/*' => '~rentalsweetrental/*',
         '~admin' => '~admin',
         '~admin/*' => '~admin/*',
+        'node/edit/*' => 'node/edit/*',
+        'node/add/*' => 'node/add/*',
       ),
     ),
   );
