@@ -229,6 +229,7 @@ function gr_blog_views_default_views() {
   $handler->display->display_options['filters']['type']['value'] = array(
     'news' => 'news',
     'opinion' => 'opinion',
+    'story' => 'story',
   );
   $handler->display->display_options['filters']['type']['expose']['operator'] = FALSE;
   /* Filter: Node: Published */
