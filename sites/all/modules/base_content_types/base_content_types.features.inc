@@ -29,6 +29,66 @@ function base_content_types_imagecache_default_presets() {
         ),
       ),
     ),
+    'WYSIWYG_full' => array(
+      'presetname' => 'WYSIWYG_full',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '800',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'WYSIWYG_large' => array(
+      'presetname' => 'WYSIWYG_large',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '360',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'WYSIWYG_medium' => array(
+      'presetname' => 'WYSIWYG_medium',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '240',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
+    'WYSIWYG_small' => array(
+      'presetname' => 'WYSIWYG_small',
+      'actions' => array(
+        '0' => array(
+          'weight' => '0',
+          'module' => 'imagecache',
+          'action' => 'imagecache_scale',
+          'data' => array(
+            'width' => '120',
+            'height' => '',
+            'upscale' => 0,
+          ),
+        ),
+      ),
+    ),
   );
   return $items;
 }
