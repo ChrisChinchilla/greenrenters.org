@@ -42,7 +42,6 @@ function projects_views_default_views() {
   $handler->display->display_options['header']['text']['label'] = '';
   $handler->display->display_options['header']['text']['empty'] = TRUE;
   $handler->display->display_options['header']['text']['content'] = 'We pride ourselves on being an innovative organisation, keen on trying new ideas, below is a summary of some of the extra special work we\'ve been involved with (more to follow…).';
-  $handler->display->display_options['header']['text']['format'] = '2';
   $handler->display->display_options['header']['text']['tokenize'] = 0;
   /* Field: Node: Title */
   $handler->display->display_options['fields']['title']['id'] = 'title';

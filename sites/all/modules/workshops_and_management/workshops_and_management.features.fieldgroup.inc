@@ -46,7 +46,7 @@ function workshops_and_management_fieldgroup_default_groups() {
         ),
       ),
     ),
-    'weight' => '11',
+    'weight' => '12',
     'fields' => array(
       '0' => 'field_budget_complete',
       '1' => 'field_budget_link',
@@ -93,7 +93,7 @@ function workshops_and_management_fieldgroup_default_groups() {
         'label' => 'above',
       ),
     ),
-    'weight' => '9',
+    'weight' => '10',
     'fields' => array(
       '0' => 'field_template_completed',
       '1' => 'field_template_link',

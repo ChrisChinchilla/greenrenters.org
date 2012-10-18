@@ -643,17 +643,17 @@ function base_content_types_strongarm() {
   $strongarm->value = array(
     'title' => '-5',
     'body_field' => '3',
-    'revision_information' => '7',
+    'revision_information' => '8',
     'author' => '0',
-    'options' => '8',
-    'comment_settings' => '6',
+    'options' => '9',
+    'comment_settings' => '7',
     'menu' => '-4',
-    'taxonomy' => '4',
+    'taxonomy' => '5',
     'path' => '-3',
     'attachments' => '2',
     'path_redirect' => '-2',
     'xmlsitemap' => '-1',
-    'nodewords' => '5',
+    'nodewords' => '6',
   );
   $export['content_extra_weights_campaign'] = $strongarm;
 
@@ -663,7 +663,7 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_competition';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
+    'body_field' => '3',
     'revision_information' => '8',
     'author' => '0',
     'options' => '9',
@@ -684,19 +684,18 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_event';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '3',
-    'revision_information' => '8',
+    'body_field' => '4',
+    'revision_information' => '9',
     'author' => '0',
-    'options' => '9',
-    'comment_settings' => '7',
+    'options' => '10',
+    'comment_settings' => '8',
     'menu' => '-4',
-    'taxonomy' => '5',
+    'taxonomy' => '6',
     'path' => '-3',
-    'attachments' => '2',
-    'locations' => '4',
+    'attachments' => '3',
     'path_redirect' => '-2',
     'xmlsitemap' => '-1',
-    'nodewords' => '6',
+    'nodewords' => '7',
   );
   $export['content_extra_weights_event'] = $strongarm;
 
@@ -706,18 +705,19 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_news';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
-    'revision_information' => '8',
-    'author' => '1',
-    'options' => '9',
-    'comment_settings' => '7',
+    'body_field' => '5',
+    'revision_information' => '10',
+    'author' => '2',
+    'options' => '11',
+    'comment_settings' => '9',
     'menu' => '-4',
-    'taxonomy' => '5',
+    'taxonomy' => '7',
     'path' => '-2',
-    'attachments' => '3',
+    'attachments' => '4',
+    'mollom' => '13',
     'path_redirect' => '-1',
     'xmlsitemap' => '0',
-    'nodewords' => '6',
+    'nodewords' => '8',
   );
   $export['content_extra_weights_news'] = $strongarm;
 
@@ -727,18 +727,19 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_opinion';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
-    'revision_information' => '8',
-    'author' => '1',
-    'options' => '9',
-    'comment_settings' => '7',
+    'body_field' => '5',
+    'revision_information' => '10',
+    'author' => '2',
+    'options' => '11',
+    'comment_settings' => '9',
     'menu' => '-4',
-    'taxonomy' => '5',
+    'taxonomy' => '7',
     'path' => '-2',
-    'attachments' => '3',
+    'attachments' => '4',
+    'mollom' => '12',
     'path_redirect' => '-1',
     'xmlsitemap' => '0',
-    'nodewords' => '6',
+    'nodewords' => '8',
   );
   $export['content_extra_weights_opinion'] = $strongarm;
 
@@ -747,19 +748,20 @@ function base_content_types_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'content_extra_weights_page';
   $strongarm->value = array(
-    'webform' => '4',
+    'webform' => '6',
     'title' => '-5',
-    'body_field' => '3',
-    'revision_information' => '7',
-    'author' => '0',
-    'options' => '8',
-    'comment_settings' => '6',
+    'body_field' => '4',
+    'revision_information' => '9',
+    'author' => '1',
+    'options' => '10',
+    'comment_settings' => '8',
     'menu' => '-4',
+    'taxonomy' => '-2',
     'path' => '-3',
-    'attachments' => '2',
-    'path_redirect' => '-2',
-    'xmlsitemap' => '-1',
-    'nodewords' => '5',
+    'attachments' => '3',
+    'path_redirect' => '-1',
+    'xmlsitemap' => '0',
+    'nodewords' => '7',
   );
   $export['content_extra_weights_page'] = $strongarm;
 
@@ -769,19 +771,19 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_resource';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
-    'revision_information' => '9',
-    'author' => '1',
-    'options' => '10',
-    'comment_settings' => '8',
+    'body_field' => '5',
+    'revision_information' => '10',
+    'author' => '2',
+    'options' => '11',
+    'comment_settings' => '9',
     'menu' => '-4',
-    'taxonomy' => '6',
+    'taxonomy' => '7',
     'path' => '-2',
-    'attachments' => '3',
-    'locations' => '5',
+    'attachments' => '4',
+    'mollom' => '13',
     'path_redirect' => '-1',
     'xmlsitemap' => '0',
-    'nodewords' => '7',
+    'nodewords' => '8',
   );
   $export['content_extra_weights_resource'] = $strongarm;
 
@@ -792,17 +794,17 @@ function base_content_types_strongarm() {
   $strongarm->value = array(
     'title' => '-5',
     'body_field' => '3',
-    'revision_information' => '7',
+    'revision_information' => '8',
     'author' => '0',
-    'options' => '8',
-    'comment_settings' => '6',
+    'options' => '9',
+    'comment_settings' => '7',
     'menu' => '-4',
-    'taxonomy' => '4',
+    'taxonomy' => '5',
     'path' => '-3',
     'attachments' => '2',
     'path_redirect' => '-2',
     'xmlsitemap' => '-1',
-    'nodewords' => '5',
+    'nodewords' => '6',
   );
   $export['content_extra_weights_service'] = $strongarm;
 
@@ -812,18 +814,19 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_story';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
-    'revision_information' => '8',
-    'author' => '1',
-    'options' => '9',
-    'comment_settings' => '7',
+    'body_field' => '5',
+    'revision_information' => '10',
+    'author' => '2',
+    'options' => '11',
+    'comment_settings' => '9',
     'menu' => '-4',
-    'taxonomy' => '5',
+    'taxonomy' => '7',
     'path' => '-2',
-    'attachments' => '3',
+    'attachments' => '4',
+    'mollom' => '13',
     'path_redirect' => '-1',
     'xmlsitemap' => '0',
-    'nodewords' => '6',
+    'nodewords' => '8',
   );
   $export['content_extra_weights_story'] = $strongarm;
 
@@ -833,18 +836,19 @@ function base_content_types_strongarm() {
   $strongarm->name = 'content_extra_weights_tutorial';
   $strongarm->value = array(
     'title' => '-5',
-    'body_field' => '4',
-    'revision_information' => '8',
-    'author' => '1',
-    'options' => '9',
-    'comment_settings' => '7',
+    'body_field' => '5',
+    'revision_information' => '10',
+    'author' => '2',
+    'options' => '11',
+    'comment_settings' => '9',
     'menu' => '-4',
-    'taxonomy' => '5',
+    'taxonomy' => '7',
     'path' => '-2',
-    'attachments' => '3',
+    'attachments' => '4',
+    'mollom' => '13',
     'path_redirect' => '-1',
     'xmlsitemap' => '0',
-    'nodewords' => '6',
+    'nodewords' => '8',
   );
   $export['content_extra_weights_tutorial'] = $strongarm;
 

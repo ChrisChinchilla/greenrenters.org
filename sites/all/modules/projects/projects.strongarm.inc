@@ -97,7 +97,6 @@ function projects_strongarm() {
     'options' => '9',
     'comment_settings' => '7',
     'menu' => '-4',
-    'taxonomy' => '5',
     'path' => '-2',
     'attachments' => '3',
     'path_redirect' => '-1',
