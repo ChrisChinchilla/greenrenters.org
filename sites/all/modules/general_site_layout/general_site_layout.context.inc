@@ -20,6 +20,7 @@ function general_site_layout_context_default_contexts() {
         '~admin' => '~admin',
         '~admin/*' => '~admin/*',
         '~node/edit/*' => '~node/edit/*',
+        '~node/*/edit' => '~node/*/edit',
         '~node/add/*' => '~node/add/*',
       ),
     ),
