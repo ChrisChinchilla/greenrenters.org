@@ -1,6 +1,9 @@
-[submodule "sites/all/modules/civicrm/api/v3/civistats"]
-	path = sites/all/modules/civicrm/api/v3/civistats
+[submodule "sites/default/extensions/com.chrischinchilla.civistats"]
+	path = sites/default/extensions/com.chrischinchilla.civistats
 	url = git://github.com/ChrisChinchilla/CiviStats.git
-[submodule "sites/default/civi_extensions"]
-	path = sites/default/civi_extensions
-	url = git://github.com/dlobo/org.civicrm.module.cividiscount.git
+[submodule "sites/default/extensions/com.webaccessglobal.module.civimobile "]
+	path = "sites/default/extensions/com.webaccessglobal.module.civimobile "
+	url = git://github.com/webaccess/com.webaccessglobal.module.civimobile.git
+[submodule "sites/default/extensions/com.chrischinchilla.fullmailstats"]
+	path = sites/default/extensions/com.chrischinchilla.fullmailstats
+	url = git://github.com/ChrisChinchilla/FullMailStats.git
