@@ -710,6 +710,30 @@ function publishing_workflow_user_default_permissions() {
     ),
   );
 
+  // Exported permission: edit field_budget_complete
+  $permissions['edit field_budget_complete'] = array(
+    'name' => 'edit field_budget_complete',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_budget_link
+  $permissions['edit field_budget_link'] = array(
+    'name' => 'edit field_budget_link',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_enquiry_form
+  $permissions['edit field_enquiry_form'] = array(
+    'name' => 'edit field_enquiry_form',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_forreview
+  $permissions['edit field_forreview'] = array(
+    'name' => 'edit field_forreview',
+    'roles' => array(),
+  );
+
   // Exported permission: edit field_image
   $permissions['edit field_image'] = array(
     'name' => 'edit field_image',
@@ -720,6 +744,62 @@ function publishing_workflow_user_default_permissions() {
       '3' => 'Writers',
       '4' => 'anonymous user',
     ),
+  );
+
+  // Exported permission: edit field_relatedworkshops
+  $permissions['edit field_relatedworkshops'] = array(
+    'name' => 'edit field_relatedworkshops',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: edit field_review
+  $permissions['edit field_review'] = array(
+    'name' => 'edit field_review',
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Editors',
+      '2' => 'Writers',
+    ),
+  );
+
+  // Exported permission: edit field_template_completed
+  $permissions['edit field_template_completed'] = array(
+    'name' => 'edit field_template_completed',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_template_link
+  $permissions['edit field_template_link'] = array(
+    'name' => 'edit field_template_link',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_views_filter
+  $permissions['edit field_views_filter'] = array(
+    'name' => 'edit field_views_filter',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_wholesale
+  $permissions['edit field_wholesale'] = array(
+    'name' => 'edit field_wholesale',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: edit field_workshops_flyer
+  $permissions['edit field_workshops_flyer'] = array(
+    'name' => 'edit field_workshops_flyer',
+    'roles' => array(),
+  );
+
+  // Exported permission: edit field_wysiwyg_images
+  $permissions['edit field_wysiwyg_images'] = array(
+    'name' => 'edit field_wysiwyg_images',
+    'roles' => array(),
   );
 
   // Exported permission: edit own campaign content
@@ -929,6 +1009,30 @@ function publishing_workflow_user_default_permissions() {
     'roles' => array(),
   );
 
+  // Exported permission: view field_budget_complete
+  $permissions['view field_budget_complete'] = array(
+    'name' => 'view field_budget_complete',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_budget_link
+  $permissions['view field_budget_link'] = array(
+    'name' => 'view field_budget_link',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_enquiry_form
+  $permissions['view field_enquiry_form'] = array(
+    'name' => 'view field_enquiry_form',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_forreview
+  $permissions['view field_forreview'] = array(
+    'name' => 'view field_forreview',
+    'roles' => array(),
+  );
+
   // Exported permission: view field_image
   $permissions['view field_image'] = array(
     'name' => 'view field_image',
@@ -941,6 +1045,73 @@ function publishing_workflow_user_default_permissions() {
       '5' => 'anonymous user',
       '6' => 'authenticated user',
     ),
+  );
+
+  // Exported permission: view field_relatedworkshops
+  $permissions['view field_relatedworkshops'] = array(
+    'name' => 'view field_relatedworkshops',
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Writers',
+      '6' => 'anonymous user',
+      '7' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: view field_review
+  $permissions['view field_review'] = array(
+    'name' => 'view field_review',
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Writers',
+      '5' => 'anonymous user',
+      '6' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: view field_template_completed
+  $permissions['view field_template_completed'] = array(
+    'name' => 'view field_template_completed',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_template_link
+  $permissions['view field_template_link'] = array(
+    'name' => 'view field_template_link',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_views_filter
+  $permissions['view field_views_filter'] = array(
+    'name' => 'view field_views_filter',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_wholesale
+  $permissions['view field_wholesale'] = array(
+    'name' => 'view field_wholesale',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: view field_workshops_flyer
+  $permissions['view field_workshops_flyer'] = array(
+    'name' => 'view field_workshops_flyer',
+    'roles' => array(),
+  );
+
+  // Exported permission: view field_wysiwyg_images
+  $permissions['view field_wysiwyg_images'] = array(
+    'name' => 'view field_wysiwyg_images',
+    'roles' => array(),
   );
 
   // Exported permission: view revisions

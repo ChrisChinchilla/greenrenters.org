@@ -40,7 +40,7 @@ function publishing_workflow_uuid_features_default_content() {
     'has_body' => '1',
     'webform' => array(
       'confirmation' => '',
-      'confirmation_format' => '6',
+      'confirmation_format' => '2',
       'redirect_url' => '<confirmation>',
       'teaser' => '0',
       'block' => '0',
@@ -128,7 +128,8 @@ function publishing_workflow_uuid_features_default_content() {
       ),
     ),
     'pathauto_perform_alias' => FALSE,
-    'date' => '2012-09-25 13:40:07 +1000',
+    'date' => '2012-09-25 14:40:07 +1100',
+    'field_wysiwyg_images' => array(),
   );
   return $nodes;
 }
