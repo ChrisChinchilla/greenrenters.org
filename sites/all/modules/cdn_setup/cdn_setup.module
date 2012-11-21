@@ -1,0 +1,3 @@
+<?php
+
+include_once('cdn_setup.features.inc');
