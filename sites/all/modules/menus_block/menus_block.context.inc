@@ -17,6 +17,19 @@ function menus_block_context_default_contexts() {
       'values' => array(
         '~rentalsweetrental' => '~rentalsweetrental',
         '~rentalsweetrental/*' => '~rentalsweetrental/*',
+        '~admin' => '~admin',
+        '~admin/*' => '~admin/*',
+      ),
+    ),
+    'php' => array(
+      'values' => array(
+        0 => TRUE,
+      ),
+      'options' => array(
+        'phpcode' => 'if(($_SERVER[\'REQUEST_URI\'] != \'/civicrm/contribute/transact?reset=1&id=10\') || (($_SERVER[\'REDIRECT_URL\'] != \'/civicrm/contribute/transact\') && ($_SESSION[CiviCRM][pastContributionID] != \'10\')))
+{
+return TRUE;
+}',
       ),
     ),
   );
@@ -74,7 +87,7 @@ function menus_block_context_default_contexts() {
       ),
     ),
   );
-  $context->condition_mode = 0;
+  $context->condition_mode = 1;
   $export['sitemenus'] = $context;
 
   return $export;

@@ -24,6 +24,17 @@ function general_site_layout_context_default_contexts() {
         '~node/add/*' => '~node/add/*',
       ),
     ),
+    'php' => array(
+      'values' => array(
+        0 => TRUE,
+      ),
+      'options' => array(
+        'phpcode' => 'if(($_SERVER[\'REQUEST_URI\'] != \'/civicrm/contribute/transact?reset=1&id=10\') || (($_SERVER[\'REDIRECT_URL\'] != \'/civicrm/contribute/transact\') && ($_SESSION[CiviCRM][pastContributionID] != \'10\')))
+{
+return TRUE;
+}',
+      ),
+    ),
   );
   $context->reactions = array(
     'block' => array(
@@ -37,7 +48,7 @@ function general_site_layout_context_default_contexts() {
       ),
     ),
   );
-  $context->condition_mode = 0;
+  $context->condition_mode = 1;
 
   // Translatables
   // Included for use with string extractors like potx.

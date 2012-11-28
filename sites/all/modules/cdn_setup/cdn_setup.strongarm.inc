@@ -118,7 +118,7 @@ sites/*|.avi .m4v .mov .mp4 .wmv .flv|perpetual';
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'cdn_stats';
-  $strongarm->value = 2;
+  $strongarm->value = 0;
   $export['cdn_stats'] = $strongarm;
 
   $strongarm = new stdClass;
