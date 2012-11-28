@@ -73,7 +73,7 @@ function service_links_block_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'service_links_check_icons';
-  $strongarm->value = 0;
+  $strongarm->value = 1;
   $export['service_links_check_icons'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -227,7 +227,7 @@ function service_links_block_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'service_links_new_window';
-  $strongarm->value = '0';
+  $strongarm->value = '1';
   $export['service_links_new_window'] = $strongarm;
 
   $strongarm = new stdClass;
@@ -235,21 +235,13 @@ function service_links_block_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'service_links_node_types';
   $strongarm->value = array(
-    'ad' => 'ad',
     'campaign' => 'campaign',
     'competition' => 'competition',
-    'ecochallenge' => 'ecochallenge',
-    'ec_blog' => 'ec_blog',
-    'ec_event' => 'ec_event',
-    'ec_group' => 'ec_group',
     'event' => 'event',
-    'feed' => 'feed',
-    'feed_item' => 'feed_item',
     'modalpage' => 'modalpage',
     'news' => 'news',
     'opinion' => 'opinion',
     'page' => 'page',
-    'panel' => 'panel',
     'product' => 'product',
     'project' => 'project',
     'resource' => 'resource',
@@ -258,6 +250,10 @@ function service_links_block_strongarm() {
     'tutorial' => 'tutorial',
     'webform' => 'webform',
     'workshop' => 'workshop',
+    'ad' => 0,
+    'feed' => 0,
+    'feed_item' => 0,
+    'panel' => 0,
   );
   $export['service_links_node_types'] = $strongarm;
 
