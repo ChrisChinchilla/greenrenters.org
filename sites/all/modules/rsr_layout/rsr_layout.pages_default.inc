@@ -150,7 +150,10 @@ rentalsweetrental/*',
     $pane->style = array(
       'settings' => NULL,
     );
-    $pane->css = array();
+    $pane->css = array(
+      'css_id' => 'rsr_social',
+      'css_class' => '',
+    );
     $pane->extras = array();
     $pane->position = 3;
     $display->content['new-4'] = $pane;
