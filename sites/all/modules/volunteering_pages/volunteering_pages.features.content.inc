@@ -44,7 +44,7 @@ function volunteering_pages_content_default_fields() {
     'widget_active' => '1',
     'type' => 'filefield',
     'required' => '0',
-    'multiple' => '5',
+    'multiple' => '1',
     'module' => 'filefield',
     'active' => '1',
     'list_field' => '0',
