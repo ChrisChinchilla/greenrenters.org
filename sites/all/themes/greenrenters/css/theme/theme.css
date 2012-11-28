@@ -29,13 +29,27 @@ color: #C61F26;
 	font-size:24px;
 
 }
-h2,h2 a {
 
-color: #003399;
-    font-weight: bold;
+h2,
+h2 a,
+legend,
+#crm-container fieldset legend
+{
+	color: #003399;
+	font-weight: bold;
 	font-size:18px;
+}
+	
+	#crm-container fieldset legend {
+display: block;
+font-family: Georgia, "Times New Roman", Times, serif;
+padding: 0;
+background: none;
+border: none;
+position: relative;
+text-indent: 0px;
+}
 
-	}
 h3 {
 color: #DE6A26;
     font-weight: normal;
@@ -128,6 +142,8 @@ a:focus {}
 .article-type-page  {}
 .article-type-poll  {}
 .article-type-story {}
+
+.small{font-size:12px;}
 
 
 /**********************************************************
@@ -1747,6 +1763,8 @@ margin-bottom: 5px;
     padding: 3px 0 5px;
 }
 
+/* CiviCRM overrides */
+
 #crm-container .crm-section .label, .crm-section .label {
    float: left;
     text-align: left;
@@ -2041,26 +2059,16 @@ width:350px;
 #membership fieldset,
 .is_pay_later-section
 {
-clear:both !important;
-margin-top: 20px !important;
-border: 1px solid #212121 !important;
-padding:15px !important;
+clear:both ;
+margin-top: 20px ;
+border: 1px solid #212121;
+padding:15px;
 }
 
 .is_pay_later-section .content,
 .is_for_organization-section .content
 {
 float:none !important;
-}
-
-#crm-container fieldset legend
-{
-	color:#C72026;
-}
-
-#membership-intro
-{
-	margin-top:-20px;
 }
 
 #crm-container #help, #crm-container .help {

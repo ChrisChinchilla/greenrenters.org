@@ -35,3 +35,80 @@
 .rsr #sidebar-first .block-inner {
 	padding:0px;
 }
+
+/* Social blocks */
+.rsr #block-service_links-service_links .service-links
+{
+	text-align:center;
+}
+
+.rsr #block-service_links-service_links iframe,
+.rsr #block-service_links-service_links span.IN-widget,
+.rsr #block-service_links-service_links div#___plusone_0
+{
+	/*width:80px !important;
+	text-align: left !important;*/
+}
+
+/* membership form */
+
+.rsr legend
+{
+	margin-bottom:10px;
+}
+
+.rsr #priceset .help
+{
+	background-color: #E9E9E9;
+	background-image: none;
+	border: none;
+	border-radius: 0;
+	padding: 15px;
+	font-size: 12px;
+	margin-bottom: 10px;
+}
+
+.rsr .crm_user-group, .custom_post_profile-group fieldset, .for_organization-group, .email-5-section, .is_for_organization-section, #membership fieldset, .is_pay_later-section {
+	border:none;
+	padding:0;
+}
+
+.rsr #crm-container fieldset {
+	background: none;
+	padding: 0px;
+	margin: 10px 0px;
+	border: none;
+}
+
+.rsr .radio_description
+{
+	font-size: 10px;
+	clear: both;
+	float: right;
+	width: 300px;
+	margin-left: 25px;
+	margin-top: 2px;
+}
+
+.rsr .Select_membership_Type-content .price-set-row label,
+.rsr .payment_options-group .content label
+{
+	margin:5px;
+}
+
+.rsr .payment_options-group .content input
+{
+	margin-top: 10px;
+}
+
+.rsr .Select_membership_Type-content .price-set-row
+{
+	margin-top: 10px;
+	height: 40px;
+}
+
+.section-pricesetTotal
+{
+	font-weight: bold;
+	font-size: 16px;
+}
