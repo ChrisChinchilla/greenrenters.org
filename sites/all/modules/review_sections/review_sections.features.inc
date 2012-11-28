@@ -1,10 +1,4 @@
 <?php
 
-/**
- * Implementation of hook_views_api().
- */
-function review_sections_views_api() {
-  return array(
-    'api' => '3.0',
-  );
-}
+// This file is deprecated and can be removed.
+// Please remove include_once('review_sections.features.inc') in review_sections.module as well.
