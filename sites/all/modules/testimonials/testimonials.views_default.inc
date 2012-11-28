@@ -72,7 +72,7 @@ function testimonials_views_default_views() {
   $handler->display->display_options['fields']['first_name']['hide_empty'] = 0;
   $handler->display->display_options['fields']['first_name']['empty_zero'] = 0;
   $handler->display->display_options['fields']['first_name']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['first_name']['link_to_civicrm_contact'] = 1;
+  $handler->display->display_options['fields']['first_name']['link_to_civicrm_contact'] = 0;
   /* Field: Global: Custom text */
   $handler->display->display_options['fields']['nothing']['id'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
@@ -90,6 +90,7 @@ function testimonials_views_default_views() {
   $handler->display->display_options['fields']['nothing']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['nothing']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['nothing']['element_type'] = 'h3';
   $handler->display->display_options['fields']['nothing']['element_label_colon'] = 0;
   $handler->display->display_options['fields']['nothing']['element_default_classes'] = 1;
   $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
@@ -112,6 +113,7 @@ function testimonials_views_default_views() {
   $handler->display->display_options['fields']['testimonial_111']['alter']['strip_tags'] = 0;
   $handler->display->display_options['fields']['testimonial_111']['alter']['trim'] = 0;
   $handler->display->display_options['fields']['testimonial_111']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['testimonial_111']['element_class'] = 'small';
   $handler->display->display_options['fields']['testimonial_111']['element_label_colon'] = 0;
   $handler->display->display_options['fields']['testimonial_111']['element_wrapper_class'] = 'testimonial';
   $handler->display->display_options['fields']['testimonial_111']['element_default_classes'] = 1;
@@ -125,6 +127,11 @@ function testimonials_views_default_views() {
   $handler->display->display_options['filters']['testimonial_111']['operator'] = 'longerthan';
   $handler->display->display_options['filters']['testimonial_111']['value'] = '1';
   $handler->display->display_options['filters']['testimonial_111']['case'] = 1;
+  /* Filter: CiviCRM Custom: Testimonials: I want my Testimonial to be anonymous */
+  $handler->display->display_options['filters']['i_want_my_testimonial_to_be_anon_112']['id'] = 'i_want_my_testimonial_to_be_anon_112';
+  $handler->display->display_options['filters']['i_want_my_testimonial_to_be_anon_112']['table'] = 'civicrm_value_testimonials_28';
+  $handler->display->display_options['filters']['i_want_my_testimonial_to_be_anon_112']['field'] = 'i_want_my_testimonial_to_be_anon_112';
+  $handler->display->display_options['filters']['i_want_my_testimonial_to_be_anon_112']['value'] = '0';
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
