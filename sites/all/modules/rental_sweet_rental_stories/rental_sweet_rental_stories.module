@@ -1,0 +1,3 @@
+<?php
+
+include_once('rental_sweet_rental_stories.features.inc');
