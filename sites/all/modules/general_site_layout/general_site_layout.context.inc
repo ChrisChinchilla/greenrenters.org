@@ -29,7 +29,7 @@ function general_site_layout_context_default_contexts() {
         0 => TRUE,
       ),
       'options' => array(
-        'phpcode' => 'if(($_SERVER[\'REQUEST_URI\'] != \'/civicrm/contribute/transact?reset=1&id=10\') || (($_SERVER[\'REDIRECT_URL\'] != \'/civicrm/contribute/transact\') && ($_SESSION[CiviCRM][pastContributionID] != \'10\')))
+        'phpcode' => 'if((($_SERVER[\'REQUEST_URI\'] != \'/civicrm/contribute/transact?reset=1&id=10\') || ($_SERVER[\'REDIRECT_URL\'] != \'/civicrm/contribute/transact\')) && ($_SESSION[CiviCRM][pastContributionID] != \'10\'))
 {
 return TRUE;
 }',
