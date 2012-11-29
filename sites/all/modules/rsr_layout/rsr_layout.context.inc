@@ -34,15 +34,15 @@ return TRUE;
   $context->reactions = array(
     'block' => array(
       'blocks' => array(
-        'block-27' => array(
-          'module' => 'block',
-          'delta' => 27,
+        'boxes-rsr_cross_stitch' => array(
+          'module' => 'boxes',
+          'delta' => 'rsr_cross_stitch',
           'region' => 'left',
           'weight' => 0,
         ),
-        'block-28' => array(
-          'module' => 'block',
-          'delta' => 28,
+        'boxes-service_links_manual' => array(
+          'module' => 'boxes',
+          'delta' => 'service_links_manual',
           'region' => 'left',
           'weight' => 1,
         ),
