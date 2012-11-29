@@ -18,7 +18,7 @@ function menus_block_menu_default_menu_links() {
     'external' => '0',
     'has_children' => '0',
     'expanded' => '0',
-    'weight' => '-47',
+    'weight' => '0',
   );
   // Exported menu link: menu-block-one:node/11
   $menu_links['menu-block-one:node/11'] = array(
@@ -173,7 +173,7 @@ function menus_block_menu_default_menu_links() {
     'link_title' => 'Volunteer',
     'options' => array(
       'attributes' => array(
-        'title' => '',
+        'title' => 'Volunteer',
       ),
     ),
     'module' => 'menu',
