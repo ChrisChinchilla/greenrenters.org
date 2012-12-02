@@ -1,6 +1,5 @@
 <?php
 
-/* $Id: media_mover_api.install,v 1.1.2.16.2.6 2009/05/17 18:38:29 arthuregg Exp $ */
 
 /**
  * @FILE media mover db files
@@ -48,6 +47,10 @@ function media_mover_api_schema() {
     'indexes' => array (
       'mmfid' => array('mmfid'),
       'nid' => array('nid'),
+      'cid,fid' => array('cid', 'fid'),
+      'cid' => array('cid'),
+      'harvest_file' => array('harvest_file'),
+      'process_file' => array('process_file'),
     ),
     'primary key' => array ('mmfid'),
     'description' => t('Holds the file data for Media Mover actions.'),
@@ -200,3 +203,15 @@ function media_mover_api_update_6110 () {
   $ret[] = update_sql('UPDATE {media_mover_files} SET status = 8 WHERE status = 7');
   return $ret;
 }
+/**
+ * Add media_mover_files indexes for performance
+ */
+function media_mover_api_update_6112() {
+  $ret = array();
+  db_add_index($ret, 'media_mover_files', 'cid_fid', array('cid','fid'));
+  db_add_index($ret, 'media_mover_files', 'cid', array('cid'));
+  db_add_index($ret, 'media_mover_files', 'harvest_file', array('harvest_file'));  
+  db_add_index($ret, 'media_mover_files', 'process_file', array('process_file'));
+  return $ret;
+}
+ 

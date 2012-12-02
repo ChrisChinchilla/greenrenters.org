@@ -1,5 +1,4 @@
 <?php
-// $Id: mm_node.module,v 1.1.4.8 2010/03/03 05:05:30 arthuregg Exp $
 
 /**
  * @file
@@ -102,7 +101,7 @@ function mm_node_media_mover($op = null, $action = null, $configuration = null, 
         case '5':
           return mm_node_attach_file($file, $configuration);
         break;
-        case '7':
+        case '6':
           return mm_node_file_store($configuration, $file);
         break;
       }
@@ -113,6 +112,9 @@ function mm_node_media_mover($op = null, $action = null, $configuration = null, 
       switch ($action) {
         case '3':
           return mm_node_complete($configuration, $file);
+        break;
+        case '7':
+          return mm_node_file_store($configuration, $file);
         break;
       }
     break;
@@ -247,11 +249,11 @@ function mm_node_harvest_mm_files($action, $configuration, $job, $nid) {
   // get files from the requested CID, that are processed at least to status
   // selected to harvest and are not already saved in current CID.
   $results = db_query('SELECT mmf.nid, mmf.fid, mmf.' . $file_type .' AS harvest_file
-    FROM media_mover_files mmf
+    FROM {media_mover_files} mmf
     WHERE mmf.cid = %d '.
     $harvest_conditions .'
     AND mmf.complete_file NOT IN
-      (SELECT mmf1.harvest_file FROM media_mover_files mmf1 WHERE mmf1.cid = %d AND mmf1.harvest_file = mmf.complete_file)',
+      (SELECT mmf1.harvest_file FROM {media_mover_files} mmf1 WHERE mmf1.cid = %d AND mmf1.harvest_file = mmf.complete_file)',
     $configuration['mm_harvest_cid'], $configuration['cid']);
 
   // we have our files, now pull them out of the db;
@@ -453,8 +455,12 @@ function mm_node_save_drupal_file($configuration, $filepath, $uid = 0, $destinat
  * @return string, path to new file
  */
 function mm_node_file_store($configuration, $file) {
-
+  $filepath = media_mover_api_config_current_file($file);
+  $new_file = mm_node_save_drupal_file($configuration, $filepath);
+  return $new_file->filepath;
 }
+
+
 /**
  * removes references to files from files table where they were
  * stored

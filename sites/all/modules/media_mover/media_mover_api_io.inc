@@ -1,6 +1,5 @@
 <?php
 
-// $Id: media_mover_api_io.inc,v 1.1.2.7.2.6 2009/05/28 12:05:37 arthuregg Exp $
 
 /**
  * @file this file contains all the media mover import and export functions

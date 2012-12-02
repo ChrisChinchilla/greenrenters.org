@@ -1,6 +1,5 @@
 <?php
 
-// $Id: media_mover_api_menus.inc,v 1.1.4.19 2009/12/09 05:51:33 arthuregg Exp $
 
 /**
  * contains all the menu functions for the module

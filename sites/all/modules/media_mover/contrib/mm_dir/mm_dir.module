@@ -1,6 +1,5 @@
 <?php
 
-// ;$Id: mm_dir.module,v 1.1.2.12.2.12 2010/04/13 20:31:24 msonnabaum Exp $
 
 
 define('MM_DIR_HARVEST_ACTION', 1 );
@@ -95,7 +94,7 @@ function mm_dir_config_harvest($configuration) {
   $form['mm_dir_conf']['file_types'] = array(
     '#title' => t('File types'),
     '#type' => 'textfield',
-    '#default_value' => $configuration['file_types'] ? $configuration['file_types'] : 'avi mov wmv mpeg mp4 mpeg2 dv 3gp 3g2 mpeg4',
+    '#default_value' => isset($configuration['file_types']) ? $configuration['file_types'] : 'avi mov wmv mpeg mp4 mpeg2 dv 3gp 3g2 mpeg4',
     '#description' => t('Space separated list of file types that can be harvested. These are file extensions and are values like "avi mov wmv mpeg mp4 mpeg2 dv".'),
   );
   return $form;
@@ -120,10 +119,10 @@ function mm_dir_config_harvest_validate($element, &$form_state) {
       // Handy function to get the form_state values key
       $form_state['values'][$key] = rtrim($values['path']);
     }
-    
+
     // is the path valid?
     if (! is_dir($values['path'] ) ) {
-      // This is mostly from file_check_directory, which we aren't using because we 
+      // This is mostly from file_check_directory, which we aren't using because we
       // don't care if the directory is writable for a harvest.
       if ((FILE_CREATE_DIRECTORY) && @mkdir($values['path'])) {
         drupal_set_message(t('The directory %directory has been created.', array('%directory' => $values['path'])));
@@ -199,19 +198,26 @@ function mm_dir_config_storage_validate($element, &$form_state) {
 function mm_dir_harvest ($configuration) {
 	// check to see if the directory exists
 	if (is_dir($configuration['path'])) {
-    // build the file types to harvest
-    $search = array(' ', ',');
-    $replace = array('|', '|');
-    $filetypes = str_replace($search, $replace, rtrim($configuration['file_types']));
 
-    // make sure that we have both lower and upper case versions of the file
-    // extensions. file_scan_directory uses ereg() for the mask which
-    // means we have to pass both upper and lower case version. This assumes
-    // that file extension is one case
-    $filetypes = strtoupper($filetypes) . '|' . strtolower($filetypes);
+	  // If file_types is not set, find all files
+	  if (! $configuration['file_types']) {
+      $pattern = "\.*";
+    }
+    else {
+      // build the file types to harvest
+      $search = array(' ', ',');
+      $replace = array('|', '|');
+      $filetypes = str_replace($search, $replace, rtrim($configuration['file_types']));
 
-    // now add the regex to the pattern
-    $pattern = "\.($filetypes)$";
+      // make sure that we have both lower and upper case versions of the file
+      // extensions. file_scan_directory uses ereg() for the mask which
+      // means we have to pass both upper and lower case version. This assumes
+      // that file extension is one case
+      $filetypes = strtoupper($filetypes) . '|' . strtolower($filetypes);
+
+      // now add the regex to the pattern
+      $pattern = "\.($filetypes)$";
+    }
 
     // get files restricted by file extension
     $found_files = file_scan_directory($configuration['path'], $pattern);

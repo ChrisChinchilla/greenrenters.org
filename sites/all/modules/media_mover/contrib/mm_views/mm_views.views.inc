@@ -1,5 +1,4 @@
 <?php
-// $Id: mm_views.views.inc,v 1.1.2.1 2009/05/14 20:53:39 arthuregg Exp $
 /**
  * @file
  *

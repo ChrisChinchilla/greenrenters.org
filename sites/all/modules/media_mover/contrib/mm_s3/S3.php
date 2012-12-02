@@ -1,6 +1,5 @@
 <?php
 /**
-* $Id: S3.php,v 1.1.4.3 2008/12/18 17:07:25 arthuregg Exp $
 *
 * Copyright (c) 2008, Donovan Schönknecht.  All rights reserved.
 *

@@ -1,8 +1,6 @@
 <<<<<<< README.txt
-;$Id: README.txt,v 1.8.2.14.2.3 2009/12/02 23:44:43 arthuregg Exp $ 
 =======
 
-;$Id: README.txt,v 1.8.2.14.2.3 2009/12/02 23:44:43 arthuregg Exp $ 
 >>>>>>> 1.8.2.14.2.2
 
 

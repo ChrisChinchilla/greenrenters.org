@@ -1,5 +1,4 @@
 <?php
-// $Id: views_handler_field_mm_upload_fid.inc,v 1.1.2.1 2009/05/14 20:53:39 arthuregg Exp $
 /**
  * Field handler to provide a list of roles.
  */

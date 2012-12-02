@@ -1,5 +1,4 @@
 <?php
-// $Id: mm_emfield.module,v 1.1.2.1 2010/04/06 22:56:07 aaron Exp $
 
 /**
  * @file
@@ -351,8 +350,17 @@ function mm_emfield_node_save($configuration, &$file) {
 
   }
 
-  // Save the node to add the emfield data.
-  $node->{$field['field_name']}[0] = $item;
+  // Add the emfield item. Append, do not replace
+  if (! is_array($node->{$field['field_name']})) {
+    $node->{$field['field_name']} = $item;
+  }
+  elseif (! isset($node->{$field['field_name']}[0]))  {
+    $node->{$field['field_name']} = $item;
+  }
+  // Files exist, append this file
+  else {
+    $node->{$field['field_name']}[] = $item;
+  }
 
   node_save($node);
 
@@ -420,7 +428,8 @@ function mm_emfield_node_file_delete($configuration, $file) {
   }
 
   // If we have a url, we can just delete that media and save the node.
-  if ($url = $file['complete_file']) {
+  $verb = $configuration['verb'];
+  if ($url = $file[$verb . '_file']) {
     // We need to look at the files stored in this field to find the url.
     foreach ($node->{$field} as $key => $node_field) {
       // Is this the file that we are looking for?

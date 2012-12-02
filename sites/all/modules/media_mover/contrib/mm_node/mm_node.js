@@ -1,4 +1,3 @@
-// $Id: mm_node.js,v 1.1.2.2 2010/03/09 02:08:42 arthuregg Exp $
 
 /**
  * @file

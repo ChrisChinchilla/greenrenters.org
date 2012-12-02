@@ -1,6 +1,5 @@
 <?php
 
-// ;$Id: mm_token.module,v 1.1.2.1.2.1 2009/03/25 16:57:57 arthuregg Exp $
 
 /**
  * this gets a media mover configuration and returns it to token

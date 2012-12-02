@@ -1,4 +1,3 @@
-; $Id: README.txt,v 1.1.2.1 2010/04/06 22:56:07 aaron Exp $
 
 Media Mover - Embedded Media Field Integration
 ----------------------------------------------

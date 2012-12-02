@@ -1,4 +1,3 @@
-; $Id: README.txt,v 1.1.4.2 2009/12/02 23:42:52 arthuregg Exp $
 
 Media Mover FFmpeg Module
 ----------------------------------------------

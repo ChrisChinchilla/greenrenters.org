@@ -1,6 +1,5 @@
 <?php
 
-// $Id: mm_mailhandler.module,v 1.1.2.6 2009/11/30 13:41:43 arthuregg Exp $;
 
 define('MM_EMAIL_ATTACHMENTS_SUBDIRECTORY', 'email_attachements');
 define('MM_EMAIL_WATCHDOG_TYPE', 'media_mover');

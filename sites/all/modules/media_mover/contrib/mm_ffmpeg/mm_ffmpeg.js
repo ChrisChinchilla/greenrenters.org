@@ -1,4 +1,3 @@
-// $Id: mm_ffmpeg.js,v 1.1.4.2 2009/12/02 23:42:52 arthuregg Exp $
 
 if (Drupal.jsEnabled) {
   $(document).ready(function () {

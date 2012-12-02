@@ -1,6 +1,5 @@
 <?php
 
-// $Id: media_mover_ftp_harvest.inc,v 1.1.4.2 2009/12/09 16:49:41 arthuregg Exp $;
 
 
 /**

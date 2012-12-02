@@ -1,4 +1,3 @@
-; $Id: README.txt,v 1.1.2.2 2009/03/01 17:18:16 arthuregg Exp $
 
 Media Mover Antiword
 --------------------------------------

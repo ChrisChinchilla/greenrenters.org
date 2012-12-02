@@ -1,5 +1,4 @@
 <?php
-// $Id: directories.test,v 1.1.2.1 2008/07/09 22:35:45 arthuregg Exp $; 
 
 /**
  * @FILE this builds a basic test to see if the media mover files directory 

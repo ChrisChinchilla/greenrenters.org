@@ -1,6 +1,5 @@
 <?php
 
-// $Id: mm_ftp_storage.inc,v 1.1.4.2 2009/12/09 16:49:41 arthuregg Exp $
 
 /**
  * @file

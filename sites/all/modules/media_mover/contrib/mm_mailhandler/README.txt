@@ -1,5 +1,4 @@
 
-; $Id: README.txt,v 1.1.2.1 2009/04/01 06:06:33 arthuregg Exp $;
 
 
 Media Mover MailHandler Module
