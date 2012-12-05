@@ -52,7 +52,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/campaign',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -429,7 +429,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/campaign',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -803,7 +803,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/competition',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -1180,7 +1180,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/competition',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -1548,7 +1548,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -1607,7 +1607,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/event',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -1984,7 +1984,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/event',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -2352,7 +2352,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -2411,7 +2411,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/news',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -2876,7 +2876,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/news',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -3244,7 +3244,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -3303,7 +3303,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/opinion',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -3768,7 +3768,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/opinion',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -4142,7 +4142,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/page',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -4519,7 +4519,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/page',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -4887,7 +4887,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -4946,7 +4946,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/resource',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -5411,7 +5411,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/resource',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -5785,7 +5785,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/service',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -6162,7 +6162,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/service',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -6530,7 +6530,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -6589,7 +6589,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/story',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -7054,7 +7054,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/story',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -7422,7 +7422,7 @@ function base_content_types_content_default_fields() {
     ),
     'widget_active' => '1',
     'type' => 'anonymous_author',
-    'required' => '0',
+    'required' => '1',
     'multiple' => '0',
     'module' => 'anonymous_posting',
     'active' => '1',
@@ -7481,7 +7481,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'field_image/tutorial',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
@@ -7946,7 +7946,7 @@ function base_content_types_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => '',
+      'file_path' => 'wysiwyg_images/tutorial',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '',
       'max_filesize_per_node' => '',
