@@ -29,3 +29,12 @@ function rental_sweet_rental_stories_node_info() {
   );
   return $items;
 }
+
+/**
+ * Implementation of hook_views_api().
+ */
+function rental_sweet_rental_stories_views_api() {
+  return array(
+    'api' => '3.0',
+  );
+}

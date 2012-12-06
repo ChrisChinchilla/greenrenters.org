@@ -107,7 +107,7 @@ function rental_sweet_rental_stories_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => 'rsr_story',
+      'file_path' => 'field_image/rsr_story',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '2M',
       'max_filesize_per_node' => '10M',
@@ -484,7 +484,7 @@ function rental_sweet_rental_stories_content_default_fields() {
     'description_field' => '0',
     'widget' => array(
       'file_extensions' => 'png gif jpg jpeg',
-      'file_path' => 'rsr_story',
+      'file_path' => 'wysiwyg_images/rsr_story',
       'progress_indicator' => 'bar',
       'max_filesize_per_file' => '2M',
       'max_filesize_per_node' => '10M',

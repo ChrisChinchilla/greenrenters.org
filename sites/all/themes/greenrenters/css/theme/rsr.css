@@ -112,3 +112,32 @@
 	font-weight: bold;
 	font-size: 16px;
 }
+
+/* RSR Stories */
+
+
+.rsr .page-rentalsweetrental-stories .body
+{
+	float: left;
+	width: 450px;
+}
+
+.rsr .page-rentalsweetrental-stories .view-node {
+	float: left;
+	padding: 20px 30px 0px 0px;
+}
+
+.rsr .page-rentalsweetrental-stories .disqus-comments
+{
+	float: right;
+	padding: 20px 30px 0px 0px;
+}
+
+.rsr .page-rentalsweetrental-stories .nothing
+{
+	font-size: 10px;
+	float: right;
+	text-align: right;
+	width: 70px;
+	height:150px
+}
