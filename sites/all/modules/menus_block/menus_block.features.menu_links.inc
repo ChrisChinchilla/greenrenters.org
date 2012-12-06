@@ -92,25 +92,6 @@ function menus_block_menu_default_menu_links() {
     'expanded' => '0',
     'weight' => '-48',
   );
-  // Exported menu link: menu-block-three:civicrm/contribute/transact
-  $menu_links['menu-block-three:civicrm/contribute/transact'] = array(
-    'menu_name' => 'menu-block-three',
-    'link_path' => 'civicrm/contribute/transact',
-    'router_path' => 'civicrm',
-    'link_title' => 'Donate',
-    'options' => array(
-      'query' => 'reset=1&id=4',
-      'attributes' => array(
-        'title' => '',
-      ),
-    ),
-    'module' => 'menu',
-    'hidden' => '0',
-    'external' => '0',
-    'has_children' => '0',
-    'expanded' => '0',
-    'weight' => '0',
-  );
   // Exported menu link: menu-block-three:node/16
   $menu_links['menu-block-three:node/16'] = array(
     'menu_name' => 'menu-block-three',
@@ -189,7 +170,6 @@ function menus_block_menu_default_menu_links() {
   t('Blog');
   t('Campaigns');
   t('Contact Us');
-  t('Donate');
   t('Projects');
   t('Store');
   t('Support');

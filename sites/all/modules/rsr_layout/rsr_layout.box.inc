@@ -14,7 +14,7 @@ function rsr_layout_default_box() {
   $box->title = '';
   $box->description = 'RSR Cross Stitch';
   $box->options = array(
-    'body' => '<p style="text-align: center; "><a href="/sites/default/files/RSR-cross-stitch.jpg" rel="lightbox"><img alt="" src="/sites/default/files/RSR-cross-stitch.jpg" style="width: 350px; height: 180px; " /></a></p>
+    'body' => '<p style="text-align: center; "><a href="/rentalsweetrental"><img alt="Rental Sweet Rental cross stitch" src="/sites/default/files/RSR-cross-stitch.jpg" style="width: 350px; height: 180px; " /></a></p>
 ',
     'format' => '2',
   );
