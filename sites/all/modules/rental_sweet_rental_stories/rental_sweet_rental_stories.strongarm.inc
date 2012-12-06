@@ -134,7 +134,9 @@ function rental_sweet_rental_stories_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'node_options_rsr_story';
-  $strongarm->value = array();
+  $strongarm->value = array(
+    0 => 'revision',
+  );
   $export['node_options_rsr_story'] = $strongarm;
 
   $strongarm = new stdClass;

@@ -20,11 +20,11 @@ function rental_sweet_rental_stories_node_info() {
       'module' => 'features',
       'description' => t('Stories for Rental Sweet Rental campaign'),
       'has_title' => '1',
-      'title_label' => t('Title'),
+      'title_label' => t('Story title'),
       'has_body' => '1',
       'body_label' => t('Body'),
       'min_word_count' => '0',
-      'help' => t('Try to be as descriptive as possible, tell a story, spin a yarn.'),
+      'help' => t('Try to be as descriptive as possible, tell a story, spin a yarn. Tell us what you\'ve tried, are trying, your failures, successes…'),
     ),
   );
   return $items;
