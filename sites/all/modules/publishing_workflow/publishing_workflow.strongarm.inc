@@ -21,9 +21,10 @@ function publishing_workflow_strongarm() {
     0 => 'event',
     1 => 'news',
     2 => 'opinion',
-    3 => 'resource',
-    4 => 'story',
-    5 => 'tutorial',
+    3 => 'rsr_story',
+    4 => 'resource',
+    5 => 'story',
+    6 => 'tutorial',
   );
   $export['anonymous_posting_enabled_node_types'] = $strongarm;
 
@@ -108,7 +109,7 @@ function publishing_workflow_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'mollom_fallback';
-  $strongarm->value = '1';
+  $strongarm->value = '0';
   $export['mollom_fallback'] = $strongarm;
 
   $strongarm = new stdClass;

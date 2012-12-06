@@ -706,32 +706,49 @@ function publishing_workflow_user_default_permissions() {
   $permissions['edit field_anonymous_author'] = array(
     'name' => 'edit field_anonymous_author',
     'roles' => array(
-      '0' => 'anonymous user',
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
   // Exported permission: edit field_budget_complete
   $permissions['edit field_budget_complete'] = array(
     'name' => 'edit field_budget_complete',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_budget_link
   $permissions['edit field_budget_link'] = array(
     'name' => 'edit field_budget_link',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_enquiry_form
   $permissions['edit field_enquiry_form'] = array(
     'name' => 'edit field_enquiry_form',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_forreview
   $permissions['edit field_forreview'] = array(
     'name' => 'edit field_forreview',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_image
@@ -741,8 +758,13 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Eco Challenge participant',
       '2' => 'Editors',
-      '3' => 'Writers',
-      '4' => 'anonymous user',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -767,19 +789,25 @@ function publishing_workflow_user_default_permissions() {
   // Exported permission: edit field_template_completed
   $permissions['edit field_template_completed'] = array(
     'name' => 'edit field_template_completed',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_template_link
   $permissions['edit field_template_link'] = array(
     'name' => 'edit field_template_link',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_views_filter
   $permissions['edit field_views_filter'] = array(
     'name' => 'edit field_views_filter',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_wholesale
@@ -793,13 +821,26 @@ function publishing_workflow_user_default_permissions() {
   // Exported permission: edit field_workshops_flyer
   $permissions['edit field_workshops_flyer'] = array(
     'name' => 'edit field_workshops_flyer',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: edit field_wysiwyg_images
   $permissions['edit field_wysiwyg_images'] = array(
     'name' => 'edit field_wysiwyg_images',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
+    ),
   );
 
   // Exported permission: edit own campaign content
@@ -1006,31 +1047,50 @@ function publishing_workflow_user_default_permissions() {
   // Exported permission: view field_anonymous_author
   $permissions['view field_anonymous_author'] = array(
     'name' => 'view field_anonymous_author',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_budget_complete
   $permissions['view field_budget_complete'] = array(
     'name' => 'view field_budget_complete',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_budget_link
   $permissions['view field_budget_link'] = array(
     'name' => 'view field_budget_link',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_enquiry_form
   $permissions['view field_enquiry_form'] = array(
     'name' => 'view field_enquiry_form',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_forreview
   $permissions['view field_forreview'] = array(
     'name' => 'view field_forreview',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
+    ),
   );
 
   // Exported permission: view field_image
@@ -1079,19 +1139,25 @@ function publishing_workflow_user_default_permissions() {
   // Exported permission: view field_template_completed
   $permissions['view field_template_completed'] = array(
     'name' => 'view field_template_completed',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_template_link
   $permissions['view field_template_link'] = array(
     'name' => 'view field_template_link',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_views_filter
   $permissions['view field_views_filter'] = array(
     'name' => 'view field_views_filter',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_wholesale
@@ -1105,13 +1171,26 @@ function publishing_workflow_user_default_permissions() {
   // Exported permission: view field_workshops_flyer
   $permissions['view field_workshops_flyer'] = array(
     'name' => 'view field_workshops_flyer',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+    ),
   );
 
   // Exported permission: view field_wysiwyg_images
   $permissions['view field_wysiwyg_images'] = array(
     'name' => 'view field_wysiwyg_images',
-    'roles' => array(),
+    'roles' => array(
+      '0' => 'Admins',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
+    ),
   );
 
   // Exported permission: view revisions
