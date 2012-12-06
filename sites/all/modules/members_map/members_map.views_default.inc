@@ -159,12 +159,16 @@ function members_map_views_default_views() {
   $handler->display->display_options['fields']['nothing']['hide_empty'] = 0;
   $handler->display->display_options['fields']['nothing']['empty_zero'] = 0;
   $handler->display->display_options['fields']['nothing']['hide_alter_empty'] = 0;
-  /* Filter: CiviCRM Groups: Group ID */
-  $handler->display->display_options['filters']['id']['id'] = 'id';
-  $handler->display->display_options['filters']['id']['table'] = 'civicrm_group';
-  $handler->display->display_options['filters']['id']['field'] = 'id';
-  $handler->display->display_options['filters']['id']['value']['value'] = '53';
-  $handler->display->display_options['filters']['id']['allow_null'] = 1;
+  /* Filter: CiviCRM Member: Status */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'civicrm_membership';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = array(
+    1 => '1',
+    2 => '2',
+    3 => '3',
+    5 => '5',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
