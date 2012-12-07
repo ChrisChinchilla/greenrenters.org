@@ -557,8 +557,15 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit any campaign content',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Editors',
-      '2' => 'Writers',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -577,8 +584,15 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit any event content',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Editors',
-      '2' => 'Writers',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -651,8 +665,15 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit any resource content',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Editors',
-      '2' => 'Writers',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -661,8 +682,15 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit any service content',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Editors',
-      '2' => 'Writers',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -681,8 +709,15 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit any tutorial content',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Editors',
-      '2' => 'Writers',
+      '1' => 'Eco Challenge participant',
+      '2' => 'Editors',
+      '3' => 'Members',
+      '4' => 'Site member',
+      '5' => 'Staff',
+      '6' => 'Volunteer',
+      '7' => 'Writers',
+      '8' => 'anonymous user',
+      '9' => 'authenticated user',
     ),
   );
 
@@ -850,6 +885,7 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
       '2' => 'Writers',
+      '3' => 'authenticated user',
     ),
   );
 
@@ -860,6 +896,7 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
       '2' => 'Writers',
+      '3' => 'authenticated user',
     ),
   );
 
@@ -945,6 +982,7 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
       '2' => 'Writers',
+      '3' => 'authenticated user',
     ),
   );
 
@@ -955,6 +993,7 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
       '2' => 'Writers',
+      '3' => 'authenticated user',
     ),
   );
 
@@ -982,6 +1021,7 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
       '2' => 'Writers',
+      '3' => 'authenticated user',
     ),
   );
 
@@ -1032,6 +1072,335 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit own workshop content',
     'roles' => array(
       '0' => 'Admins',
+      '1' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish any ad content
+  $permissions['publish any ad content'] = array(
+    'name' => 'publish any ad content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any campaign content
+  $permissions['publish any campaign content'] = array(
+    'name' => 'publish any campaign content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any competition content
+  $permissions['publish any competition content'] = array(
+    'name' => 'publish any competition content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any content
+  $permissions['publish any content'] = array(
+    'name' => 'publish any content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any event content
+  $permissions['publish any event content'] = array(
+    'name' => 'publish any event content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any feed content
+  $permissions['publish any feed content'] = array(
+    'name' => 'publish any feed content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any feed_item content
+  $permissions['publish any feed_item content'] = array(
+    'name' => 'publish any feed_item content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any modalpage content
+  $permissions['publish any modalpage content'] = array(
+    'name' => 'publish any modalpage content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any news content
+  $permissions['publish any news content'] = array(
+    'name' => 'publish any news content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any opinion content
+  $permissions['publish any opinion content'] = array(
+    'name' => 'publish any opinion content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any page content
+  $permissions['publish any page content'] = array(
+    'name' => 'publish any page content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any panel content
+  $permissions['publish any panel content'] = array(
+    'name' => 'publish any panel content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any product content
+  $permissions['publish any product content'] = array(
+    'name' => 'publish any product content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any project content
+  $permissions['publish any project content'] = array(
+    'name' => 'publish any project content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any resource content
+  $permissions['publish any resource content'] = array(
+    'name' => 'publish any resource content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any rsr_story content
+  $permissions['publish any rsr_story content'] = array(
+    'name' => 'publish any rsr_story content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any service content
+  $permissions['publish any service content'] = array(
+    'name' => 'publish any service content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any story content
+  $permissions['publish any story content'] = array(
+    'name' => 'publish any story content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any tutorial content
+  $permissions['publish any tutorial content'] = array(
+    'name' => 'publish any tutorial content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any webform content
+  $permissions['publish any webform content'] = array(
+    'name' => 'publish any webform content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish any workshop content
+  $permissions['publish any workshop content'] = array(
+    'name' => 'publish any workshop content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: publish own ad content
+  $permissions['publish own ad content'] = array(
+    'name' => 'publish own ad content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own campaign content
+  $permissions['publish own campaign content'] = array(
+    'name' => 'publish own campaign content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own competition content
+  $permissions['publish own competition content'] = array(
+    'name' => 'publish own competition content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own event content
+  $permissions['publish own event content'] = array(
+    'name' => 'publish own event content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own feed content
+  $permissions['publish own feed content'] = array(
+    'name' => 'publish own feed content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own feed_item content
+  $permissions['publish own feed_item content'] = array(
+    'name' => 'publish own feed_item content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own modalpage content
+  $permissions['publish own modalpage content'] = array(
+    'name' => 'publish own modalpage content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own news content
+  $permissions['publish own news content'] = array(
+    'name' => 'publish own news content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own opinion content
+  $permissions['publish own opinion content'] = array(
+    'name' => 'publish own opinion content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own page content
+  $permissions['publish own page content'] = array(
+    'name' => 'publish own page content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own panel content
+  $permissions['publish own panel content'] = array(
+    'name' => 'publish own panel content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own product content
+  $permissions['publish own product content'] = array(
+    'name' => 'publish own product content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own project content
+  $permissions['publish own project content'] = array(
+    'name' => 'publish own project content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own resource content
+  $permissions['publish own resource content'] = array(
+    'name' => 'publish own resource content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own rsr_story content
+  $permissions['publish own rsr_story content'] = array(
+    'name' => 'publish own rsr_story content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own service content
+  $permissions['publish own service content'] = array(
+    'name' => 'publish own service content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own story content
+  $permissions['publish own story content'] = array(
+    'name' => 'publish own story content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own tutorial content
+  $permissions['publish own tutorial content'] = array(
+    'name' => 'publish own tutorial content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own webform content
+  $permissions['publish own webform content'] = array(
+    'name' => 'publish own webform content',
+    'roles' => array(
+      '0' => 'authenticated user',
+    ),
+  );
+
+  // Exported permission: publish own workshop content
+  $permissions['publish own workshop content'] = array(
+    'name' => 'publish own workshop content',
+    'roles' => array(
+      '0' => 'authenticated user',
     ),
   );
 
@@ -1042,6 +1411,294 @@ function publishing_workflow_user_default_permissions() {
       '0' => 'Admins',
       '1' => 'Editors',
     ),
+  );
+
+  // Exported permission: unpublish any ad content
+  $permissions['unpublish any ad content'] = array(
+    'name' => 'unpublish any ad content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any campaign content
+  $permissions['unpublish any campaign content'] = array(
+    'name' => 'unpublish any campaign content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any competition content
+  $permissions['unpublish any competition content'] = array(
+    'name' => 'unpublish any competition content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any content
+  $permissions['unpublish any content'] = array(
+    'name' => 'unpublish any content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any event content
+  $permissions['unpublish any event content'] = array(
+    'name' => 'unpublish any event content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any feed content
+  $permissions['unpublish any feed content'] = array(
+    'name' => 'unpublish any feed content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any feed_item content
+  $permissions['unpublish any feed_item content'] = array(
+    'name' => 'unpublish any feed_item content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any modalpage content
+  $permissions['unpublish any modalpage content'] = array(
+    'name' => 'unpublish any modalpage content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any news content
+  $permissions['unpublish any news content'] = array(
+    'name' => 'unpublish any news content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any opinion content
+  $permissions['unpublish any opinion content'] = array(
+    'name' => 'unpublish any opinion content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any page content
+  $permissions['unpublish any page content'] = array(
+    'name' => 'unpublish any page content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any panel content
+  $permissions['unpublish any panel content'] = array(
+    'name' => 'unpublish any panel content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any product content
+  $permissions['unpublish any product content'] = array(
+    'name' => 'unpublish any product content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any project content
+  $permissions['unpublish any project content'] = array(
+    'name' => 'unpublish any project content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any resource content
+  $permissions['unpublish any resource content'] = array(
+    'name' => 'unpublish any resource content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any rsr_story content
+  $permissions['unpublish any rsr_story content'] = array(
+    'name' => 'unpublish any rsr_story content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any service content
+  $permissions['unpublish any service content'] = array(
+    'name' => 'unpublish any service content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any story content
+  $permissions['unpublish any story content'] = array(
+    'name' => 'unpublish any story content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any tutorial content
+  $permissions['unpublish any tutorial content'] = array(
+    'name' => 'unpublish any tutorial content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any webform content
+  $permissions['unpublish any webform content'] = array(
+    'name' => 'unpublish any webform content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish any workshop content
+  $permissions['unpublish any workshop content'] = array(
+    'name' => 'unpublish any workshop content',
+    'roles' => array(
+      '0' => 'Admins',
+    ),
+  );
+
+  // Exported permission: unpublish own ad content
+  $permissions['unpublish own ad content'] = array(
+    'name' => 'unpublish own ad content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own campaign content
+  $permissions['unpublish own campaign content'] = array(
+    'name' => 'unpublish own campaign content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own competition content
+  $permissions['unpublish own competition content'] = array(
+    'name' => 'unpublish own competition content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own event content
+  $permissions['unpublish own event content'] = array(
+    'name' => 'unpublish own event content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own feed content
+  $permissions['unpublish own feed content'] = array(
+    'name' => 'unpublish own feed content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own feed_item content
+  $permissions['unpublish own feed_item content'] = array(
+    'name' => 'unpublish own feed_item content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own modalpage content
+  $permissions['unpublish own modalpage content'] = array(
+    'name' => 'unpublish own modalpage content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own news content
+  $permissions['unpublish own news content'] = array(
+    'name' => 'unpublish own news content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own opinion content
+  $permissions['unpublish own opinion content'] = array(
+    'name' => 'unpublish own opinion content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own page content
+  $permissions['unpublish own page content'] = array(
+    'name' => 'unpublish own page content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own panel content
+  $permissions['unpublish own panel content'] = array(
+    'name' => 'unpublish own panel content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own product content
+  $permissions['unpublish own product content'] = array(
+    'name' => 'unpublish own product content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own project content
+  $permissions['unpublish own project content'] = array(
+    'name' => 'unpublish own project content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own resource content
+  $permissions['unpublish own resource content'] = array(
+    'name' => 'unpublish own resource content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own rsr_story content
+  $permissions['unpublish own rsr_story content'] = array(
+    'name' => 'unpublish own rsr_story content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own service content
+  $permissions['unpublish own service content'] = array(
+    'name' => 'unpublish own service content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own story content
+  $permissions['unpublish own story content'] = array(
+    'name' => 'unpublish own story content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own tutorial content
+  $permissions['unpublish own tutorial content'] = array(
+    'name' => 'unpublish own tutorial content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own webform content
+  $permissions['unpublish own webform content'] = array(
+    'name' => 'unpublish own webform content',
+    'roles' => array(),
+  );
+
+  // Exported permission: unpublish own workshop content
+  $permissions['unpublish own workshop content'] = array(
+    'name' => 'unpublish own workshop content',
+    'roles' => array(),
   );
 
   // Exported permission: view field_anonymous_author
