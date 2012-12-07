@@ -2152,3 +2152,8 @@ td[id^=Event_]
 {
 	display:none;
 }
+
+.pane-for-review
+{
+	clear:both;
+}
