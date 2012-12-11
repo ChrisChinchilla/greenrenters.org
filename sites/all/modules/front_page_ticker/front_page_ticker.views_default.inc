@@ -94,6 +94,26 @@ function front_page_ticker_views_default_views() {
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_reversed'] = 0;
+    /* Field: Content: Image (field_wysiwyg_images) */
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['label_type'] = 'none';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['format'] = 'fp_slideshow_linked';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['group'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
   /* Field: Node: Type */
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'node';
@@ -192,6 +212,26 @@ function front_page_ticker_views_default_views() {
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_reversed'] = 0;
+    /* Field: Content: Image (field_wysiwyg_images) */
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['label_type'] = 'none';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['format'] = 'fp_slideshow_linked';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['group'] = 1;
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
+  $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
   /* Field: Node: Type */
   $handler->display->display_options['fields']['type']['id'] = 'type';
   $handler->display->display_options['fields']['type']['table'] = 'node';
