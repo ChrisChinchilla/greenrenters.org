@@ -791,15 +791,6 @@ function publishing_workflow_user_default_permissions() {
     'name' => 'edit field_image',
     'roles' => array(
       '0' => 'Admins',
-      '1' => 'Eco Challenge participant',
-      '2' => 'Editors',
-      '3' => 'Members',
-      '4' => 'Site member',
-      '5' => 'Staff',
-      '6' => 'Volunteer',
-      '7' => 'Writers',
-      '8' => 'anonymous user',
-      '9' => 'authenticated user',
     ),
   );
 
