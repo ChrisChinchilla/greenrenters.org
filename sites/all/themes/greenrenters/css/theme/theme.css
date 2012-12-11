@@ -2157,3 +2157,17 @@ td[id^=Event_]
 {
 	clear:both;
 }
+
+/* Sure this can be consolidated? */
+.pane-boxes-contribute-box
+{
+	padding:15px;
+	font-size:12px;
+	background: #E9E9E9;
+	margin-bottom: 15px;
+}
+
+.pane-boxes-contribute-box p
+{
+	margin-bottom:0;
+}
