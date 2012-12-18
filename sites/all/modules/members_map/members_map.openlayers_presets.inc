@@ -13,7 +13,7 @@ function members_map_openlayers_presets() {
   $openlayers_presets->title = 'Members Map';
   $openlayers_presets->description = 'Members Map';
   $openlayers_presets->data = array(
-    'width' => '300px',
+    'width' => '350px',
     'height' => '350px',
     'image_path' => '',
     'css_path' => '',
