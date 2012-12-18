@@ -114,33 +114,28 @@
 }
 
 /* RSR Stories */
-
 .rsr .field-wysiwyg-images-fid
 {
 	float:left;
 	margin-right: 20px;
 }
 
-.rsr .body
+.rsr .page-rentalsweetrental-stories .body
 {
 }
 
-.rsr .view-node {
+.rsr .page-rentalsweetrental-stories .view-node {
 	float: left;
 	padding: 20px 30px 0px 0px;
 }
 
-.rsr .disqus-comments
+.rsr .page-rentalsweetrental-stories .disqus-comments
 {
 	float: right;
 	padding: 20px 30px 0px 0px;
 }
 
-.rsr .nothing
+.rsr .page-rentalsweetrental-stories .nothing
 {
-	font-size: 10px;
-	float: right;
-	text-align: right;
-	width: 70px;
-	height:150px
+
 }
