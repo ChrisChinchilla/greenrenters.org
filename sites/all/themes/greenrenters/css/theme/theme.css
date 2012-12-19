@@ -2158,8 +2158,13 @@ td[id^=Event_]
 	clear:both;
 }
 
+.panel-2col-stacked .panel-col-last .inside {
+	margin: 0;
+}
+
 /* Sure this can be consolidated? */
-.pane-boxes-contribute-box
+.pane-boxes-contribute-box,
+.aggregation
 {
 	padding:15px;
 	font-size:12px;
@@ -2167,7 +2172,8 @@ td[id^=Event_]
 	margin-bottom: 15px;
 }
 
-.pane-boxes-contribute-box p
+.pane-boxes-contribute-box p,
+.aggregation p
 {
 	margin-bottom:0;
 }
