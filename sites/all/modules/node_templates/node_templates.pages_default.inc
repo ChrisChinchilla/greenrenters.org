@@ -51,7 +51,8 @@ function node_templates_default_page_manager_handlers() {
           'settings' => array(
             'visibility_setting' => '0',
             'paths' => 'rentalsweetrental
-rentalsweetrental/*',
+rentalsweetrental/*
+user/dashboard',
           ),
           'context' => 'empty',
           'not' => FALSE,

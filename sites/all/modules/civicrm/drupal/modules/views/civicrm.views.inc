@@ -5178,6 +5178,11 @@ function civicrm_views_data() {
       'left_field' => 'campaign_id',
       'field' => 'id',
     ),
+    
+    'civicrm_activity' => array(
+      'left_field' => 'campaign_id',
+      'field' => 'id',
+    ),
 );    
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla

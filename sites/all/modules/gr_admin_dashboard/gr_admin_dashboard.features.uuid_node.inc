@@ -12,7 +12,7 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'uid' => '1',
     'status' => '1',
     'created' => '1354012505',
-    'changed' => '1354012967',
+    'changed' => '1358834393',
     'comment' => '0',
     'promote' => '0',
     'moderate' => '0',
@@ -21,17 +21,17 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'translate' => '0',
     'revision_uid' => '1',
     'title' => 'User Dashboard',
-    'body' => '<p>This is work in progress. Ignore for now!</p>
+    'body' => '<p>User dashboard, work in progress!</p>
   ',
-    'teaser' => '<p>This is work in progress. Ignore for now!</p>
+    'teaser' => '<p>User dashboard, work in progress!</p>
   ',
     'log' => '',
-    'revision_timestamp' => '1354012967',
+    'revision_timestamp' => '1358834393',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
     'data' => 'a:11:{s:18:"admin_compact_mode";b:0;s:8:"new_role";i:0;s:12:"new_role_add";s:1:"3";s:16:"new_role_add_qty";s:0:"";s:24:"new_role_add_granularity";s:3:"day";s:9:"nodewords";a:9:{s:8:"abstract";a:1:{s:5:"value";s:42:"Sustainable living in rental accommodation";}s:9:"canonical";a:1:{s:5:"value";s:0:"";}s:9:"copyright";a:1:{s:5:"value";s:18:"Green Renters 2011";}s:11:"description";a:1:{s:5:"value";s:167:"Chris Ward aka Chris Chinchilla is one of Green Renters founders and handles a multitude of tasks including website development, editing, marketing and communications.";}s:8:"keywords";a:1:{s:5:"value";s:68:"Chris Chinchilla, Green Renters, website, development,editor, writer";}s:13:"revisit-after";a:1:{s:5:"value";s:1:"1";}s:6:"robots";a:2:{s:5:"value";a:6:{s:9:"noarchive";i:0;s:8:"nofollow";i:0;s:7:"noindex";i:0;s:5:"noodp";i:0;s:9:"nosnippet";i:0;s:6:"noydir";i:0;}s:11:"use_default";i:0;}s:8:"dc.title";a:1:{s:5:"value";s:0:"";}s:8:"location";a:2:{s:8:"latitude";s:0:"";s:9:"longitude";s:0:"";}}s:7:"contact";i:1;s:13:"form_build_id";s:37:"form-adcba416485286c296675d5d385f4de7";s:14:"picture_delete";i:0;s:14:"picture_upload";s:0:"";s:5:"block";a:1:{s:10:"masquerade";a:1:{i:0;i:1;}}}',
-    'path' => 'dashboard',
+    'path' => 'user/dashboard',
     'field_image' => array(),
     'field_wysiwyg_images' => array(),
     'webform' => array(
@@ -68,7 +68,7 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'location' => array(),
     'page_title' => '',
     'uuid' => '1c2d7e2f-387e-11e2-b0cb-003048612c9c',
-    'revision_uuid' => '2f0aa641-387f-11e2-b0cb-003048612c9c',
+    'revision_uuid' => 'f0b13c3a-6458-11e2-9644-78c67702a32e',
     'nodewords' => array(
       'abstract' => array(
         'value' => 'Sustainable living in rental accommodation',
