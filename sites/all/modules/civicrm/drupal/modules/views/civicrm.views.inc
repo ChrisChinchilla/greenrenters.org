@@ -5172,6 +5172,13 @@ function civicrm_views_data() {
 
   $data['civicrm_campaign']['table']['group'] = t('CiviCRM Campaigns');
 
+  $data['civicrm_campaign']['table']['join'] = array(
+
+'civicrm_contribution' => array(
+      'left_field' => 'campaign_id',
+      'field' => 'id',
+    ),
+);    
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla
     'field' => 'id',
