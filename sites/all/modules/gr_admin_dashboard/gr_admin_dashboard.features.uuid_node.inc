@@ -12,7 +12,7 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'uid' => '1',
     'status' => '1',
     'created' => '1354012505',
-    'changed' => '1358835452',
+    'changed' => '1358988783',
     'comment' => '0',
     'promote' => '0',
     'moderate' => '0',
@@ -26,7 +26,7 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'teaser' => '<p>User dashboard, work in progress!</p>
   ',
     'log' => '',
-    'revision_timestamp' => '1358835452',
+    'revision_timestamp' => '1358988783',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
@@ -68,7 +68,7 @@ function gr_admin_dashboard_uuid_features_default_content() {
     'location' => array(),
     'page_title' => '',
     'uuid' => '1c2d7e2f-387e-11e2-b0cb-003048612c9c',
-    'revision_uuid' => '680b518d-645b-11e2-88de-003048612c9c',
+    'revision_uuid' => '68d26ac8-65c0-11e2-9644-78c67702a32e',
     'nodewords' => array(
       'abstract' => array(
         'value' => 'Sustainable living in rental accommodation',
