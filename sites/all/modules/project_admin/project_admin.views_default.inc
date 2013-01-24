@@ -96,6 +96,11 @@ function project_admin_views_default_views() {
   $handler->display->display_options['relationships']['target_contact_id']['table'] = 'civicrm_activity_target';
   $handler->display->display_options['relationships']['target_contact_id']['field'] = 'target_contact_id';
   $handler->display->display_options['relationships']['target_contact_id']['required'] = 0;
+  /* Relationship: CiviCRM Activity Assignments: Assignee Contact ID */
+  $handler->display->display_options['relationships']['assignee_contact_id']['id'] = 'assignee_contact_id';
+  $handler->display->display_options['relationships']['assignee_contact_id']['table'] = 'civicrm_activity_assignment';
+  $handler->display->display_options['relationships']['assignee_contact_id']['field'] = 'assignee_contact_id';
+  $handler->display->display_options['relationships']['assignee_contact_id']['required'] = 0;
   /* Field: CiviCRM Activities: Subject */
   $handler->display->display_options['fields']['subject']['id'] = 'subject';
   $handler->display->display_options['fields']['subject']['table'] = 'civicrm_activity';
@@ -230,7 +235,7 @@ function project_admin_views_default_views() {
   $handler->display->display_options['fields']['display_name_1']['id'] = 'display_name_1';
   $handler->display->display_options['fields']['display_name_1']['table'] = 'civicrm_contact';
   $handler->display->display_options['fields']['display_name_1']['field'] = 'display_name';
-  $handler->display->display_options['fields']['display_name_1']['relationship'] = 'target_contact_id';
+  $handler->display->display_options['fields']['display_name_1']['relationship'] = 'assignee_contact_id';
   $handler->display->display_options['fields']['display_name_1']['label'] = 'Assignee';
   $handler->display->display_options['fields']['display_name_1']['alter']['alter_text'] = 0;
   $handler->display->display_options['fields']['display_name_1']['alter']['make_link'] = 0;
@@ -249,7 +254,7 @@ function project_admin_views_default_views() {
   $handler->display->display_options['fields']['display_name_1']['hide_empty'] = 0;
   $handler->display->display_options['fields']['display_name_1']['empty_zero'] = 0;
   $handler->display->display_options['fields']['display_name_1']['hide_alter_empty'] = 1;
-  $handler->display->display_options['fields']['display_name_1']['link_to_civicrm_contact'] = 0;
+  $handler->display->display_options['fields']['display_name_1']['link_to_civicrm_contact'] = 1;
   /* Filter: CiviCRM Activities: Activity Type */
   $handler->display->display_options['filters']['activity_type']['id'] = 'activity_type';
   $handler->display->display_options['filters']['activity_type']['table'] = 'civicrm_activity';
@@ -358,7 +363,7 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['display_name']['id'] = 'display_name';
   $handler->display->display_options['filters']['display_name']['table'] = 'civicrm_contact';
   $handler->display->display_options['filters']['display_name']['field'] = 'display_name';
-  $handler->display->display_options['filters']['display_name']['relationship'] = 'target_contact_id';
+  $handler->display->display_options['filters']['display_name']['relationship'] = 'assignee_contact_id';
   $handler->display->display_options['filters']['display_name']['operator'] = 'contains';
   $handler->display->display_options['filters']['display_name']['exposed'] = TRUE;
   $handler->display->display_options['filters']['display_name']['expose']['operator'] = 'display_name_op';
