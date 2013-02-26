@@ -379,6 +379,16 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['parent_id']['field'] = 'parent_id';
   $handler->display->display_options['filters']['parent_id']['operator'] = 'empty';
   $handler->display->display_options['filters']['parent_id']['allow_null'] = 1;
+  /* Filter: CiviCRM Activities: Activity Status */
+  $handler->display->display_options['filters']['status']['id'] = 'status';
+  $handler->display->display_options['filters']['status']['table'] = 'civicrm_activity';
+  $handler->display->display_options['filters']['status']['field'] = 'status';
+  $handler->display->display_options['filters']['status']['value'] = array(
+    1 => '1',
+    4 => '4',
+    5 => '5',
+    7 => '7',
+  );
   $handler->display->display_options['path'] = 'admin/tasks';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Tasks';
@@ -492,7 +502,6 @@ function project_admin_views_default_views() {
   $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = 0;
   $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['style_plugin'] = 'views_calc';
-  $handler->display->display_options['style_options']['grouping'] = 'title';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
     'expense_sub_category_214' => 'expense_sub_category_214',
@@ -795,7 +804,6 @@ function project_admin_views_default_views() {
   $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'views_calc';
-  $handler->display->display_options['style_options']['grouping'] = 'title';
   $handler->display->display_options['style_options']['columns'] = array(
     'title' => 'title',
     'expense_sub_category_214' => 'expense_sub_category_214',
@@ -874,7 +882,7 @@ function project_admin_views_default_views() {
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'justification' => 'views_calc_justify_none',
+      'justification' => 'views_calc_justify_right',
       'has_calc' => 1,
       'calc' => array(
         'SUM' => 'SUM',
