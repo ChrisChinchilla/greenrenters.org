@@ -11,17 +11,17 @@
 function widget_services_service_links() {
   $links = array();
 
-  $links['facebook_share'] = array(
+  $links['facebook_widget'] = array(
     'name' => t('Share on Facebook'),
     'link' => 'http://www.facebook.com/sharer.php',
     'description' => t('Share this post on Facebook'),
     'javascript' => array(
-      //'http://static.ak.fbcdn.net/connect.php/js/FB.Share',
+      'http://static.ak.fbcdn.net/connect.php/js/FB.Share',
       'facebook_share.js',
     ),
     'icon' => 'facebook.png',
-    'style' => SERVICE_LINKS_STYLE_EMPTY,
-    'callback' => 'ws_facebook_share_data',
+    'style' => SERVICE_LINKS_STYLE_TEXT,
+    'callback' => 'ws_facebook_widget_share',
   );
   $links['twitter_widget'] = array(
     'name' => 'Tweet Widget',
@@ -40,7 +40,7 @@ function widget_services_service_links() {
     'description' => t('I Like it'),
     'javascript' => 'facebook_like.js',
     'style' => SERVICE_LINKS_STYLE_EMPTY,
-    'callback' => 'ws_facebook_like_data',
+    'callback' => 'ws_facebook_widget_like',
   );
   $links['digg_smart_button'] = array(
     'name' => 'Digg Smart Button',
@@ -70,24 +70,10 @@ function widget_services_service_links() {
     'description' => t('Share on Linkedin'),
     'javascript' => array(
       'linkedin_share_button.js',
-      //'http://platform.linkedin.com/in.js',
+      'http://platform.linkedin.com/in.js',
     ),
     'style' => SERVICE_LINKS_STYLE_EMPTY,
     'callback' => 'ws_linkedin_share_button_data',
-  );
-  $links['pinterest_button'] = array(
-    'name' => 'Pinterest',
-    'link' => 'http://pinterest.com/pin/create/button/?url=<raw-encoded-url>&description=<pinterest-description>&media=<pinterest-media>',
-    'icon' => 'pinterest.png',
-    'description' => t('Pin It'),
-    'javascript' => array(
-      'pinterest_button.js',
-      //'http://assets.pinterest.com/js/pinit.js',
-    ),
-    'style' => SERVICE_LINKS_STYLE_EMPTY,
-    'attributes' => array('class' => 'pin-it-button'),
-    'callback' => 'ws_pinterest_button_data',
-    'preset' => 'ws_pinterest_button_tags',
   );
 
   return $links;
@@ -115,16 +101,15 @@ function ws_twitter_widget_data(&$service, $subst) {
 }
 
 /**
- * Callback function for Facebook Share.
+ * Callback function for Facebook Share Widget.
  */
-function ws_facebook_share_data(&$service, $subst) {
+function ws_facebook_widget_share(&$service, $subst) {
   static $fs_settings;
 
   if (!isset($fs_settings)) {
     $fs_settings = array(
       'type' => check_plain(variable_get('service_links_fs_type', 'button_count')),
       'fix_count' => (boolean) variable_get('service_links_fs_fix_count', FALSE),
-      'text' => t('@text', array('@text' => (variable_get('service_links_fs_text', 'Share on Facebook')))),
     );
 
     drupal_add_js(array('ws_fs' => $fs_settings), 'setting');
@@ -134,9 +119,9 @@ function ws_facebook_share_data(&$service, $subst) {
 }
 
 /**
- * Callback function for Facebook Like.
+ * Callback function for Facebook Like Widget.
  */
-function ws_facebook_like_data(&$service, $subst) {
+function ws_facebook_widget_like(&$service, $subst) {
   static $vars;
 
   if (!isset($vars)) {
@@ -233,59 +218,11 @@ function ws_linkedin_share_button_data(&$service, $subst) {
   static $lsb_settings;
 
   if (!isset($lsb_settings)) {
-    if (!module_exists('jquery_update')) {
-      drupal_set_message(t('Linkedin Share Button requires <a href="@url">Jquery Update 2.x</a> to work correctly.', array('@url' => 'http://drupal.org/project/jquery_update')), 'warning', FALSE);
-    }
-
     $lsb_settings = array(
       'countmode' => check_plain(variable_get('service_links_lsb_countmode', 'right')),
     );
 
     drupal_add_js(array('ws_lsb' => $lsb_settings), 'setting');
-  }
-}
-
-/**
- * Preset function for Pinterest Button, which fill the media tag.
- */
-function ws_pinterest_button_tags(&$service, &$settings, $node = NULL) {
-  static $tokens;
-
-  if (!isset($tokens)) {
-    $tokens['media'] = variable_get('service_links_pb_mediatoken', '');
-    $tokens['description'] = variable_get('service_links_pb_descriptiontoken', '');
-  }
-
-  $settings['tag']['pinterest-media'] = '<pinterest-media>';
-  
-  if (module_exists('token')) {
-    $settings['subst']['pinterest-media'] = rawurlencode(@token_replace($tokens['media'], 'node', $node));
-    if (empty($tokens['description'])) {
-      $service['link'] = str_replace('pinterest-description', 'raw-encoded-teaser', $service['link']);
-    }
-    else {
-      $settings['tag']['pinterest-description'] = '<pinterest-description>';
-      $settings['subst']['pinterest-description'] = rawurlencode(@token_replace($tokens['description'], 'node', $node));
-    }
-  }
-  else {
-    $settings['subst']['pinterest-media'] = '';
-    $service['link'] = str_replace('pinterest-description', 'raw-encoded-teaser', $service['link']);
-  }
-}
-
-/**
- * Callback function for Pinterest Button.
- */
-function ws_pinterest_button_data(&$service, $subst) {
-  static $pb_settings;
-
-  if (!isset($pb_settings)) {
-    $pb_settings = array(
-      'countlayout' => check_plain(variable_get('service_links_pb_countlayout', 'horizontal')),
-    );
-
-    drupal_add_js(array('ws_pb' => $pb_settings), 'setting');
   }
 }
 

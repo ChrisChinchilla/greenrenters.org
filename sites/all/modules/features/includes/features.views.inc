@@ -264,3 +264,13 @@ function views_features_revert($module) {
     menu_rebuild();
   }
 }
+
+/**
+ * Implementation of hook_features_import().
+ */
+function views_features_import($items = array(), $module_name = '') {
+  foreach ($items as $view_name) {
+    $view = views_get_view($view_name);
+    $view->save();
+  }
+}

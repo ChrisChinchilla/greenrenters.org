@@ -1,3 +1,29 @@
+linkchecker 6.x-dev, nightly
+----------------------------
+
+* Issue #1901018 by hass: ERROR - __clone method called on non-object.
+* #1891900: Uninstall of variable 'linkchecker_check_connections_max' failed.
+* #1719174: Editing node throws "Undefined property" stdClass::$nid in hook_node_prepare().
+* #1875602: Check URL fragment identifiers in content
+* Minor code style fixes
+
+linkchecker 6.x-2.6, December 24, 2012
+--------------------------------------
+
+* Fixed some typos.
+* Upgraded outdated HTTP user agents.
+* #380052: Add support with non-blocking parallel link checking.
+* linkchecker_update_6211 was missing an update message.
+* #1869924: Strict warning: Creating default object from empty value.
+* #1867460: Prevent save on automatic updates, if content has not changed.
+* #1804842 follow up: Exit if all node types are disabled
+* #1450672: Cron task does not impersonate to admin user on automatic content updates.
+* Added Drupal 6.14 warning to known issues.
+* #1804842: Lots of warnings when comment module is not installed
+* #1811908: Allow extracting protocol relative url's
+* #1586022: linkchecker generating bad User-Agent string
+* Status code 500 on HEAD/GET does not increase fail_count
+* #1488572: i18n: "Permission restrictions deny" all broken links in other languages
 
 linkchecker 6.x-2.5, February 15, 2012
 --------------------------------------

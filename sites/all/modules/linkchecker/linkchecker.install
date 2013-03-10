@@ -19,6 +19,9 @@ define('LINKCHECKER_MINIMUM_MYSQL', '5.0');
  */
 function linkchecker_install() {
   drupal_install_schema('linkchecker');
+
+  $linkchecker_default_impersonate_user = user_load(1);
+  variable_set('linkchecker_impersonate_user', $linkchecker_default_impersonate_user->name);
 }
 
 /**
@@ -29,8 +32,9 @@ function linkchecker_uninstall() {
 
   variable_del('linkchecker_action_status_code_301');
   variable_del('linkchecker_action_status_code_404');
+  variable_del('linkchecker_check_connections_max');
+  variable_del('linkchecker_check_library');
   variable_del('linkchecker_check_links_interval');
-  variable_del('linkchecker_check_links_max');
   variable_del('linkchecker_check_useragent');
   variable_del('linkchecker_cleanup_links_last');
   variable_del('linkchecker_disable_link_check_for_urls');
@@ -45,6 +49,7 @@ function linkchecker_uninstall() {
   variable_del('linkchecker_filter_blacklist');
   variable_del('linkchecker_fqdn_only');
   variable_del('linkchecker_ignore_response_codes');
+  variable_del('linkchecker_impersonate_user');
   variable_del('linkchecker_scan_blocks');
   variable_del('linkchecker_scan_comments');
   variable_del('linkchecker_scan_nodetypes');
@@ -552,6 +557,7 @@ function linkchecker_update_6211() {
   $ret = array();
 
   variable_del('linkchecker_pathfilter_support');
+  $ret[] = array('success' => TRUE, 'query' => 'Removed obsolete linkchecker_pathfilter_support variable.');
 
   return $ret;
 }
@@ -626,6 +632,57 @@ function linkchecker_update_6216() {
   db_add_index($ret, 'linkchecker_links', 'fail_count', array('fail_count'));
   db_add_index($ret, 'linkchecker_links', 'last_checked', array('last_checked'));
   db_add_index($ret, 'linkchecker_links', 'status', array('status'));
+
+  return $ret;
+}
+
+/**
+ * #1450672: Set user 1 as default user to impersonate content updates.
+ */
+function linkchecker_update_6217() {
+  $ret = array();
+
+  $linkchecker_default_impersonate_user = user_load(1);
+  variable_set('linkchecker_impersonate_user', $linkchecker_default_impersonate_user->name);
+  $ret[] = array('success' => TRUE, 'query' => 'Set user 1 as default user to impersonate content updates.');
+
+  return $ret;
+}
+
+/**
+ * Removed obsolete linkchecker_check_links_max variable.
+ */
+function linkchecker_update_6218() {
+  $ret = array();
+
+  variable_del('linkchecker_check_links_max');
+  $ret[] = array('success' => TRUE, 'query' => 'Removed obsolete linkchecker_check_links_max variable.');
+
+  return $ret;
+}
+
+/**
+ * Upgrade outdated HTTP user agents.
+ */
+function linkchecker_update_6219() {
+  $ret = array();
+
+  $linkchecker_check_useragent = variable_get('linkchecker_check_useragent', 'Drupal (+http://drupal.org/)');
+
+  $useragent_upgrade = array(
+    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;)' => 'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0;)' => 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)',
+    'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0',
+    'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0',
+  );
+
+  if (isset($useragent_upgrade[$linkchecker_check_useragent])) {
+    variable_set('linkchecker_check_useragent', $useragent_upgrade[$linkchecker_check_useragent]);
+    $ret[] = array('success' => TRUE, 'query' => 'Upgraded outdated HTTP user agent.');
+  }
+  else {
+    $ret[] = array('success' => TRUE, 'query' => 'User agent already up to date.');
+  }
 
   return $ret;
 }

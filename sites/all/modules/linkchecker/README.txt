@@ -28,7 +28,7 @@ Required:
    reported as broken and cannot verified as they should be.
 
    To make sure it always works - it's required to configure the $base_url in
-   the sites settings.php with your public sites URL. Better save than sorry!
+   the sites settings.php with your public sites URL. Better safe than sorry!
 
 
 Known issues:
@@ -44,3 +44,8 @@ Known issues:
    to the newly provided URL.
    
    -> Workaround: Manually fix these links or try the patch.
+
+2. Drupal 6.14 only: A critical core bug has been introduced by #193383:
+   set_time_limit: Centralize calls and prevent warnings and errors that stops
+   link checker from verifying links. Apply the available D6 hotfix in #111 or
+   update to Drupal 6.15+ to fix your installation.

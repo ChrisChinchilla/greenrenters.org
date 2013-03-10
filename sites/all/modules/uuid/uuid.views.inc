@@ -17,7 +17,8 @@ function uuid_views_data() {
   foreach ($tables as $table => $schema) {
     $base_table = str_replace('uuid_', '', $table);
 
-    $field = array_shift(array_keys($schema['fields']));
+    $field_keys = array_keys($schema['fields']);
+    $field = array_shift($field_keys);
 
     $data[$table]['table'] = array(
       'group' => 'UUID',

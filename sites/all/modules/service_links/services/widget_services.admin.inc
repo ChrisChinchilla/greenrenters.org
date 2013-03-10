@@ -100,7 +100,7 @@ function  widget_services_admin() {
     '#default_value' => variable_get('service_links_fl_action', 'like'),
     '#options' => array(
       'like' => t('Like'),
-      'recommend' => t('Recommend'),
+      'recommended' => t('Recommended'),
     ),
     '#attributes' => array('class' => 'container-inline'),
   );
@@ -113,13 +113,13 @@ function  widget_services_admin() {
     '#attributes' => array('class' => 'container-inline'),
   );
 
-  $form['facebook_share'] = array(
+  $form['facebook_widget'] = array(
     '#type' => 'fieldset',
     '#collapsible' => TRUE,
     '#collapsed' => FALSE,
     '#title' => t('Facebook Share'),
   );
-  $form['facebook_share']['service_links_fs_type'] = array(
+  $form['facebook_widget']['service_links_fs_type'] = array(
     '#type' => 'select',
     '#title' => t('Type'),
     '#default_value' => variable_get('service_links_fs_type', 'button_count'),
@@ -129,14 +129,7 @@ function  widget_services_admin() {
       'icon_link' => t('Icon Link'),
     ),
   );
-  $form['facebook_share']['service_links_fs_text'] = array(
-    '#type' => 'textfield',
-    '#title' => t('Text'),
-    '#default_value' => variable_get('service_links_fs_text', 'Share on Facebook'),
-    '#description' => t('This is the text displayed in the button. Leave blank if you dont want show anything but the counter (Select also Button Count above).'),
-    '#size' => 40,
-  );
-  $form['facebook_share']['service_links_fs_fix_count'] = array(
+  $form['facebook_widget']['service_links_fs_fix_count'] = array(
     '#type' => 'checkbox',
     '#title' => t('Show the counter also if zero'),
     '#default_value' => variable_get('service_links_fs_fix_count', FALSE),
@@ -219,47 +212,6 @@ function  widget_services_admin() {
       '' => t('No Count'),
     ),
   );
-
-  $form['pinterest_button'] = array(
-    '#type' => 'fieldset',
-    '#collapsible' => TRUE,
-    '#collapsed' => FALSE,
-    '#title' => t('Pinterest Button'),
-  );
-  $form['pinterest_button']['service_links_pb_countlayout'] = array(
-    '#title' => t('Pin Count'),
-    '#type' => 'select',
-    '#default_value' => variable_get('service_links_pb_countlayout', 'horizontal'),
-    '#options' => array(
-      'horizontal' => t('Horizontal'),
-      'vertical' => t('Vertical'),
-      'none' => t('No Count'),
-    ),
-  );
-  $form['pinterest_button']['service_links_pb_mediatoken'] = array(
-    '#title' => t('Media parameter'),
-    '#type' => 'textfield',
-    '#default_value' => variable_get('service_links_pb_mediatoken', ''),
-    '#description' => t('Fill the media parameter with a token which will be evaluated by <a href=@url>Token</a> module.', array('@url' => 'http://www.drupal.org/project/token')),
-    '#size' => 40,
-  );
-  $form['pinterest_button']['service_links_pb_descriptiontoken'] = array(
-    '#title' => t('Description parameter'),
-    '#type' => 'textfield',
-    '#default_value' => variable_get('service_links_pb_descriptiontoken', ''),
-    '#description' => t('Fill the description parameter with a token which will be evaluated by <a href=@url>Token</a> module, if left blank will be replaced by the node teaser.', array('@url' => 'http://www.drupal.org/project/token')),
-    '#size' => 40,
-  );
-  if (module_exists('token')) {
-    $form['pinterest_button']['token_help'] = array(
-      '#type' => 'fieldset',
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#title' => t('Token help'),
-      '#theme' => 'token_tree',
-      '#token_types' => array('node'),
-    );
-  }
 
   return system_settings_form($form);
 }

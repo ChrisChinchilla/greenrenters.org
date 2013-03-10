@@ -1,6 +1,6 @@
 if (Drupal.jsEnabled) {
   $(document).ready(function(){
-    // It works only for FF, IE, Opera, Chrome
+    // work only for FF, IE, Opera, Chrome
     if (window.sidebar || window.external || window.opera) {
       $("a.service-links-favorite").show();
       if (window.chrome) {
@@ -16,7 +16,7 @@ if (Drupal.jsEnabled) {
 
           $(this).attr('rel', 'sidebar').attr('href', url).attr('title', title);
         });
-      } else if (window.sidebar || (window.external && window.external.AddFavourite)) {
+      } else if (window.sidebar || window.external.AddFavourite) {
         $("a.service-links-favorite").click(function(event){
           event.preventDefault();
           var url = $(this).attr('href').split('&favtitle=');

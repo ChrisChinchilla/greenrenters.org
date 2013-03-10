@@ -120,14 +120,33 @@ function linkchecker_admin_settings_form(&$form_state) {
     '#title' => t('Filters disabled for link extraction'),
     '#default_value' => variable_get('linkchecker_filter_blacklist', explode('|', LINKCHECKER_DEFAULT_FILTER_BLACKLIST)),
     '#options' => $filter_options,
-    '#description' => t('If a filter has been enabled for an input format it runs first and afterwards the link extraction. This helps the link checker module to find all links normally created by custom filters (e.g. Markdown filter, Bbcode). All filters used as an inline references (e.g. Weblink filter <code>[link: id]</code>) to other content and filters only wasting processing time (e.g. Line break converter) should be disabled. This setting does not have any effect on how content is shown on a page. This feature optimizes the internal link extraction process for link checker and prevents false alarms about broken links in content not having the real data of a link.'),
+    '#description' => t('If a filter has been enabled for an input format it runs first and afterwards the link extraction. This helps the link checker module to find all links normally created by custom filters (e.g. Markdown filter, Bbcode). All filters used as inline references (e.g. Weblink filter <code>[link: id]</code>) to other content and filters only wasting processing time (e.g. Line break converter) should be disabled. This setting does not have any effect on how content is shown on a page. This feature optimizes the internal link extraction process for link checker and prevents false alarms about broken links in content not having the real data of a link.'),
   );
 
+  $count_lids_enabled = db_result(db_query("SELECT count(lid) FROM {linkchecker_links} WHERE status = %d", 1));
+  $count_lids_disabled = db_result(db_query("SELECT count(lid) FROM {linkchecker_links} WHERE status = %d", 0));
   $form['check'] = array(
     '#type' => 'fieldset',
     '#title' => t('Check settings'),
-    // '#description' => t('For simultaneous link checks it is highly recommended to install the <a href="@curl">cURL</a> library. This may be <strong>necessary</strong> on larger sites with very many links, but may still improve (speed up), link checking performance on smaller sites.', array('@curl' => 'http://www.php.net/manual/en/book.curl.php')),
+    '#description' => t('For simultaneous link checks it is recommended to install the <a href="@httprl">HTTP Parallel Request & Threading Library</a>. This may be <strong>necessary</strong> on larger sites with very many links (30.000+), but will also improve overall link check duration on smaller sites. Currently the site has @count links (@count_enabled enabled / @count_disabled disabled).', array('@httprl' => 'http://drupal.org/project/httprl', '@count' => $count_lids_enabled+$count_lids_disabled, '@count_enabled' => $count_lids_enabled, '@count_disabled' => $count_lids_disabled)),
     '#collapsible' => FALSE,
+  );
+  $form['check']['linkchecker_check_library'] = array(
+    '#type' => 'select',
+    '#title' => t('Check library'),
+    '#description' => t('Defines the library that is used for checking links.'),
+    '#default_value' => variable_get('linkchecker_check_library', 'core'),
+    '#options' => array(
+      'core' => t('Drupal core'),
+      'httprl' => t('HTTP Parallel Request & Threading Library'),
+    ),
+  );
+  $form['check']['linkchecker_check_connections_max'] = array(
+    '#type' => 'select',
+    '#title' => t('Number of simultaneous connections'),
+    '#description' => t('Defines the maximum number of simultaneous connections that can be opened by the server. <em>HTTP Parallel Request & Threading Library</em> make sure that a single domain is not overloaded beyond RFC limits. For small hosting plans with very limited CPU and RAM it may be required to reduce the default limit.'),
+    '#default_value' => variable_get('linkchecker_check_connections_max', 8),
+    '#options' => drupal_map_assoc(array(2, 4, 8, 16, 24, 32, 48, 64, 96, 128)),
   );
   $form['check']['linkchecker_check_useragent'] = array(
     '#type' => 'select',
@@ -136,20 +155,12 @@ function linkchecker_admin_settings_form(&$form_state) {
     '#default_value' => variable_get('linkchecker_check_useragent', 'Drupal (+http://drupal.org/)'),
     '#options' => array(
       'Drupal (+http://drupal.org/)' => 'Drupal (+http://drupal.org/)',
-      'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1;)' => 'Windows XP / Internet Explorer 7.0',
-      'Mozilla/5.0 (Windows; U; Windows NT 5.1; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Windows XP / Mozilla Firefox 3.0.5',
-      'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0;)' => 'Windows Vista / Internet Explorer 7.0',
-      'Mozilla/5.0 (Windows; U; Windows NT 6.0; de; rv:1.9.0.5) Gecko/2008120122 Firefox/3.0.5' => 'Windows Vista / Mozilla Firefox 3.0.5',
+      'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)' => 'Windows 7 (x64), Internet Explorer 9.0',
+      'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0' => 'Windows 7 (x64), Mozilla Firefox 17.0',
+      'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.2; WOW64; Trident/6.0)' => 'Windows 8 (x64), Internet Explorer 10.0',
+      'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0' => 'Windows 8 (x64), Mozilla Firefox 17.0',
     ),
   );
-/* For now it's better to guess this value from max_execution_time.
-   $form['check']['linkchecker_check_links_max'] = array(
-    '#type' => 'select',
-    '#title' => t('Check number of links per cron run'),
-    '#description' => t('Defines the number of links that will be checked per cron run. The possible setting hardly depends on your PHP timeout value and remote servers speed and may increased if <a href="@curl">cURL</a> is installed and use simultaneous request checking. All cron jobs may fail, if this setting is too high!', array('@curl' => 'http://www.php.net/manual/en/book.curl.php')),
-    '#default_value' => variable_get('linkchecker_check_links_max', 10),
-    '#options' => drupal_map_assoc(array(5, 10, 25, 50, 100, 200, 250, 300, 350, 400, 450, 500, 750, 1000)),
-  ); */
   $form['check']['linkchecker_check_links_interval'] = array(
     '#type' => 'select',
     '#title' => t('Check interval for links'),
@@ -170,6 +181,16 @@ function linkchecker_admin_settings_form(&$form_state) {
     '#title' => t('Error handling'),
     '#description' => t('Defines error handling and custom actions to be executed if specific HTTP requests are failing.'),
     '#collapsible' => FALSE,
+  );
+  $linkchecker_default_impersonate_user = user_load(1);
+  $form['error']['linkchecker_impersonate_user'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Impersonate user account'),
+    '#description' => t('If below error handling actions are executed they can be impersonated with a custom user account. By default this is user %name, but you are able to assign a custom user to allow easier identification of these automatic revision updates. Make sure you select a user with <em>full</em> permissions on your site or the user may not able to access and save all content.', array('%name' => $linkchecker_default_impersonate_user->name)),
+    '#size' => 30,
+    '#maxlength' => 60,
+    '#autocomplete_path' => 'user/autocomplete',
+    '#default_value' => variable_get('linkchecker_impersonate_user', ''),
   );
   $form['error']['linkchecker_action_status_code_301'] = array(
     '#title' => t('Update permanently moved links'),
@@ -249,6 +270,12 @@ function linkchecker_admin_settings_form_validate($form, &$form_state) {
   // reserved documentation domains and not "example" hostnames!
   $linkchecker_disable_link_check_for_urls = array_filter(preg_split('/(\r\n?|\n)/', $form_state['values']['linkchecker_disable_link_check_for_urls']));
   $form_state['values']['linkchecker_disable_link_check_for_urls'] = implode("\n", array_unique(array_merge(explode("\n", LINKCHECKER_RESERVED_DOCUMENTATION_DOMAINS), $linkchecker_disable_link_check_for_urls)));
+
+  // Validate impersonation user name.
+  $linkchecker_impersonate_user = user_load(array('name' => $form_state['values']['linkchecker_impersonate_user']));
+  if (empty($linkchecker_impersonate_user->uid)) {
+    form_set_error('linkchecker_impersonate_user', t('User account %name cannot found.', array('%name' => $form_state['values']['linkchecker_impersonate_user'])));
+  }
 }
 
 function linkchecker_admin_settings_form_submit($form, &$form_state) {

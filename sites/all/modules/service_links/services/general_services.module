@@ -103,6 +103,11 @@ function general_services_service_links() {
     'link' => 'http://www.mister-wong.com/addurl/?bm_url=<encoded-url>&bm_description=<encoded-title>',
     'description' => t('Bookmark this post on Mister Wong'),
   );
+  $links['google_buzz'] = array(
+   'name' => 'Google Buzz',
+   'link' => 'http://www.google.com/buzz/post?url=<encoded-url>',
+   'description' => t('Buzz this post on Google.'),
+  );
   $links['mixx'] = array(
     'name' => 'Mixx',
     'link' => 'http://www.mixx.com/submit?page_url=<encoded-url>&title=<encoded-title>',

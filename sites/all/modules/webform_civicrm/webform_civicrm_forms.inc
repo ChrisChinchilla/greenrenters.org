@@ -57,15 +57,15 @@ function _webform_civicrm_webform_frontend_form_alter(&$form, &$form_state) {
   // If this is an edit op, use the original IDs and return
   if (isset($form['#submission']->sid)) {
     if (isset($form['#submission']->civicrm)) {
-      $form_state['storage']['civicrm']['id']['cid'] = $form['#submission']->civicrm['contact_id'];
-      $form_state['storage']['civicrm']['id']['act'][1] = $form['#submission']->civicrm['activity_id'];
+      $form_state['civicrm']['id']['cid'] = $form['#submission']->civicrm['contact_id'];
+      $form_state['civicrm']['id']['act'][1] = $form['#submission']->civicrm['activity_id'];
     }
     webform_civicrm_fill_values($form['submitted'], array(), $fields, array());
     return;
   }
   // If this form is already in-process, IDs will be stored
-  if (!empty($form_state['storage'])) {
-    $id = $form_state['storage']['civicrm']['id'];
+  if (!empty($form_state['civicrm'])) {
+    $id = $form_state['civicrm']['id'];
   }
   else {
     $args = $_GET;
@@ -78,7 +78,7 @@ function _webform_civicrm_webform_frontend_form_alter(&$form, &$form_state) {
         $cid = (int) $args['cid' . $i];
         require_once 'CRM/Contact/BAO/Contact/Permission.php';
         if ($cid === 0 ||
-        CRM_Contact_BAO_Contact_Permission::validateChecksumContact($cid, CRM_Core_DAO::$_nullObject)) {
+        CRM_Contact_BAO_Contact_Permission::validateChecksumContact($cid, CRM_Core_DAO::$_nullObject, FALSE)) {
           $id['cid'][$i] = $cid;
           // Identify contact 1 as acting user if not already logged in
           if ($cid && $i == 1 && user_is_anonymous()) {
@@ -374,7 +374,7 @@ function _webform_civicrm_webform_frontend_form_alter(&$form, &$form_state) {
   }
 
   // Store ids
-  $form_state['storage']['civicrm']['id'] = $id;
+  $form_state['civicrm']['id'] = $id;
 
   // Set default values and other attributes for CiviCRM form elements
   // Passing $submitted helps avoid overwriting values that have been entered on a multi-step form
@@ -431,10 +431,14 @@ function webform_civicrm_fill_values(&$elements, $data, $fields, $submitted) {
           && empty($element['#multiple']) && is_array($val)) {
             $val = array_pop($val);
           }
-          if ($element['#type'] == 'hidden') {
+          // Set value for "secure value" elements
+          if ($element['#type'] == 'value') {
             $element['#value'] = $val;
           }
-          $element['#default_value'] = $val;
+          // Set default value
+          else {
+            $element['#default_value'] = $val;
+          }
         }
       }
     }
@@ -793,17 +797,24 @@ function webform_civicrm_process_submission($node, &$submission, $op) {
               }
             }
             if (!empty($params['event_id'])) {
+              $params['contact_id'] = $cid;
+              if (empty($params['campaign_id']) || !in_array('CiviCampaign', $config->enableComponents, TRUE)) {
+                unset($params['campaign_id']);
+              }
+              // Reformat custom data from nested arrays
+              $custom = array();
+              foreach ($data['participant'][$n] as $key => $vals) {
+                if (substr($key, 0, 2) == 'cg' && isset($vals[$e])) {
+                  $custom[$key][1] = $vals[$e];
+                }
+              }
               // Loop through event ids to support multi-valued form elements
               $events = (array) $params['event_id'];
               foreach ($events as $i => $eid) {
                 if (!empty($eid)) {
-                  $params['contact_id'] = $cid;
                   list($eid) = explode('-', $eid);
                   $params['event_id'] = $eid;
-                  unset($remove[$eid]);
-                  if (empty($params['campaign_id']) || !in_array('CiviCampaign', $config->enableComponents, TRUE)) {
-                    unset($params['campaign_id']);
-                  }
+                  unset($remove[$eid], $params['registered_by_id'], $params['id'], $params['source']);
                   // Is existing participant?
                   if (!empty($existing[$eid])) {
                     $params['id'] = $existing[$params['event_id']];
@@ -815,15 +826,9 @@ function webform_civicrm_process_submission($node, &$submission, $op) {
                     }
                   }
                   $result = webform_civicrm_api('participant', 'create', $params);
-                  if ($c == 1 && $data['participant_reg_type'] == 'all') {
+                  // When registering contact 1, store id to apply to other contacts
+                  if ($c == 1) {
                     $registered_by_id[$e][$i] = $result['id'];
-                  }
-                  // Reformat custom data from nested arrays
-                  $custom = array();
-                  foreach ($data['participant'][$n] as $key => $vals) {
-                    if (substr($key, 0, 2) == 'cg' && isset($vals[$e])) {
-                      $custom[$key][1] = $vals[$e];
-                    }
                   }
                   if ($custom) {
                     webform_civicrm_save_custom($custom, $result['id'], 'Participant');
@@ -1134,7 +1139,7 @@ function _webform_civicrm_form_validate($form, &$form_state, $submitted) {
  */
 function _webform_civicrm_participant_validate($form, &$form_state, $submitted) {
   $data = $form['#node']->webform_civicrm['data'];
-  $cids = webform_civicrm_aval($form_state, 'storage:civicrm:id:cid', array());
+  $cids = webform_civicrm_aval($form_state, 'civicrm:id:cid', array());
   // Check how many valid contacts we have
   $contacts = array();
   foreach (array_keys($data['contact']) as $c) {

@@ -1238,12 +1238,16 @@ margin-bottom: 100%;*/
 }
 
 .view-content .field-image,
-.field-image-fid
+.field-image-fid,
+.view-content .field-wysiwyg-images-fid,
+.field-wysiwyg-images-fid
 {
   float: left;
   margin-right: 20px;
+  /*
   width:150px;
   height:150px;
+  */
 }
 
 .page-store .view-content .field-image,
