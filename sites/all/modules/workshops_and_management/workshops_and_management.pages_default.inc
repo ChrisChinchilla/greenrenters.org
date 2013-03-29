@@ -83,7 +83,13 @@ events',
       'override_title' => 0,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -106,7 +112,13 @@ events',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -126,7 +138,13 @@ events',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -146,7 +164,13 @@ events',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -181,7 +205,13 @@ events',
       'override_title' => 0,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '86400',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -202,7 +232,13 @@ events',
       'override_title' => 1,
       'override_title_text' => '<none>',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => array(),
       'style' => 'stylizer',
@@ -235,7 +271,13 @@ events',
       'override_title' => 1,
       'override_title_text' => 'What workshops do we offer?',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -283,7 +325,13 @@ events',
       'override_title' => 0,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -304,7 +352,13 @@ events',
       'override_title' => 0,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
@@ -359,7 +413,13 @@ events',
       'override_title' => 0,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
       'style' => 'block',
@@ -394,7 +454,13 @@ events',
       'override_title' => 1,
       'override_title_text' => 'Make an enquiry',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
       'style' => 'default',
@@ -415,7 +481,13 @@ events',
       'override_title' => 1,
       'override_title_text' => '',
     );
-    $pane->cache = array();
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
     $pane->style = array(
       'settings' => NULL,
     );
