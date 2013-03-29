@@ -94,14 +94,14 @@ function gr_wysiwyg_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'imageapi_imagemagick_convert';
-  $strongarm->value = '/ImageMagick/bin/convert';
+  $strongarm->value = '/usr/bin/convert';
   $export['imageapi_imagemagick_convert'] = $strongarm;
 
   $strongarm = new stdClass;
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'imageapi_imagemagick_debugging';
-  $strongarm->value = 1;
+  $strongarm->value = 0;
   $export['imageapi_imagemagick_debugging'] = $strongarm;
 
   $strongarm = new stdClass;
