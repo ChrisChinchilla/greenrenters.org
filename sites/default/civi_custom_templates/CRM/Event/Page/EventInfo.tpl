@@ -24,7 +24,6 @@
  +--------------------------------------------------------------------+
 *}
 {* this template is used for displaying event information *}
-CHANGE ME
 {if $registerClosed }
 <div class="spacer"></div>
 <div class="messages status">
