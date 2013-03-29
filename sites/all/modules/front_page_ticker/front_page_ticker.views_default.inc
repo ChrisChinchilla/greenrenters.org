@@ -94,7 +94,7 @@ function front_page_ticker_views_default_views() {
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_reversed'] = 0;
-    /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -212,7 +212,7 @@ function front_page_ticker_views_default_views() {
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_reversed'] = 0;
-    /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -266,6 +266,7 @@ function front_page_ticker_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  $handler->display->display_options['block_caching'] = '8';
 
   /* Display: Feed */
   $handler = $view->new_display('feed', 'Feed', 'feed_1');
