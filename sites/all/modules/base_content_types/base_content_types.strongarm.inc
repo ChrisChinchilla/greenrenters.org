@@ -1027,7 +1027,7 @@ function base_content_types_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'xmlsitemap_settings_node_';
   $strongarm->value = array(
-    'status' => '1',
+    'status' => '0',
     'priority' => '0.5',
   );
   $export['xmlsitemap_settings_node_'] = $strongarm;
