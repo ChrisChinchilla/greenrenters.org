@@ -468,6 +468,66 @@ function projects_content_default_fields() {
     ),
   );
 
+  // Exported field: field_vol_op
+  $fields['project-field_vol_op'] = array(
+    'field_name' => 'field_vol_op',
+    'type_name' => 'project',
+    'display_settings' => array(
+      'label' => array(
+        'format' => 'above',
+        'exclude' => 0,
+      ),
+      'teaser' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'full' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '4' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '2' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      '3' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+      'token' => array(
+        'format' => 'default',
+        'exclude' => 0,
+      ),
+    ),
+    'widget_active' => '1',
+    'type' => 'text',
+    'required' => '0',
+    'multiple' => '0',
+    'module' => 'text',
+    'active' => '1',
+    'text_processing' => '0',
+    'max_length' => '',
+    'allowed_values' => 'No
+Yes',
+    'allowed_values_php' => '',
+    'widget' => array(
+      'default_value' => array(
+        '0' => array(
+          'value' => NULL,
+        ),
+      ),
+      'default_value_php' => NULL,
+      'label' => 'Volunteer Oppurtunity',
+      'weight' => '11',
+      'description' => 'Does this project currently need volunteer support? if so, check this box.',
+      'type' => 'optionwidgets_onoff',
+      'module' => 'optionwidgets',
+    ),
+  );
+
   // Exported field: field_wysiwyg_images
   $fields['project-field_wysiwyg_images'] = array(
     'field_name' => 'field_wysiwyg_images',
@@ -849,6 +909,7 @@ function projects_content_default_fields() {
   // Included for use with string extractors like potx.
   t('Image');
   t('Related Workshops');
+  t('Volunteer Oppurtunity');
   t('WYSIWYG Images');
 
   return $fields;
