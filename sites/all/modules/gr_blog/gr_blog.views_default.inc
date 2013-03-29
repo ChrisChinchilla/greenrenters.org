@@ -48,6 +48,26 @@ function gr_blog_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
+  /* Field: Content: Image (field_image) */
+  $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
+  $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
+  $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
+  $handler->display->display_options['fields']['field_image_fid']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['make_link'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['word_boundary'] = 1;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['ellipsis'] = 1;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['strip_tags'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['trim'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['alter']['html'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['hide_empty'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['empty_zero'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['link_to_node'] = 0;
+  $handler->display->display_options['fields']['field_image_fid']['label_type'] = 'none';
+  $handler->display->display_options['fields']['field_image_fid']['format'] = 'Content_Thumb_linked';
+  $handler->display->display_options['fields']['field_image_fid']['multiple']['group'] = 1;
+  $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_number'] = '1';
+  $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_from'] = '0';
+  $handler->display->display_options['fields']['field_image_fid']['multiple']['multiple_reversed'] = 0;
   /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
