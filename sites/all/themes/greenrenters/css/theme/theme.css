@@ -290,6 +290,24 @@ a:focus {}
 
 	/*background-image: url(../images/house_header.gif);	*/
 	}
+	
+	#house_overlay { 
+background-color: #e9e9e9;
+width: 40%;
+height: 40%;
+position: absolute;
+top: 30%;
+left: 30%;
+z-index: 1000;
+}
+
+#house_overlay p
+{
+text-align: center;
+font-size: 16px;
+font-weight: bold;
+padding: 15px;
+}
 
 /* #branding wraps #logo, #site-name and #site-slogan. */
 #branding {

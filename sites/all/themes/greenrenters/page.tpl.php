@@ -96,35 +96,6 @@
   <?php print $styles; ?>
   <?php print $layout_settings; ?>
   <?php print $scripts; ?>
-  <script>
-  $(document).ready(function() {
-		
-		// Preload all rollovers
-		$("#Table_01 img").each(function() {
-			// Set the original src
-			rollsrc = $(this).attr("src");
-			rollON = rollsrc.replace(/.png$/ig,"_over.png");
-			$("<img>").attr("src", rollON);
-		});
-		
-		// Navigation rollovers
-		$("#Table_01 a").mouseover(function(){
-			imgsrc = $(this).children("img").attr("src");
-			matches = imgsrc.match(/_over/);
-			
-			// don't do the rollover if state is already ON
-			if (!matches) {
-			imgsrcON = imgsrc.replace(/.png$/ig,"_over.png"); // strip off extension
-			$(this).children("img").attr("src", imgsrcON);
-			}
-			
-		});
-		$("#Table_01 a").mouseout(function(){
-			$(this).children("img").attr("src", imgsrc);
-		});
-		
-	
-	});</script>
 <link rel="alternate" type="application/rss+xml" title="Green Renters RSS feed" href="http://feeds.feedburner.com/GreenRenters" />
   
 </head>
