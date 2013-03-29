@@ -25,6 +25,7 @@ function project_admin_views_default_views() {
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
+  $handler->display->display_options['exposed_form']['options']['submit_button'] = 'Filter';
   $handler->display->display_options['exposed_form']['options']['reset_button'] = TRUE;
   $handler->display->display_options['exposed_form']['options']['autosubmit'] = 0;
   $handler->display->display_options['exposed_form']['options']['autosubmit_hide'] = 0;
@@ -285,11 +286,8 @@ function project_admin_views_default_views() {
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['defaults']['pager'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '50';
+  $handler->display->display_options['pager']['type'] = 'none';
   $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['pager']['options']['id'] = '0';
-  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['grouping'] = 'title_1';
@@ -300,9 +298,9 @@ function project_admin_views_default_views() {
     'priority' => 'priority',
     'due_date_117' => 'due_date_117',
     'text_link' => 'text_link',
-    'display_name' => 'display_name',
+    'display_name_1' => 'display_name_1',
   );
-  $handler->display->display_options['style_options']['default'] = '-1';
+  $handler->display->display_options['style_options']['default'] = 'due_date_117';
   $handler->display->display_options['style_options']['info'] = array(
     'subject' => array(
       'sortable' => 0,
@@ -323,13 +321,13 @@ function project_admin_views_default_views() {
       'separator' => '',
     ),
     'priority' => array(
-      'sortable' => 0,
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
     ),
     'due_date_117' => array(
-      'sortable' => 0,
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -338,8 +336,8 @@ function project_admin_views_default_views() {
       'align' => '',
       'separator' => '',
     ),
-    'display_name' => array(
-      'sortable' => 1,
+    'display_name_1' => array(
+      'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -389,6 +387,19 @@ function project_admin_views_default_views() {
     5 => '5',
     7 => '7',
   );
+  /* Filter: CiviCRM Campaigns: Title */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'civicrm_campaign';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['operator'] = 'contains';
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Project title';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['optional'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['single'] = TRUE;
+  $handler->display->display_options['filters']['title']['case'] = 1;
   $handler->display->display_options['path'] = 'admin/tasks';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Tasks';
@@ -793,6 +804,16 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['optional'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['single'] = TRUE;
   $handler->display->display_options['filters']['title']['case'] = 0;
+  /* Filter: CiviCRM Contributions: Contribution Status */
+  $handler->display->display_options['filters']['contribution_status']['id'] = 'contribution_status';
+  $handler->display->display_options['filters']['contribution_status']['table'] = 'civicrm_contribution';
+  $handler->display->display_options['filters']['contribution_status']['field'] = 'contribution_status';
+  $handler->display->display_options['filters']['contribution_status']['value'] = array(
+    1 => '1',
+    2 => '2',
+    5 => '5',
+    6 => '6',
+  );
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
@@ -902,8 +923,16 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['contribution_type']['table'] = 'civicrm_contribution';
   $handler->display->display_options['filters']['contribution_type']['field'] = 'contribution_type';
   $handler->display->display_options['filters']['contribution_type']['value'] = array(
+    4 => '4',
     6 => '6',
   );
+  $handler->display->display_options['filters']['contribution_type']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['contribution_type']['expose']['operator'] = 'contribution_type_op';
+  $handler->display->display_options['filters']['contribution_type']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['contribution_type']['expose']['label'] = 'Income Type';
+  $handler->display->display_options['filters']['contribution_type']['expose']['identifier'] = 'contribution_type';
+  $handler->display->display_options['filters']['contribution_type']['expose']['single'] = 0;
+  $handler->display->display_options['filters']['contribution_type']['expose']['reduce'] = 1;
   /* Filter: CiviCRM Campaigns: Title */
   $handler->display->display_options['filters']['title']['id'] = 'title';
   $handler->display->display_options['filters']['title']['table'] = 'civicrm_campaign';
@@ -917,6 +946,16 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['optional'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['single'] = TRUE;
   $handler->display->display_options['filters']['title']['case'] = 0;
+  /* Filter: CiviCRM Custom: Project Campaign fields: Expense Sub Category */
+  $handler->display->display_options['filters']['expense_sub_category_214']['id'] = 'expense_sub_category_214';
+  $handler->display->display_options['filters']['expense_sub_category_214']['table'] = 'civicrm_value_project_campaign_fields_31';
+  $handler->display->display_options['filters']['expense_sub_category_214']['field'] = 'expense_sub_category_214';
+  $handler->display->display_options['filters']['expense_sub_category_214']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['expense_sub_category_214']['expose']['operator'] = 'expense_sub_category_214_op';
+  $handler->display->display_options['filters']['expense_sub_category_214']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['expense_sub_category_214']['expose']['label'] = 'Expense Type';
+  $handler->display->display_options['filters']['expense_sub_category_214']['expose']['identifier'] = 'expense_sub_category_214';
+  $handler->display->display_options['filters']['expense_sub_category_214']['expose']['reduce'] = 0;
   $handler->display->display_options['path'] = 'admin/projects/budgets';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Project Budgets';
