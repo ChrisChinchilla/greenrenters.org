@@ -12,7 +12,7 @@ function publishing_workflow_uuid_features_default_content() {
     'uid' => '1',
     'status' => '1',
     'created' => '1348544407',
-    'changed' => '1354854733',
+    'changed' => '1354858144',
     'comment' => '2',
     'promote' => '0',
     'moderate' => '0',
@@ -34,11 +34,11 @@ function publishing_workflow_uuid_features_default_content() {
     'teaser' => '<p>We&#39;re keen to make this site a community resource, for a community that is disparate, varied and wide spread.</p>
   <p>We don&#39;t have the resources to do it all ourselves, so if you have something you want to add here, go ahead. You will be asked to add your name and email so we can get in touch with you if need be and you will be asked to prove your human so we don&#39;t get inundated with spam, but apart from that, go crazy, write whatever you feel.</p>',
     'log' => '',
-    'revision_timestamp' => '1354854733',
+    'revision_timestamp' => '1354858144',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
-    'data' => 'a:11:{s:18:"admin_compact_mode";b:0;s:8:"new_role";i:0;s:12:"new_role_add";s:1:"3";s:16:"new_role_add_qty";s:0:"";s:24:"new_role_add_granularity";s:3:"day";s:9:"nodewords";a:9:{s:8:"abstract";a:1:{s:5:"value";s:42:"Sustainable living in rental accommodation";}s:9:"canonical";a:1:{s:5:"value";s:0:"";}s:9:"copyright";a:1:{s:5:"value";s:18:"Green Renters 2011";}s:11:"description";a:1:{s:5:"value";s:167:"Chris Ward aka Chris Chinchilla is one of Green Renters founders and handles a multitude of tasks including website development, editing, marketing and communications.";}s:8:"keywords";a:1:{s:5:"value";s:68:"Chris Chinchilla, Green Renters, website, development,editor, writer";}s:13:"revisit-after";a:1:{s:5:"value";s:1:"1";}s:6:"robots";a:2:{s:5:"value";a:6:{s:9:"noarchive";i:0;s:8:"nofollow";i:0;s:7:"noindex";i:0;s:5:"noodp";i:0;s:9:"nosnippet";i:0;s:6:"noydir";i:0;}s:11:"use_default";i:0;}s:8:"dc.title";a:1:{s:5:"value";s:0:"";}s:8:"location";a:2:{s:8:"latitude";s:0:"";s:9:"longitude";s:0:"";}}s:7:"contact";i:1;s:13:"form_build_id";s:37:"form-adcba416485286c296675d5d385f4de7";s:14:"picture_delete";i:0;s:14:"picture_upload";s:0:"";s:5:"block";a:1:{s:10:"masquerade";a:1:{i:0;i:1;}}}',
+    'data' => 'a:10:{s:18:"admin_compact_mode";b:0;s:8:"new_role";i:0;s:12:"new_role_add";s:1:"3";s:16:"new_role_add_qty";s:0:"";s:24:"new_role_add_granularity";s:3:"day";s:7:"contact";i:1;s:13:"form_build_id";s:37:"form-adcba416485286c296675d5d385f4de7";s:14:"picture_delete";i:0;s:14:"picture_upload";s:0:"";s:5:"block";a:1:{s:10:"masquerade";a:1:{i:0;i:1;}}}',
     'path' => 'contribute',
     'field_image' => array(),
     'field_wysiwyg_images' => array(),
@@ -72,11 +72,9 @@ function publishing_workflow_uuid_features_default_content() {
     'files' => array(),
     '0' => FALSE,
     'probability' => 100,
-    'locations' => array(),
-    'location' => array(),
     'page_title' => '',
     'uuid' => 'b332a202-06c2-11e2-825f-121c575fd617',
-    'revision_uuid' => '12cf4b28-4027-11e2-bdbb-38edfe30f332',
+    'revision_uuid' => '03fe5d16-402f-11e2-88de-003048612c9c',
     'nodewords' => array(
       'abstract' => array(
         'value' => 'Sustainable living in rental accommodation',
@@ -87,20 +85,20 @@ function publishing_workflow_uuid_features_default_content() {
       'copyright' => array(
         'value' => 'Green Renters 2011',
       ),
-      'dc.contributor' => array(
+      'dcterms.contributor' => array(
         'value' => '',
       ),
-      'dc.creator' => array(
+      'dcterms.creator' => array(
         'value' => '',
       ),
-      'dc.date' => array(
+      'dcterms.date' => array(
         'value' => array(
           'day' => '25',
           'month' => '9',
           'year' => '2012',
         ),
       ),
-      'dc.title' => array(
+      'dcterms.title' => array(
         'value' => '',
       ),
       'description' => array(

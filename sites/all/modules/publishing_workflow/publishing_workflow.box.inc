@@ -14,7 +14,7 @@ function publishing_workflow_default_box() {
   $box->title = '';
   $box->description = 'Contribute to article';
   $box->options = array(
-    'body' => '<p>Is something missing, need updating or inaccurate? Simply click the <em>edit</em> link above to make a change! Create a new articles&nbsp;<a href="/node/add">here</a>.</p>
+    'body' => '<p>Is something missing, need updating or inaccurate? Simply click the&nbsp;<em>edit</em>&nbsp;link above to make a change! Create a new articles&nbsp;<a href="/node/add">here</a>.</p>
 ',
     'format' => '2',
   );
