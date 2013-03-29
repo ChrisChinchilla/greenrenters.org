@@ -99,8 +99,8 @@ function civievent_views_views_default_views() {
   $handler = $view->new_display('default', 'Defaults', 'default');
   $handler->display->display_options['access']['type'] = 'none';
   $handler->display->display_options['cache']['type'] = 'time';
-  $handler->display->display_options['cache']['results_lifespan'] = '518400';
-  $handler->display->display_options['cache']['output_lifespan'] = '518400';
+  $handler->display->display_options['cache']['results_lifespan'] = '21600';
+  $handler->display->display_options['cache']['output_lifespan'] = '21600';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'some';
@@ -215,6 +215,15 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['filters']['terms_agreed_76']['field'] = 'terms_agreed_76';
   $handler->display->display_options['filters']['terms_agreed_76']['value'] = '1';
   $handler->display->display_options['filters']['terms_agreed_76']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Custom: Event management: Payment status */
+  $handler->display->display_options['filters']['payment_status_83']['id'] = 'payment_status_83';
+  $handler->display->display_options['filters']['payment_status_83']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['payment_status_83']['field'] = 'payment_status_83';
+  $handler->display->display_options['filters']['payment_status_83']['operator'] = 'not in';
+  $handler->display->display_options['filters']['payment_status_83']['value'] = array(
+    'To quote' => 'To quote',
+    'Cancelled' => 'Cancelled',
+  );
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
@@ -226,6 +235,7 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['footer']['text']['label'] = '';
   $handler->display->display_options['footer']['text']['empty'] = TRUE;
   $handler->display->display_options['footer']['text']['content'] = 'Above are only our next 5 activities, make sure you take a look at our <a href="/workshops">workshops and events</a> page for more.';
+  $handler->display->display_options['block_caching'] = '8';
 
   $views[$view->name] = $view;
 
@@ -250,8 +260,10 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = 15;
-  $handler->display->display_options['pager']['options']['id'] = 2;
+  $handler->display->display_options['pager']['options']['items_per_page'] = '25';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['expose']['items_per_page_options_all'] = 0;
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['columns'] = array(
     'start_date' => 'start_date',
@@ -400,9 +412,19 @@ function civievent_views_views_default_views() {
   $handler->display->display_options['filters']['terms_agreed_76']['field'] = 'terms_agreed_76';
   $handler->display->display_options['filters']['terms_agreed_76']['value'] = '1';
   $handler->display->display_options['filters']['terms_agreed_76']['expose']['operator'] = FALSE;
+  /* Filter: CiviCRM Custom: Event management: Payment status */
+  $handler->display->display_options['filters']['payment_status_83']['id'] = 'payment_status_83';
+  $handler->display->display_options['filters']['payment_status_83']['table'] = 'civicrm_value_event_management_16';
+  $handler->display->display_options['filters']['payment_status_83']['field'] = 'payment_status_83';
+  $handler->display->display_options['filters']['payment_status_83']['operator'] = 'not in';
+  $handler->display->display_options['filters']['payment_status_83']['value'] = array(
+    'To quote' => 'To quote',
+    'Cancelled' => 'Cancelled',
+  );
 
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
+  $handler->display->display_options['block_caching'] = '4';
 
   $views[$view->name] = $view;
 

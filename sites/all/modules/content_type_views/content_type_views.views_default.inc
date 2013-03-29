@@ -22,7 +22,9 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['title'] = 'Campaigns';
   $handler->display->display_options['use_ajax'] = TRUE;
   $handler->display->display_options['access']['type'] = 'none';
-  $handler->display->display_options['cache']['type'] = 'none';
+  $handler->display->display_options['cache']['type'] = 'time';
+  $handler->display->display_options['cache']['results_lifespan'] = '518400';
+  $handler->display->display_options['cache']['output_lifespan'] = '518400';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
   $handler->display->display_options['pager']['type'] = 'full';
@@ -30,7 +32,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -50,8 +52,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -148,6 +149,14 @@ function content_type_views_views_default_views() {
   /* Display: Block */
   $handler = $view->new_display('block', 'Block', 'block_1');
 
+  /* Display: Page */
+  $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['path'] = 'campaigns';
+  $handler->display->display_options['menu']['type'] = 'normal';
+  $handler->display->display_options['menu']['title'] = 'Campaigns';
+  $handler->display->display_options['menu']['weight'] = '0';
+  $handler->display->display_options['menu']['name'] = 'menu-block-one';
+
   $views[$view->name] = $view;
 
   // Exported view: category_page
@@ -187,7 +196,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -207,8 +216,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -258,10 +266,15 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['view_node']['hide_empty'] = 0;
   $handler->display->display_options['fields']['view_node']['empty_zero'] = 0;
   $handler->display->display_options['fields']['view_node']['text'] = 'Tell me more';
-  /* Sort criterion: Global: Random */
-  $handler->display->display_options['sorts']['random']['id'] = 'random';
-  $handler->display->display_options['sorts']['random']['table'] = 'views';
-  $handler->display->display_options['sorts']['random']['field'] = 'random';
+  /* Sort criterion: Node: Sticky */
+  $handler->display->display_options['sorts']['sticky']['id'] = 'sticky';
+  $handler->display->display_options['sorts']['sticky']['table'] = 'node';
+  $handler->display->display_options['sorts']['sticky']['field'] = 'sticky';
+  /* Sort criterion: Node statistics: Total views */
+  $handler->display->display_options['sorts']['totalcount']['id'] = 'totalcount';
+  $handler->display->display_options['sorts']['totalcount']['table'] = 'node_counter';
+  $handler->display->display_options['sorts']['totalcount']['field'] = 'totalcount';
+  $handler->display->display_options['sorts']['totalcount']['order'] = 'DESC';
   /* Argument: Taxonomy: Term */
   $handler->display->display_options['arguments']['name']['id'] = 'name';
   $handler->display->display_options['arguments']['name']['table'] = 'term_data';
@@ -353,7 +366,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -373,8 +386,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -499,7 +511,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -519,8 +531,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -692,7 +703,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -712,8 +723,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -858,7 +868,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -878,8 +888,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -997,7 +1006,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1017,8 +1026,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1141,7 +1149,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1161,8 +1169,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1264,7 +1271,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1284,8 +1291,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1433,7 +1439,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['created']['alter']['html'] = 0;
   $handler->display->display_options['fields']['created']['hide_empty'] = 0;
   $handler->display->display_options['fields']['created']['empty_zero'] = 0;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1453,8 +1459,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1564,7 +1569,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['row_plugin'] = 'fields';
   $handler->display->display_options['row_options']['hide_empty'] = 0;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1584,8 +1589,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1703,7 +1707,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1723,8 +1727,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -1844,7 +1847,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -1864,8 +1867,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
@@ -2013,7 +2015,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['title']['hide_empty'] = 0;
   $handler->display->display_options['fields']['title']['empty_zero'] = 0;
   $handler->display->display_options['fields']['title']['link_to_node'] = 1;
-  /* Field: Content: Image (field_wysiwyg_images) */
+  /* Field: Content: WYSIWYG Images (field_wysiwyg_images) */
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['id'] = 'field_wysiwyg_images_fid';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['table'] = 'node_data_field_wysiwyg_images';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['field'] = 'field_wysiwyg_images_fid';
@@ -2033,8 +2035,7 @@ function content_type_views_views_default_views() {
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_number'] = '1';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_from'] = '0';
   $handler->display->display_options['fields']['field_wysiwyg_images_fid']['multiple']['multiple_reversed'] = 0;
-  
-    /* Field: Content: Image (field_image) */
+  /* Field: Content: Image (field_image) */
   $handler->display->display_options['fields']['field_image_fid']['id'] = 'field_image_fid';
   $handler->display->display_options['fields']['field_image_fid']['table'] = 'node_data_field_image';
   $handler->display->display_options['fields']['field_image_fid']['field'] = 'field_image_fid';
