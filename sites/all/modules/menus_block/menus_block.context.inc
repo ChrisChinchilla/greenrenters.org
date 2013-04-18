@@ -9,6 +9,57 @@ function menus_block_context_default_contexts() {
   $context = new stdClass;
   $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
   $context->api_version = 3;
+  $context->name = 'admin_sitemenus';
+  $context->description = '';
+  $context->tag = 'site menus';
+  $context->conditions = array(
+    'context' => array(
+      'values' => array(
+        '~rsr_layout' => '~rsr_layout',
+      ),
+    ),
+    'path' => array(
+      'values' => array(
+        '~rentalsweetrental' => '~rentalsweetrental',
+        '~rentalsweetrental/*' => '~rentalsweetrental/*',
+        '~admin' => '~admin',
+        '~admin/*' => '~admin/*',
+      ),
+    ),
+    'user' => array(
+      'values' => array(
+        'Admins' => 'Admins',
+        'Editors' => 'Editors',
+        'Members' => 'Members',
+        'Site member' => 'Site member',
+        'Staff' => 'Staff',
+        'Volunteer' => 'Volunteer',
+        'Writers' => 'Writers',
+      ),
+    ),
+  );
+  $context->reactions = array(
+    'block' => array(
+      'blocks' => array(
+        'user-1' => array(
+          'module' => 'user',
+          'delta' => 1,
+          'region' => 'left',
+          'weight' => 0,
+        ),
+      ),
+    ),
+  );
+  $context->condition_mode = 1;
+
+  // Translatables
+  // Included for use with string extractors like potx.
+  t('site menus');
+  $export['admin_sitemenus'] = $context;
+
+  $context = new stdClass;
+  $context->disabled = FALSE; /* Edit this to true to make a default context disabled initially */
+  $context->api_version = 3;
   $context->name = 'sitemenus';
   $context->description = '';
   $context->tag = '';
