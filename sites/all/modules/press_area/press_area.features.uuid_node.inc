@@ -12,7 +12,7 @@ function press_area_uuid_features_default_content() {
     'uid' => '1',
     'status' => '0',
     'created' => '1375332507',
-    'changed' => '1375333925',
+    'changed' => '1375336276',
     'comment' => '0',
     'promote' => '0',
     'moderate' => '0',
@@ -26,12 +26,11 @@ function press_area_uuid_features_default_content() {
     'teaser' => '<p>One of our aims is to ensure that renters are included in conversations around sustainability and housing more generally, we are often asked for our thoughts and opinions by the media and below is a selection of some of our appearances.</p>
     ',
     'log' => '',
-    'revision_timestamp' => '1375333925',
+    'revision_timestamp' => '1375336276',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
     'data' => 'a:10:{s:18:"admin_compact_mode";b:0;s:8:"new_role";i:0;s:12:"new_role_add";s:1:"3";s:16:"new_role_add_qty";s:0:"";s:24:"new_role_add_granularity";s:3:"day";s:7:"contact";i:1;s:13:"form_build_id";s:37:"form-adcba416485286c296675d5d385f4de7";s:14:"picture_delete";i:0;s:14:"picture_upload";s:0:"";s:5:"block";a:1:{s:10:"masquerade";a:1:{i:0;i:1;}}}',
-    'path' => 'press',
     'field_image' => array(),
     'field_wysiwyg_images' => array(),
     'webform' => array(
@@ -57,7 +56,7 @@ function press_area_uuid_features_default_content() {
       'emails' => array(),
       'components' => array(),
     ),
-    'last_comment_timestamp' => '1375332507',
+    'last_comment_timestamp' => '1375336130',
     'last_comment_name' => NULL,
     'comment_count' => '0',
     'taxonomy' => array(),
@@ -66,7 +65,7 @@ function press_area_uuid_features_default_content() {
     'probability' => 100,
     'page_title' => '',
     'uuid' => '9af12fa0-fa65-11e2-b079-45cf3fcc45f4',
-    'revision_uuid' => 'e88fe83e-fa68-11e2-b079-45cf3fcc45f4',
+    'revision_uuid' => '61525c8b-fa6e-11e2-9e36-003048612c9c',
     'nodewords' => array(
       'abstract' => array(
         'value' => '',
@@ -148,7 +147,6 @@ function press_area_uuid_features_default_content() {
         'value' => '',
       ),
     ),
-    'pathauto_perform_alias' => FALSE,
     'date' => '2013-08-01 14:48:27 +1000',
   );
   return $nodes;

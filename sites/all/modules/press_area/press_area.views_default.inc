@@ -114,11 +114,11 @@ function press_area_views_default_views() {
   $handler->display->display_options['fields']['field_articlelink_url']['id'] = 'field_articlelink_url';
   $handler->display->display_options['fields']['field_articlelink_url']['table'] = 'node_data_field_articlelink';
   $handler->display->display_options['fields']['field_articlelink_url']['field'] = 'field_articlelink_url';
-  $handler->display->display_options['fields']['field_articlelink_url']['alter']['alter_text'] = 1;
-  $handler->display->display_options['fields']['field_articlelink_url']['alter']['text'] = 'http://[field_articlelink_url]';
-  $handler->display->display_options['fields']['field_articlelink_url']['alter']['make_link'] = 0;
-  $handler->display->display_options['fields']['field_articlelink_url']['alter']['absolute'] = 0;
-  $handler->display->display_options['fields']['field_articlelink_url']['alter']['external'] = 0;
+  $handler->display->display_options['fields']['field_articlelink_url']['alter']['alter_text'] = 0;
+  $handler->display->display_options['fields']['field_articlelink_url']['alter']['make_link'] = 1;
+  $handler->display->display_options['fields']['field_articlelink_url']['alter']['path'] = 'http://[field_articlelink_url]';
+  $handler->display->display_options['fields']['field_articlelink_url']['alter']['absolute'] = 1;
+  $handler->display->display_options['fields']['field_articlelink_url']['alter']['external'] = 1;
   $handler->display->display_options['fields']['field_articlelink_url']['alter']['replace_spaces'] = 0;
   $handler->display->display_options['fields']['field_articlelink_url']['alter']['trim_whitespace'] = 0;
   $handler->display->display_options['fields']['field_articlelink_url']['alter']['nl2br'] = 0;
