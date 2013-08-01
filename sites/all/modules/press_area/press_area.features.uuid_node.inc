@@ -12,7 +12,7 @@ function press_area_uuid_features_default_content() {
     'uid' => '1',
     'status' => '0',
     'created' => '1375332507',
-    'changed' => '1375332507',
+    'changed' => '1375333925',
     'comment' => '0',
     'promote' => '0',
     'moderate' => '0',
@@ -22,11 +22,11 @@ function press_area_uuid_features_default_content() {
     'revision_uid' => '1',
     'title' => 'Press',
     'body' => '<p>One of our aims is to ensure that renters are included in conversations around sustainability and housing more generally, we are often asked for our thoughts and opinions by the media and below is a selection of some of our appearances.</p>
-  ',
+    ',
     'teaser' => '<p>One of our aims is to ensure that renters are included in conversations around sustainability and housing more generally, we are often asked for our thoughts and opinions by the media and below is a selection of some of our appearances.</p>
-  ',
+    ',
     'log' => '',
-    'revision_timestamp' => '1375332507',
+    'revision_timestamp' => '1375333925',
     'format' => '2',
     'name' => 'ChrisChinchilla',
     'picture' => 'sites/default/files/pictures/picture-1.jpg',
@@ -66,7 +66,7 @@ function press_area_uuid_features_default_content() {
     'probability' => 100,
     'page_title' => '',
     'uuid' => '9af12fa0-fa65-11e2-b079-45cf3fcc45f4',
-    'revision_uuid' => '9af13cac-fa65-11e2-b079-45cf3fcc45f4',
+    'revision_uuid' => 'e88fe83e-fa68-11e2-b079-45cf3fcc45f4',
     'nodewords' => array(
       'abstract' => array(
         'value' => '',
