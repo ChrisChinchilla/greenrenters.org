@@ -2172,7 +2172,7 @@ margin-left:-10px;
 
 td[id^=Event_]
 {
-	display:none;
+	/*display:none;*/
 }
 
 .pane-for-review
@@ -2198,4 +2198,11 @@ td[id^=Event_]
 .aggregation p
 {
 	margin-bottom:0;
+}
+
+.pane-press-page .body,
+.pane-press-page .field-articlelink-url,
+.pane-press-page .upload-fid
+{
+	font-size:12px;
 }

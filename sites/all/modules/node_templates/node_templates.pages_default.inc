@@ -13,7 +13,7 @@ function node_templates_default_page_manager_handlers() {
   $handler->task = 'node_view';
   $handler->subtask = '';
   $handler->handler = 'panel_context';
-  $handler->weight = -24;
+  $handler->weight = -23;
   $handler->conf = array(
     'title' => 'Node Template',
     'no_blocks' => 0,
@@ -40,7 +40,6 @@ function node_templates_default_page_manager_handlers() {
               'tutorial' => 'tutorial',
               'project' => 'project',
               'product' => 'product',
-              'workshop' => 'workshop',
               'membership_offer' => 'membership_offer',
             ),
           ),
@@ -691,6 +690,56 @@ events',
     $pane->pid = 'new-15';
     $pane->panel = 'right';
     $pane->type = 'views';
+    $pane->subtype = 'press_page';
+    $pane->shown = TRUE;
+    $pane->access = array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'path_visibility',
+          'settings' => array(
+            'visibility_setting' => '1',
+            'paths' => 'press',
+          ),
+          'context' => 'empty',
+          'not' => FALSE,
+        ),
+      ),
+    );
+    $pane->configuration = array(
+      'override_pager_settings' => 0,
+      'use_pager' => 1,
+      'nodes_per_page' => '0',
+      'pager_id' => '24',
+      'offset' => '0',
+      'more_link' => 0,
+      'feed_icons' => 0,
+      'panel_args' => 0,
+      'link_to_view' => 0,
+      'args' => '',
+      'url' => '',
+      'display' => 'block_1',
+      'override_title' => 1,
+      'override_title_text' => '',
+    );
+    $pane->cache = array(
+      'method' => 'simple',
+      'settings' => array(
+        'lifetime' => '604800',
+        'granularity' => 'args',
+      ),
+    );
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 6;
+    $display->content['new-15'] = $pane;
+    $display->panels['right'][6] = 'new-15';
+    $pane = new stdClass;
+    $pane->pid = 'new-16';
+    $pane->panel = 'right';
+    $pane->type = 'views';
     $pane->subtype = 'civi_workshops_bayside';
     $pane->shown = TRUE;
     $pane->access = array(
@@ -737,11 +786,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 6;
-    $display->content['new-15'] = $pane;
-    $display->panels['right'][6] = 'new-15';
+    $pane->position = 7;
+    $display->content['new-16'] = $pane;
+    $display->panels['right'][7] = 'new-16';
     $pane = new stdClass;
-    $pane->pid = 'new-16';
+    $pane->pid = 'new-17';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'Campaigns';
@@ -787,11 +836,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 7;
-    $display->content['new-16'] = $pane;
-    $display->panels['right'][7] = 'new-16';
+    $pane->position = 8;
+    $display->content['new-17'] = $pane;
+    $display->panels['right'][8] = 'new-17';
     $pane = new stdClass;
-    $pane->pid = 'new-17';
+    $pane->pid = 'new-18';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'for_review';
@@ -837,11 +886,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 8;
-    $display->content['new-17'] = $pane;
-    $display->panels['right'][8] = 'new-17';
+    $pane->position = 9;
+    $display->content['new-18'] = $pane;
+    $display->panels['right'][9] = 'new-18';
     $pane = new stdClass;
-    $pane->pid = 'new-18';
+    $pane->pid = 'new-19';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'pk';
@@ -891,11 +940,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 9;
-    $display->content['new-18'] = $pane;
-    $display->panels['right'][9] = 'new-18';
+    $pane->position = 10;
+    $display->content['new-19'] = $pane;
+    $display->panels['right'][10] = 'new-19';
     $pane = new stdClass;
-    $pane->pid = 'new-19';
+    $pane->pid = 'new-20';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'AvailableWorkshopsBlocks';
@@ -941,11 +990,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 10;
-    $display->content['new-19'] = $pane;
-    $display->panels['right'][10] = 'new-19';
+    $pane->position = 11;
+    $display->content['new-20'] = $pane;
+    $display->panels['right'][11] = 'new-20';
     $pane = new stdClass;
-    $pane->pid = 'new-20';
+    $pane->pid = 'new-21';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'faq_block';
@@ -991,11 +1040,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 11;
-    $display->content['new-20'] = $pane;
-    $display->panels['right'][11] = 'new-20';
+    $pane->position = 12;
+    $display->content['new-21'] = $pane;
+    $display->panels['right'][12] = 'new-21';
     $pane = new stdClass;
-    $pane->pid = 'new-21';
+    $pane->pid = 'new-22';
     $pane->panel = 'right';
     $pane->type = 'node_attachments';
     $pane->subtype = 'node_attachments';
@@ -1018,11 +1067,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 12;
-    $display->content['new-21'] = $pane;
-    $display->panels['right'][12] = 'new-21';
+    $pane->position = 13;
+    $display->content['new-22'] = $pane;
+    $display->panels['right'][13] = 'new-22';
     $pane = new stdClass;
-    $pane->pid = 'new-22';
+    $pane->pid = 'new-23';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'product_block';
@@ -1073,11 +1122,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 13;
-    $display->content['new-22'] = $pane;
-    $display->panels['right'][13] = 'new-22';
+    $pane->position = 14;
+    $display->content['new-23'] = $pane;
+    $display->panels['right'][14] = 'new-23';
     $pane = new stdClass;
-    $pane->pid = 'new-23';
+    $pane->pid = 'new-24';
     $pane->panel = 'right';
     $pane->type = 'content_field';
     $pane->subtype = 'field_review';
@@ -1116,11 +1165,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 14;
-    $display->content['new-23'] = $pane;
-    $display->panels['right'][14] = 'new-23';
+    $pane->position = 15;
+    $display->content['new-24'] = $pane;
+    $display->panels['right'][15] = 'new-24';
     $pane = new stdClass;
-    $pane->pid = 'new-24';
+    $pane->pid = 'new-25';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'panel_tag';
@@ -1157,11 +1206,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 15;
-    $display->content['new-24'] = $pane;
-    $display->panels['right'][15] = 'new-24';
+    $pane->position = 16;
+    $display->content['new-25'] = $pane;
+    $display->panels['right'][16] = 'new-25';
     $pane = new stdClass;
-    $pane->pid = 'new-25';
+    $pane->pid = 'new-26';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'associated_links-1';
@@ -1184,11 +1233,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 16;
-    $display->content['new-25'] = $pane;
-    $display->panels['right'][16] = 'new-25';
+    $pane->position = 17;
+    $display->content['new-26'] = $pane;
+    $display->panels['right'][17] = 'new-26';
     $pane = new stdClass;
-    $pane->pid = 'new-26';
+    $pane->pid = 'new-27';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'campaign_page';
@@ -1234,11 +1283,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 17;
-    $display->content['new-26'] = $pane;
-    $display->panels['right'][17] = 'new-26';
+    $pane->position = 18;
+    $display->content['new-27'] = $pane;
+    $display->panels['right'][18] = 'new-27';
     $pane = new stdClass;
-    $pane->pid = 'new-27';
+    $pane->pid = 'new-28';
     $pane->panel = 'right';
     $pane->type = 'views';
     $pane->subtype = 'service_page';
@@ -1284,11 +1333,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 18;
-    $display->content['new-27'] = $pane;
-    $display->panels['right'][18] = 'new-27';
+    $pane->position = 19;
+    $display->content['new-28'] = $pane;
+    $display->panels['right'][19] = 'new-28';
     $pane = new stdClass;
-    $pane->pid = 'new-28';
+    $pane->pid = 'new-29';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'webform-client-block-13';
@@ -1325,11 +1374,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 19;
-    $display->content['new-28'] = $pane;
-    $display->panels['right'][19] = 'new-28';
+    $pane->position = 20;
+    $display->content['new-29'] = $pane;
+    $display->panels['right'][20] = 'new-29';
     $pane = new stdClass;
-    $pane->pid = 'new-29';
+    $pane->pid = 'new-30';
     $pane->panel = 'right';
     $pane->type = 'block';
     $pane->subtype = 'block-26';
@@ -1351,11 +1400,11 @@ events',
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 20;
-    $display->content['new-29'] = $pane;
-    $display->panels['right'][20] = 'new-29';
+    $pane->position = 21;
+    $display->content['new-30'] = $pane;
+    $display->panels['right'][21] = 'new-30';
     $pane = new stdClass;
-    $pane->pid = 'new-30';
+    $pane->pid = 'new-31';
     $pane->panel = 'top';
     $pane->type = 'block';
     $pane->subtype = 'block-19';
@@ -1392,8 +1441,8 @@ events',
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
-    $display->content['new-30'] = $pane;
-    $display->panels['top'][0] = 'new-30';
+    $display->content['new-31'] = $pane;
+    $display->panels['top'][0] = 'new-31';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
