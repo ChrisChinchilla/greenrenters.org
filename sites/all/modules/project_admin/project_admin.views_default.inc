@@ -355,6 +355,13 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['activity_type']['table'] = 'civicrm_activity';
   $handler->display->display_options['filters']['activity_type']['field'] = 'activity_type';
   $handler->display->display_options['filters']['activity_type']['value'] = array(
+    1 => '1',
+    2 => '2',
+    3 => '3',
+    34 => '34',
+    36 => '36',
+    56 => '56',
+    57 => '57',
     64 => '64',
   );
   /* Filter: CiviCRM Contacts: Display Name */
@@ -371,12 +378,6 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['display_name']['expose']['optional'] = TRUE;
   $handler->display->display_options['filters']['display_name']['expose']['single'] = TRUE;
   $handler->display->display_options['filters']['display_name']['case'] = 1;
-  /* Filter: CiviCRM Activities: Parent Activity ID */
-  $handler->display->display_options['filters']['parent_id']['id'] = 'parent_id';
-  $handler->display->display_options['filters']['parent_id']['table'] = 'civicrm_activity';
-  $handler->display->display_options['filters']['parent_id']['field'] = 'parent_id';
-  $handler->display->display_options['filters']['parent_id']['operator'] = 'empty';
-  $handler->display->display_options['filters']['parent_id']['allow_null'] = 1;
   /* Filter: CiviCRM Activities: Activity Status */
   $handler->display->display_options['filters']['status']['id'] = 'status';
   $handler->display->display_options['filters']['status']['table'] = 'civicrm_activity';
@@ -400,6 +401,19 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['title']['expose']['optional'] = TRUE;
   $handler->display->display_options['filters']['title']['expose']['single'] = TRUE;
   $handler->display->display_options['filters']['title']['case'] = 1;
+  /* Filter: CiviCRM Activities: Subject */
+  $handler->display->display_options['filters']['subject']['id'] = 'subject';
+  $handler->display->display_options['filters']['subject']['table'] = 'civicrm_activity';
+  $handler->display->display_options['filters']['subject']['field'] = 'subject';
+  $handler->display->display_options['filters']['subject']['operator'] = 'not empty';
+  $handler->display->display_options['filters']['subject']['case'] = 1;
+  /* Filter: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['filters']['display_name_1']['id'] = 'display_name_1';
+  $handler->display->display_options['filters']['display_name_1']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['display_name_1']['field'] = 'display_name';
+  $handler->display->display_options['filters']['display_name_1']['relationship'] = 'assignee_contact_id';
+  $handler->display->display_options['filters']['display_name_1']['operator'] = 'not empty';
+  $handler->display->display_options['filters']['display_name_1']['case'] = 1;
   $handler->display->display_options['path'] = 'admin/tasks';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Tasks';
@@ -956,6 +970,16 @@ function project_admin_views_default_views() {
   $handler->display->display_options['filters']['expense_sub_category_214']['expose']['label'] = 'Expense Type';
   $handler->display->display_options['filters']['expense_sub_category_214']['expose']['identifier'] = 'expense_sub_category_214';
   $handler->display->display_options['filters']['expense_sub_category_214']['expose']['reduce'] = 0;
+  /* Filter: CiviCRM Contributions: Contribution Status */
+  $handler->display->display_options['filters']['contribution_status']['id'] = 'contribution_status';
+  $handler->display->display_options['filters']['contribution_status']['table'] = 'civicrm_contribution';
+  $handler->display->display_options['filters']['contribution_status']['field'] = 'contribution_status';
+  $handler->display->display_options['filters']['contribution_status']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['contribution_status']['expose']['operator'] = 'contribution_status_op';
+  $handler->display->display_options['filters']['contribution_status']['expose']['limit_operators'] = array();
+  $handler->display->display_options['filters']['contribution_status']['expose']['label'] = 'Status';
+  $handler->display->display_options['filters']['contribution_status']['expose']['identifier'] = 'contribution_status';
+  $handler->display->display_options['filters']['contribution_status']['expose']['reduce'] = 0;
   $handler->display->display_options['path'] = 'admin/projects/budgets';
   $handler->display->display_options['menu']['type'] = 'normal';
   $handler->display->display_options['menu']['title'] = 'Project Budgets';
