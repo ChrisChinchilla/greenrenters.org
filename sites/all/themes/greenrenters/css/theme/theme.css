@@ -1786,7 +1786,11 @@ margin-bottom: 5px;
 }
 
 /* CiviCRM overrides */
-
+.crm-submit-buttons
+{
+	clear:both;
+}
+	
 #crm-container .crm-section .label, .crm-section .label {
    float: left;
     text-align: left;
