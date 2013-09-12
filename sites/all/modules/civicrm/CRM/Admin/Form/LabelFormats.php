@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -149,7 +149,7 @@ class CRM_Admin_Form_LabelFormats extends CRM_Admin_Form {
     if ($this->_action & CRM_Core_Action::DELETE) {
       // delete Label Format
       CRM_Core_BAO_LabelFormat::del($this->_id);
-      CRM_Core_Session::setStatus(ts('Selected Label Format has been deleted.'));
+      CRM_Core_Session::setStatus(ts('Selected Label Format has been deleted.'), ts('Record Deleted'), 'success');
       return;
     }
     if ($this->_action & CRM_Core_Action::COPY) {
@@ -167,7 +167,7 @@ class CRM_Admin_Form_LabelFormats extends CRM_Admin_Form {
       $labelFormat['is_reserved'] = 0;
       $bao = new CRM_Core_BAO_LabelFormat();
       $bao->saveLabelFormat($labelFormat);
-      CRM_Core_Session::setStatus($labelFormat['label'] . ts(' has been created.'));
+      CRM_Core_Session::setStatus($labelFormat['label'] . ts(' has been created.'), ts('Saved'), 'success');
       return;
     }
 
@@ -204,7 +204,6 @@ class CRM_Admin_Form_LabelFormats extends CRM_Admin_Form {
     if ($this->_action & CRM_Core_Action::UPDATE) {
       $status = ts('Your Label Format titled <strong>%1</strong> has been updated.', array(1 => $values['label']));
     }
-    CRM_Core_Session::setStatus($status);
+    CRM_Core_Session::setStatus($status, ts('Saved'), 'success');
   }
 }
-

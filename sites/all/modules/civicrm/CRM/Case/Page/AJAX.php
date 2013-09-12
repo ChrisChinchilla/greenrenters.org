@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  *
  */
 
@@ -40,8 +40,7 @@ class CRM_Case_Page_AJAX {
   /**
    * Retrieve unclosed cases.
    */
-  static
-  function unclosedCases() {
+  static function unclosedCases() {
     $criteria = explode('-', CRM_Utils_Type::escape(CRM_Utils_Array::value('s', $_GET), 'String'));
 
     $limit = NULL;
@@ -101,7 +100,6 @@ class CRM_Case_Page_AJAX {
     $session = CRM_Core_Session::singleton();
 
     $activityParams = array();
-
     $activityParams['source_contact_id'] = $session->get('userID');
     $activityParams['activity_type_id'] = CRM_Core_OptionGroup::getValue('activity_type', 'Change Case Tags', 'name');
     $activityParams['activity_date_time'] = date('YmdHis');
@@ -125,7 +123,6 @@ class CRM_Case_Page_AJAX {
 
   function caseDetails() {
     $caseId    = CRM_Utils_Type::escape($_GET['caseId'], 'Integer');
-    $contactId = CRM_Utils_Type::escape($_GET['contactId'], 'Integer');
     $sql       = "SELECT * FROM civicrm_case where id = %1";
     $dao       = CRM_Core_DAO::executeQuery($sql, array(1 => array($caseId, 'Integer')));
 
@@ -150,7 +147,6 @@ class CRM_Case_Page_AJAX {
   }
 
   function addClient() {
-
     $caseId = CRM_Utils_Type::escape($_POST['caseID'], 'Integer');
     $contactId = CRM_Utils_Type::escape($_POST['contactID'], 'Integer');
 
@@ -159,12 +155,14 @@ class CRM_Case_Page_AJAX {
       'contact_id' => $contactId,
     );
 
-    $result = CRM_Case_BAO_Case::addCaseToContact($params);
+    CRM_Case_BAO_Case::addCaseToContact($params);
+
+    // add case relationships
+    CRM_Case_BAO_Case::addCaseRelationships($caseId, $contactId);
 
     $session = CRM_Core_Session::singleton();
 
     $activityParams = array();
-
     $activityParams['source_contact_id'] = $session->get('userID');
     $activityParams['activity_type_id'] = CRM_Core_OptionGroup::getValue('activity_type', 'Add Client To Case', 'name');
     $activityParams['activity_date_time'] = date('YmdHis');
@@ -182,6 +180,19 @@ class CRM_Case_Page_AJAX {
 
     CRM_Case_BAO_Case::processCaseActivity($caseParams);
     echo json_encode(TRUE);
+    CRM_Utils_System::civiExit();
+  }
+
+  /**
+   * Function to delete relationships specific to case and relationship type
+   */
+  static function deleteCaseRoles() {
+    $caseId  = CRM_Utils_Type::escape($_POST['case_id'], 'Integer');
+    $relType = CRM_Utils_Type::escape($_POST['rel_type'], 'Integer');
+
+    $sql = "DELETE FROM civicrm_relationship WHERE case_id={$caseId} AND relationship_type_id={$relType}";
+    CRM_Core_DAO::executeQuery($sql);
+
     CRM_Utils_System::civiExit();
   }
 }

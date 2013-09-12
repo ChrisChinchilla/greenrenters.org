@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -135,9 +135,9 @@ class CRM_Utils_Mail_EmailProcessor {
       EMAIL_ACTIVITY_TYPE_ID :
       CRM_Core_OptionGroup::getValue(
         'activity_type',
-        'Inbound Email',
-        'name'
-      );
+      'Inbound Email',
+      'name'
+    );
 
     if (!$emailActivityTypeId) {
       CRM_Core_Error::fatal(ts('Could not find a valid Activity Type ID for Inbound Email'));
@@ -213,10 +213,11 @@ class CRM_Utils_Mail_EmailProcessor {
           // if its the activities that needs to be processed ..
           $mailParams = CRM_Utils_Mail_Incoming::parseMailingObject($mail);
 
-          require_once 'api/v2/Activity.php';
-          $params            = _civicrm_activity_buildmailparams($mailParams, $emailActivityTypeId);
-          $params['version'] = 2;
-          $result            = civicrm_activity_create($params);
+          require_once 'CRM/Utils/DeprecatedUtils.php';
+          $params = _civicrm_api3_deprecated_activity_buildmailparams($mailParams, $emailActivityTypeId);
+
+          $params['version'] = 3;
+          $result = civicrm_api('activity', 'create', $params);
 
           if ($result['is_error']) {
             $matches = FALSE;
@@ -271,7 +272,8 @@ class CRM_Utils_Mail_EmailProcessor {
                 }
               }
 
-              if ($text == NULL &&
+              if (
+                $text == NULL &&
                 $mail->subject == "Delivery Status Notification (Failure)"
               ) {
                 // Exchange error - CRM-9361
@@ -284,6 +286,16 @@ class CRM_Utils_Mail_EmailProcessor {
                       }
                     }
                   }
+                }
+              }
+
+              if (empty($text)) {
+                // If bounce processing fails, just take the raw body. Cf. CRM-11046
+                $text = $mail->generateBody();
+
+                // if text is still empty, lets fudge a blank text so the api call below will succeed
+                if (empty($text)) {
+                  $text = ts('We could not extract the mail body from this bounce message.');
                 }
               }
 

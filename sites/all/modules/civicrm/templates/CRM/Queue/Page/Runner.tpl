@@ -122,18 +122,18 @@ cj(function() {
   
   cj("#crm-queue-runner-progress").progressbar({ value: 0 });
   if (queueRunnerData.buttons.retry == 1) {
-    cj("#crm-queue-runner-retry").button({
-      text: false,
-      icons: {primary: 'ui-icon-refresh'}
-    }).click(retryNext);
+  cj("#crm-queue-runner-retry").button({
+    text: false,
+    icons: {primary: 'ui-icon-refresh'}
+  }).click(retryNext);
   } else {
     cj("#crm-queue-runner-retry").remove();
   }
   if (queueRunnerData.buttons.skip == 1) {
-    cj("#crm-queue-runner-skip").button({
-      text: false,
-      icons: {primary: 'ui-icon-seek-next'}
-    }).click(skipNext);
+  cj("#crm-queue-runner-skip").button({
+    text: false,
+    icons: {primary: 'ui-icon-seek-next'}
+  }).click(skipNext);
   } else {
     cj("#crm-queue-runner-skip").remove();
   }

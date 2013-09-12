@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -58,8 +58,7 @@ class CRM_Utils_Mail {
    *
    * @return boolean true if a mail was sent, else false
    */
-  static
-  function send(&$params) {
+  static function send(&$params) {
     $returnPath       = CRM_Core_BAO_MailSettings::defaultReturnPath();
     $includeMessageId = CRM_Core_BAO_MailSettings::includeMessageId();
     $emailDomain      = CRM_Core_BAO_MailSettings::defaultDomain();
@@ -73,7 +72,8 @@ class CRM_Utils_Mail {
     CRM_Utils_Hook::alterMailParams($params);
 
     // check if any module has aborted mail sending
-    if (CRM_Utils_Array::value('abortMailSend', $params) ||
+    if (
+      CRM_Utils_Array::value('abortMailSend', $params) ||
       !CRM_Utils_Array::value('toEmail', $params)
     ) {
       return FALSE;
@@ -94,10 +94,12 @@ class CRM_Utils_Mail {
       $headers = array_merge($headers, $params['headers']);
     }
     $headers['From'] = $params['from'];
-    $headers['To']   = self::formatRFC822Email(CRM_Utils_Array::value('toName', $params),
-      CRM_Utils_Array::value('toEmail', $params),
-      FALSE
-    );
+    $headers['To']   =
+      self::formatRFC822Email(
+        CRM_Utils_Array::value('toName', $params),
+        CRM_Utils_Array::value('toEmail', $params),
+        FALSE
+      );
     $headers['Cc'] = CRM_Utils_Array::value('cc', $params);
     $headers['Bcc'] = CRM_Utils_Array::value('bcc', $params);
     $headers['Subject'] = CRM_Utils_Array::value('subject', $params);
@@ -105,7 +107,13 @@ class CRM_Utils_Mail {
     $headers['Content-Disposition'] = 'inline';
     $headers['Content-Transfer-Encoding'] = '8bit';
     $headers['Return-Path'] = CRM_Utils_Array::value('returnPath', $params);
-    $headers['Reply-To'] = CRM_Utils_Array::value('replyTo', $params, $from);
+
+    // CRM-11295: Omit reply-to headers if empty; this avoids issues with overzealous mailservers
+    $replyTo = CRM_Utils_Array::value('replyTo', $params, $from);
+
+    if (!empty($replyTo)) {
+      $headers['Reply-To'] = $replyTo;
+    }
     $headers['Date'] = date('r');
     if ($includeMessageId) {
       $headers['Message-ID'] = '<' . uniqid('civicrm_', TRUE) . "@$emailDomain>";
@@ -115,15 +123,17 @@ class CRM_Utils_Mail {
     }
 
     //make sure we has to have space, CRM-6977
-    foreach (array(
-      'From', 'To', 'Cc', 'Bcc', 'Reply-To', 'Return-Path') as $fld) {
-      $headers[$fld] = str_replace('"<', '" <', $headers[$fld]);
+    foreach (array('From', 'To', 'Cc', 'Bcc', 'Reply-To', 'Return-Path') as $fld) {
+      if (isset($headers[$fld])) {
+        $headers[$fld] = str_replace('"<', '" <', $headers[$fld]);
+      }
     }
 
     // quote FROM, if comma is detected AND is not already quoted. CRM-7053
     if (strpos($headers['From'], ',') !== FALSE) {
       $from = explode(' <', $headers['From']);
-      $headers['From'] = self::formatRFC822Email($from[0],
+      $headers['From'] = self::formatRFC822Email(
+        $from[0],
         substr(trim($from[1]), 0, -1),
         TRUE
       );
@@ -141,7 +151,8 @@ class CRM_Utils_Mail {
 
     if (!empty($attachments)) {
       foreach ($attachments as $fileID => $attach) {
-        $msg->addAttachment($attach['fullPath'],
+        $msg->addAttachment(
+          $attach['fullPath'],
           $attach['mime_type'],
           $attach['cleanName']
         );
@@ -165,15 +176,15 @@ class CRM_Utils_Mail {
 
     $result = NULL;
     $mailer = CRM_Core_Config::getMailer();
-    CRM_Core_Error::ignoreException();
     if (is_object($mailer)) {
+      CRM_Core_Error::ignoreException();
       $result = $mailer->send($to, $headers, $message);
       CRM_Core_Error::setCallback();
       if (is_a($result, 'PEAR_Error')) {
         $message = self::errorMessage($mailer, $result);
         // append error message in case multiple calls are being made to
         // this method in the course of sending a batch of messages.
-        CRM_Core_Session::setStatus($message, TRUE);
+        CRM_Core_Session::setStatus($message, ts('Mailing Error'), 'error');
         return FALSE;
       }
       // CRM-10699
@@ -183,8 +194,7 @@ class CRM_Utils_Mail {
     return FALSE;
   }
 
-  static
-  function errorMessage($mailer, $result) {
+  static function errorMessage($mailer, $result) {
     $message = '<p>' . ts('An error occurred when CiviCRM attempted to send an email (via %1). If you received this error after submitting on online contribution or event registration - the transaction was completed, but we were unable to send the email receipt.', array(
       1 => 'SMTP')) . '</p>' . '<p>' . ts('The mail library returned the following error message:') . '<br /><span class="font-red"><strong>' . $result->getMessage() . '</strong></span></p>' . '<p>' . ts('This is probably related to a problem in your Outbound Email Settings (Administer CiviCRM &raquo; System Settings &raquo; Outbound Email), OR the FROM email address specifically configured for your contribution page or event. Possible causes are:') . '</p>';
 
@@ -201,7 +211,7 @@ class CRM_Utils_Mail {
     return $message;
   }
 
-  function logger(&$to, &$headers, &$message) {
+  static function logger(&$to, &$headers, &$message) {
     if (is_array($to)) {
       $toString = implode(', ', $to);
       $fileName = $to[0];
@@ -240,8 +250,7 @@ class CRM_Utils_Mail {
    * @return string          the plucked email address
    * @static
    */
-  static
-  function pluckEmailFromHeader($header) {
+  static function pluckEmailFromHeader($header) {
     preg_match('/<([^<]*)>$/', $header, $matches);
 
     if (isset($matches[1])) {
@@ -257,15 +266,14 @@ class CRM_Utils_Mail {
    * @access public
    * @static
    */
-  static
-  function validOutBoundMail() {
+  static function validOutBoundMail() {
     $mailingInfo = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
       'mailing_backend'
     );
-    if ($mailingInfo['outBound_option'] == 3) {
+    if ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_MAIL) {
       return TRUE;
     }
-    elseif ($mailingInfo['outBound_option'] == 0) {
+    elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_SMTP) {
       if (!isset($mailingInfo['smtpServer']) || $mailingInfo['smtpServer'] == '' ||
         $mailingInfo['smtpServer'] == 'YOUR SMTP SERVER' ||
         ($mailingInfo['smtpAuth'] && ($mailingInfo['smtpUsername'] == '' || $mailingInfo['smtpPassword'] == ''))
@@ -274,17 +282,19 @@ class CRM_Utils_Mail {
       }
       return TRUE;
     }
-    elseif ($mailingInfo['outBound_option'] == 1) {
+    elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_SENDMAIL) {
       if (!$mailingInfo['sendmail_path'] || !$mailingInfo['sendmail_args']) {
         return FALSE;
       }
       return TRUE;
     }
+    elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_REDIRECT_TO_DB) {
+      return TRUE;
+    }
     return FALSE;
   }
 
-  static
-  function &setMimeParams(&$message, $params = NULL) {
+  static function &setMimeParams(&$message, $params = NULL) {
     static $mimeParams = NULL;
     if (!$params) {
       if (!$mimeParams) {
@@ -301,8 +311,7 @@ class CRM_Utils_Mail {
     return $message->get($params);
   }
 
-  static
-  function formatRFC822Email($name, $email, $useQuote = FALSE) {
+  static function formatRFC822Email($name, $email, $useQuote = FALSE) {
     $result = NULL;
 
     $name = trim($name);
@@ -340,8 +349,7 @@ class CRM_Utils_Mail {
    *
    * This code has been copied and adapted from ezc/Mail/src/tools.php
    */
-  static
-  function formatRFC2822Name($name) {
+  static function formatRFC2822Name($name) {
     $name = trim($name);
     if (!empty($name)) {
       // remove the quotes around the name part if they are already there

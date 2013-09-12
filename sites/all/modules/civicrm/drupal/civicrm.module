@@ -29,6 +29,9 @@
  *
  */
 
+define('CIVICRM_UF_HEAD', TRUE);
+
+
 /**
  * Provides a link to the CSS stylesheet associated with this module.
  * and the javascript files needed by this module
@@ -40,33 +43,12 @@ function civicrm_html_head() {
     return;
   }
 
-  $head = NULL;
   if (arg(0) == 'civicrm') {
-    require_once 'CRM/Core/Config.php';
-    $config = CRM_Core_Config::singleton();
-
-    $template = CRM_Core_Smarty::singleton();
-    $buffer   = $template->fetch('CRM/common/jquery.files.tpl');
-    $lines    = preg_split('/\s+/', $buffer);
-    foreach ($lines as $line) {
-      $line = trim($line);
-      if (empty($line)) {
-        continue;
-      }
-      if (strpos($line, '.css') !== FALSE) {
-        drupal_add_css(drupal_get_path('module', 'civicrm') . '/../' . $line);
-      }
-    }
+    // Add our standard css & js
+    CRM_Core_Resources::singleton()->addCoreResources();
+  } else {
+    CRM_Core_Resources::singleton()->addCoreStyles();
   }
-  if (isset($config->customCSSURL) && !empty($config->customCSSURL)) {
-    $head = "<style type=\"text/css\">@import url({$config->customCSSURL});</style>\n";
-  }
-  else {
-    drupal_add_css(drupal_get_path('module', 'civicrm') . '/../css/deprecate.css');
-    drupal_add_css(drupal_get_path('module', 'civicrm') . '/../css/civicrm.css');
-    drupal_add_css(drupal_get_path('module', 'civicrm') . '/../css/extras.css');
-  }
-  return $head;
 }
 
 /**
@@ -203,28 +185,22 @@ function civicrm_menu() {
   );
 }
 
+
 /**
  * Initialize CiviCRM. Call this function from other modules too if
  * they use the CiviCRM API.
- *
  */
 function civicrm_initialize() {
   // Check for php version and ensure its greater than 5.
-  // do a fatal exit if
-  if ((int ) substr(PHP_VERSION, 0, 1) < 5) {
+  // Do a fatal exit if not.
+  if ((int) substr(PHP_VERSION, 0, 1) < 5) {
     echo "CiviCRM requires PHP Version 5.2 or greater. You are running PHP Version " . PHP_VERSION . "<p>";
     exit();
   }
 
-  // autoload
-  if (FALSE && module_exists('xautoload')) {
-    _xautoload_finder()->registerPrefixDeep('CRM', 'CRM');
-  }
-  elseif (file_exists(dirname(__FILE__) . '/../CRM/Core/ClassLoader.php')) {
-    require_once dirname(__FILE__) . '/../CRM/Core/ClassLoader.php';
-    $classLoader = CRM_Core_ClassLoader::singleton();
-    $classLoader->register();
-  }
+  require_once dirname(__FILE__) . '/../CRM/Core/ClassLoader.php';
+  CRM_Core_ClassLoader::singleton()->register();
+
   static $initialized = FALSE;
   static $failure = FALSE;
 
@@ -250,7 +226,6 @@ function civicrm_initialize() {
     $errorMsgAdd = t("Please review the <a href='!1'>Drupal Installation Guide</a> and the <a href='!2'>Trouble-shooting page</a> for assistance. If you still need help installing, you can often find solutions to your issue by searching for the error message in the <a href='!3'>installation support section of the community forum</a>.</strong></p>",
       array('!1' => $docLinkInstall, '!2' => $docLinkTrouble, '!3' => $forumLink)
     );
-
 
     if ($error == FALSE) {
       $failure = TRUE;
@@ -283,31 +258,28 @@ function civicrm_initialize() {
     $config = CRM_Core_Config::singleton();
 
     // Add module-specific header elements
-    drupal_set_html_head(civicrm_html_head());
-    require_once 'CRM/Core/BAO/Preferences.php';
-    //fixme - after 3.4 is discontinued remove 3.4 support
-    //As this file may be shared between 3.4 & 4.1 releases use the BAO_Preferences::value legacy function if it exists
-    // in future only CRM_Core_BAO_Setting::getItem will be required
-    if ($config->isUpgradeMode()) {
-      // skip
-    } elseif (
-         (
-           method_exists('CRM_Core_BAO_Preferences','value')
-           &&
-           CRM_Core_BAO_Preferences::value( 'editor_id' ) == 4 //drupal wysiwyg 
-         )
-         ||
-         (
-           method_exists('CRM_Core_BAO_Setting','getItem') 
-           &&
-           CRM_Core_BAO_Setting::getItem( CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'editor_id' ) == 4  //drupal wysiwyg 
-         )
+    $header = civicrm_html_head();
+    if (!empty($header)) {
+      drupal_set_html_head($header);
+    }
+
+    $args = explode('/', $_GET['q']);
+    if (
+      (!isset($args[1]) || $args[1] != 'upgrade') &&
+      CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
+        // drupal wysiwyg
+        'editor_id'
+      ) == 4
     ) {
       //we have to ensure that wysiwyg is loaded since
+      //pages load only with ajax callbacks
       $formats = filter_formats();
       foreach ($formats as $id => $format) {
         wysiwyg_get_profile($id);
       }
+      $path = drupal_get_path('module', 'filter');
+      drupal_add_js($path . '/filter.js');
+      drupal_add_css($path . '/filter.css');
     }
   }
 
@@ -871,8 +843,9 @@ function civicrm_views_api() {
 }
 
 function civicrm_add_jquery(&$html) {
-  require_once 'CRM/Utils/String.php';
-  return CRM_Utils_String::addJqueryFiles($html);
+  CRM_Core_Resources::singleton()->addCoreResources('html-header');
+  // JS/CSS markup will be rendered in theme('page') by preprocess function
+  return $html;
 }
 
 function civicrm_form_alter(&$form, $formValues, $formID) {
@@ -912,12 +885,43 @@ function _civicrm_rebuild($form, &$form_state) {
  */
 function civicrm_theme_registry_alter(&$theme_registry) {
   if (isset($theme_registry['page'])) {
-    // See if our preprocess function is loaded, if so remove it.
-    if ($key = array_search('civicrm_preprocess_page', $theme_registry['page']['preprocess functions'])) {
-      unset($theme_registry['page']['preprocess functions'][$key]);
+    // D6 theme() supports two modes: function or template
+    if (isset($info['function'])) {
+      // If someone can find a theme which actually defines 'page' with a function, then we
+      // should implement & test a wrapper function to generate JS/CSS headers.
+      drupal_set_message(t('The page theme is currently unsupported by CiviCRM. Please report.'));
+    } else {
+      // Add callback to generate JS/CSS headers -- at the beginning
+      if ($key = array_search('civicrm_preprocess_page_inject', $theme_registry['page']['preprocess functions'])) {
+        // when is this necessary?
+        unset($theme_registry['page']['preprocess functions'][$key]);
+      }
+      array_unshift($theme_registry['page']['preprocess functions'], 'civicrm_preprocess_page_inject');
+
+      // Add callback to tweak JS/CSS headers -- at the end
+      if ($key = array_search('civicrm_preprocess_page', $theme_registry['page']['preprocess functions'])) {
+        // when is this necessary?
+        unset($theme_registry['page']['preprocess functions'][$key]);
+      }
+      // Now add it on at the end of the array so that it runs last.
+      $theme_registry['page']['preprocess functions'][] = 'civicrm_preprocess_page';
     }
-    // Now add it on at the end of the array so that it runs last.
-    $theme_registry['page']['preprocess functions'][] = 'civicrm_preprocess_page';
+  }
+}
+
+/**
+ * Preprocess callback for theme('page')
+ *
+ * @see civicrm_theme_registry_alter
+ * @see CRM_Upgrade_Incremental_php_FourThree::setPreUpgradeMessage
+ */
+function civicrm_preprocess_page_inject(&$variables) {
+  // CRM-11823 - If Civi bootstrapped, then merge its HTML header with the CMS's header
+  global $civicrm_root;
+  if (!empty($civicrm_root)) {
+    if ($region = CRM_Core_Region::instance('html-header', FALSE)) {
+      CRM_Utils_System::addHTMLHead($region->render(''));
+    }
   }
 }
 
@@ -951,45 +955,6 @@ function civicrm_preprocess_page(&$variables) {
       unset($variables['css']['all']['module'][$path . '/themes/datepicker.css']);
       $variables['styles'] = drupal_get_css($variables['css']);
     }
-  }
-
-  if (!civicrm_initialize()) {
-    return;
-  }
-  if (in_array(arg(0), array('civicrm', 'user'))) {
-    // Move the CiviCRM jquery and jQuery UI libraries above Drupal's core jQuery
-    // and relatively gracefully handle noConflict.
-    $path    = drupal_get_path('module', 'civicrm');
-    $scripts = array();
-    $val     = array('cache' => TRUE, 'defer' => FALSE, 'preprocess' => TRUE);
-
-    $template = CRM_Core_Smarty::singleton();
-    $buffer   = $template->fetch('CRM/common/jquery.files.tpl');
-    $lines    = preg_split('/\s+/', $buffer);
-    foreach ($lines as $line) {
-      $line = trim($line);
-      if (empty($line)) {
-        continue;
-      }
-      if (strpos($line, '.js') !== FALSE) {
-        $scripts[$path . '/../' . $line] = $val;
-      }
-    }
-
-    // add localized calendar js
-    $config           = CRM_Core_Config::singleton();
-    $localisation     = explode('_', $config->lcMessages);
-    $localizationFile = $path . '/../packages/jquery/jquery-ui-1.8.11/development-bundle/ui/i18n/jquery.ui.datepicker-' . $localisation[0] . '.js';
-
-    if (file_exists($localizationFile)) {
-      $scripts[$localizationFile] = $val;
-    }
-
-    // add Common.js
-    $scripts[$path . '/../js/Common.js'] = $val;
-    $scripts[$path . '/../js/noconflict.js'] = $val;
-
-    $variables['scripts'] = drupal_get_js('header', array('core' => $scripts)) . $variables['scripts'];
   }
 }
 

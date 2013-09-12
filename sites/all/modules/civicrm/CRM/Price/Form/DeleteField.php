@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -106,7 +106,7 @@ class CRM_Price_Form_DeleteField extends CRM_Core_Form {
   public function postProcess() {
 
     if (CRM_Price_BAO_Field::deleteField($this->_fid)) {
-      CRM_Core_Session::setStatus(ts('The Price Field \'%1\' has been deleted.', array(1 => $this->_title)));
+      CRM_Core_Session::setStatus(ts('The Price Field \'%1\' has been deleted.', array(1 => $this->_title)), '', 'success');
     }
   }
 }

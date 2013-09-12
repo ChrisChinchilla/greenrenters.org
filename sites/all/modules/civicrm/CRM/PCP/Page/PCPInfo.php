@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -49,7 +49,8 @@ class CRM_PCP_Page_PCPInfo extends CRM_Core_Page {
    * @return void
    * @access public
    *
-   */ function run() {
+   */
+  function run() {
     $session         = CRM_Core_Session::singleton();
     $config          = CRM_Core_Config::singleton();
     $permissionCheck = FALSE;
@@ -83,21 +84,9 @@ class CRM_PCP_Page_PCPInfo extends CRM_Core_Page {
     // check if PCP is created by anonymous user
     $anonymousPCP = CRM_Utils_Request::retrieve('ap', 'Boolean', $this);
     if ($anonymousPCP) {
-      $loginUrl = $config->userFrameworkBaseURL;
-
-      switch (ucfirst($config->userFramework)) {
-        case 'Joomla':
-          $loginUrl = str_replace('administrator/', '', $loginUrl);
-          $loginUrl .= 'index.php?option=com_user&view=login';
-          break;
-
-        case 'Drupal':
-          $loginUrl .= 'user';
-          break;
-      }
-
-      $anonMessage = ts('Once you\'ve received your new account welcome email, you can <a href=%1>click here</a> to login and promote your campaign page.', array(1 => $loginUrl));
-      CRM_Core_Session::setStatus($anonMessage);
+      $loginURL = $config->userSystem->getLoginURL();
+      $anonMessage = ts('Once you\'ve received your new account welcome email, you can <a href=%1>click here</a> to login and promote your campaign page.', array(1 => $loginURL));
+      CRM_Core_Session::setStatus($anonMessage, ts('Success'), 'success');
     }
     else {
       $statusMessage = ts('The personal campaign page you requested is currently unavailable. However you can still support the campaign by making a contribution here.');
@@ -158,7 +147,7 @@ class CRM_PCP_Page_PCPInfo extends CRM_Core_Page {
         $pcpInfo['page_id'], $default, array('start_date', 'end_date')
       );
     }
-    
+
     $pageInfo = $default[$pcpInfo['page_id']];
 
     if ($pcpInfo['contact_id'] == $session->get('userID')) {
@@ -184,7 +173,7 @@ class CRM_PCP_Page_PCPInfo extends CRM_Core_Page {
         'pageComponent' => $this->_component,
       );
 
-      if ($pcpBlock->is_tellfriend_enabled || CRM_Utils_Array::value('status_id', $pcpInfo) != $approvedId) {
+      if (!$pcpBlock->is_tellfriend_enabled || CRM_Utils_Array::value('status_id', $pcpInfo) != $approvedId) {
         unset($link['all'][CRM_Core_Action::DETACH]);
       }
 

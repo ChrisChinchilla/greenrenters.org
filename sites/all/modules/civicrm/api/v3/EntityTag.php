@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,14 +33,13 @@
  * @package CiviCRM_APIv3
  * @subpackage API_EntityTag
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: EntityTag.php 30879 2010-11-22 15:45:55Z shot $
  */
 
 /**
  * Include utility functions
  */
-require_once 'CRM/Core/BAO/EntityTag.php';
 
 /**
  * {@getfields EntityTag_get}
@@ -60,7 +59,8 @@ function civicrm_api3_entity_tag_get($params) {
   }
   return civicrm_api3_create_success($result, $params);
 }
-/*
+
+/**
  * Adjust Metadata for Get action
  *
  * The metadata is used for setting defaults, documentation & validation
@@ -96,7 +96,6 @@ function civicrm_api3_entity_tag_display($params) {
     $entityTable = $params['entity_table'];
   }
 
-  require_once 'CRM/Core/BAO/EntityTag.php';
   $values = CRM_Core_BAO_EntityTag::getTag($entityID, $entityTable);
   $result = array();
   $tags   = CRM_Core_PseudoConstant::tag();
@@ -132,7 +131,8 @@ function civicrm_api3_entity_tag_delete($params) {
 
   return _civicrm_api3_entity_tag_common($params, 'remove');
 }
-/*
+
+/**
  * modify metadata
  */
 function _civicrm_api3_entity_tag_delete_spec(&$params) {
@@ -173,7 +173,6 @@ function _civicrm_api3_entity_tag_common($params, $op = 'add') {
     return civicrm_api3_create_error('tag_id is a required field');
   }
 
-  require_once 'CRM/Core/BAO/EntityTag.php';
   $values = array('is_error' => 0);
   if ($op == 'add') {
     $values['total_count'] = $values['added'] = $values['not_added'] = 0;

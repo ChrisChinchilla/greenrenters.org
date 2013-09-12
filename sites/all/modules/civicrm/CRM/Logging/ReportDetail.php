@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,6 +39,7 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
   protected $log_date;
   protected $raw;
   protected $tables = array();
+  protected $interval = '10 SECOND';
 
   // detail/summary report ids
   protected $detail;
@@ -59,15 +60,15 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
     parent::__construct();
 
     CRM_Utils_System::resetBreadCrumb();
-    $breadcrumb =
+    $breadcrumb = 
       array(
-            array('title' => ts('Home'),
+            array('title' => ts('Home'), 
                   'url' => CRM_Utils_System::url()),
-            array('title' => ts('CiviCRM'),
+            array('title' => ts('CiviCRM'), 
                   'url' => CRM_Utils_System::url('civicrm', 'reset=1')),
-            array('title' => ts('View Contact'),
+            array('title' => ts('View Contact'), 
                   'url' => CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$this->cid}")),
-            array('title' => ts('Search Results'),
+            array('title' => ts('Search Results'), 
                   'url' => CRM_Utils_System::url('civicrm/contact/search', "force=1")),
             );
     CRM_Utils_System::appendBreadCrumb($breadcrumb);
@@ -75,7 +76,7 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
     if (CRM_Utils_Request::retrieve('revert', 'Boolean', CRM_Core_DAO::$_nullObject)) {
       $reverter = new CRM_Logging_Reverter($this->log_conn_id, $this->log_date);
       $reverter->revert($this->tables);
-      CRM_Core_Session::setStatus(ts('The changes have been reverted.'));
+      CRM_Core_Session::setStatus(ts('The changes have been reverted.'), ts('Reverted'), 'success');
       if ($this->cid) {
         CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/contact/view', "reset=1&selectedChild=log&cid={$this->cid}", FALSE, NULL, FALSE));
       }
@@ -100,7 +101,7 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
     );
   }
 
-  function buildQuery() {}
+  function buildQuery($applyLimit = TRUE) {}
 
   function buildRows($sql, &$rows) {
     // safeguard for when there aren’t any log entries yet
@@ -122,7 +123,7 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
   protected function diffsInTable($table) {
     $rows = array();
 
-    $differ = new CRM_Logging_Differ($this->log_conn_id, $this->log_date);
+    $differ = new CRM_Logging_Differ($this->log_conn_id, $this->log_date, $this->interval);
     $diffs = $differ->diffsInTable($table, $this->cid);
 
     // return early if nothing found
@@ -148,10 +149,6 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
         }
         // $differ filters out === values; for presentation hide changes like 42 → '42'
         if ($from == $to) {
-          continue;
-        }
-        // only in PHP: '0' == false and null == false but '0' != null
-        if ($from == FALSE and $to == FALSE) {
           continue;
         }
 
@@ -206,7 +203,7 @@ class CRM_Logging_ReportDetail extends CRM_Report_Form {
       $this->assign('who_name', $dao->who_name);
       $this->assign('whom_name', $dao->whom_name);
     }
-    $this->assign('log_date', $this->log_date);
+    $this->assign('log_date', CRM_Utils_Date::mysqlToIso($this->log_date));
 
     $q = "reset=1&log_conn_id={$this->log_conn_id}&log_date={$this->log_date}";
     $this->assign('revertURL', CRM_Report_Utils_Report::getNextUrl($this->detail, "$q&revert=1", FALSE, TRUE));

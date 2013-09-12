@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -94,7 +94,7 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
    * @var array
    * @access protected
    */
-  protected static $_formattedFieldNames;
+  protected $_formattedFieldNames;
 
   /**
    * on duplicate
@@ -106,9 +106,9 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
   protected $_dedupeFields;
 
   /**
-   * Attempt to resolve a column name with our mapper fields
+   * Attempt to match header labels with our mapper fields
    *
-   * @param columnName
+   * @param header
    * @param mapperFields
    *
    * @return string
@@ -124,9 +124,8 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
     }
 
     foreach ($patterns as $key => $re) {
-      /* skip empty patterns */
-
-      if (empty($re) or $re == '//') {
+      // Skip empty key/patterns
+      if (!$key || !$re || strlen("$re") < 5) {
         continue;
       }
 
@@ -153,7 +152,8 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
     $n        = count($this->_dataValues);
 
     foreach ($patterns as $key => $re) {
-      if (empty($re)) {
+      // Skip empty key/patterns
+      if (!$key || !$re || strlen("$re") < 5) {
         continue;
       }
 
@@ -225,7 +225,7 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
         'Individual', 'Household', 'Organization') as $cType) {
         $ruleParams = array(
           'contact_type' => $cType,
-          'level' => 'Strict',
+          'used'         => 'Unsupervised',
         );
         $this->_dedupeFields[$cType] = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
       }
@@ -339,19 +339,13 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
 
     $defaultLocationType = CRM_Core_BAO_LocationType::getDefault();
 
-    /* FIXME: dirty hack to make the default option show up first.  This
-         * avoids a mozilla browser bug with defaults on dynamically constructed
-         * selector widgets. */
-
+    // Pass default location to js
     if ($defaultLocationType) {
-      $defaultLocation = $this->_location_types[$defaultLocationType->id];
-      unset($this->_location_types[$defaultLocationType->id]);
-      $this->_location_types = array(
-        $defaultLocationType->id => $defaultLocation) + $this->_location_types;
+      $this->assign('defaultLocationType', $defaultLocationType->id);
+      $this->assign('defaultLocationTypeLabel', $this->_location_types[$defaultLocationType->id]);
     }
 
     /* Initialize all field usages to false */
-
     foreach ($mapperKeys as $key) {
       $this->_fieldUsed[$key] = FALSE;
     }
@@ -688,20 +682,20 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
     $this->setDefaults($defaults);
 
     $this->addButtons(array(
-        array(
-          'type' => 'back',
-          'name' => ts('<< Previous'),
-        ),
-        array(
-          'type' => 'next',
-          'name' => ts('Continue >>'),
-          'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-          'isDefault' => TRUE,
-        ),
-        array(
-          'type' => 'cancel',
-          'name' => ts('Cancel'),
-        ),
+      array(
+        'type' => 'back',
+        'name' => ts('<< Previous'),
+      ),
+       array(
+         'type' => 'next',
+         'name' => ts('Continue >>'),
+         'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+         'isDefault' => TRUE,
+       ),
+       array(
+         'type' => 'cancel',
+         'name' => ts('Cancel'),
+       ),
       )
     );
   }
@@ -715,8 +709,7 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields) {
+  static function formRule($fields) {
     $errors = array();
     if (CRM_Utils_Array::value('saveMapping', $fields)) {
       $nameField = CRM_Utils_Array::value('saveMappingName', $fields);
@@ -904,7 +897,7 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
 
       for ($i = 0; $i < $this->_columnCount; $i++) {
         $updateMappingFields = new CRM_Core_DAO_MappingField();
-        $updateMappingFields->id = $mappingFieldsId[$i];
+        $updateMappingFields->id = CRM_Utils_Array::value($i,$mappingFieldsId);
         $updateMappingFields->mapping_id = $params['mappingId'];
         $updateMappingFields->column_number = $i;
 
@@ -948,7 +941,7 @@ class CRM_Import_Form_MapField extends CRM_Core_Form {
               $updateMappingFields->im_provider_id = isset($mapperKeys[$i][2]) ? $mapperKeys[$i][2] : NULL;
             }
             $location = array_keys($locationTypes, $locations[$i]);
-            $updateMappingFields->location_type_id = isset($location) ? $location[0] : NULL;
+            $updateMappingFields->location_type_id = (isset($location) && isset($location[0])) ? $location[0] : NULL;
           }
         }
         $updateMappingFields->save();

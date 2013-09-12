@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +33,7 @@
  * abstract class.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -55,7 +55,7 @@ class CRM_Report_Info extends CRM_Core_Component_Info {
 
 
   // docs inherited from interface
-  public function getPermissions() {
+  public function getPermissions($getAllUnconditionally = FALSE) {
     return array('access CiviReport', 'access Report Criteria', 'administer reserved reports', 'administer Reports');
   }
 

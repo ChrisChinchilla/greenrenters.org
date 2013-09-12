@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,7 +27,7 @@
 <h3>{if $action eq 1}{ts}New ACL{/ts}{elseif $action eq 2}{ts}Edit ACL{/ts}{else}{ts}Delete ACL{/ts}{/if}</h3>
 <div class="crm-block crm-form-block crm-acl-form-block">
 {if $action eq 8}
-  <div class="messages status">
+  <div class="messages status no-popup">
     <div class="icon inform-icon"></div>&nbsp;
         {ts}WARNING: Delete will remove this permission from the specified ACL Role.{/ts} {ts}Do you want to continue?{/ts}
   </div>
@@ -130,28 +130,28 @@
         if ( ot[i].checked ) {
             switch(ot[i].value) {
                 case "1":
-                    show('id-group-acl');
-                    hide('id-profile-acl');
-                    hide('id-custom-acl');
-                    hide('id-event-acl');
+                    cj('#id-group-acl').show();
+                    cj('#id-profile-acl').hide();
+                    cj('#id-custom-acl').hide();
+                    cj('#id-event-acl').hide();
                     break;
                 case "2":
-                    hide('id-group-acl');
-                    show('id-profile-acl');
-                    hide('id-custom-acl');
-                    hide('id-event-acl');
+                    cj('#id-group-acl').hide();
+                    cj('#id-profile-acl').show();
+                    cj('#id-custom-acl').hide();
+                    cj('#id-event-acl').hide();
                     break;
                 case "3":
-                    hide('id-group-acl');
-                    hide('id-profile-acl');
-                    show('id-custom-acl');
-                    hide('id-event-acl');
+                    cj('#id-group-acl').hide();
+                    cj('#id-profile-acl').hide();
+                    cj('#id-custom-acl').show();
+                    cj('#id-event-acl').hide();
                     break;
                 case "4":
-                    hide('id-group-acl');
-                    hide('id-profile-acl');
-                    hide('id-custom-acl');
-                    show('id-event-acl');
+                    cj('#id-group-acl').hide();
+                    cj('#id-profile-acl').hide();
+                    cj('#id-custom-acl').hide();
+                    cj('#id-event-acl').show();
                     break;
             }
         }

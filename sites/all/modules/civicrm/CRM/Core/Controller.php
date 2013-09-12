@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -38,7 +38,7 @@
  * for other useful tips and suggestions
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -106,6 +106,18 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
   public $_print = 0;
 
   /**
+   * Should we generate a qfKey, true by default
+   *
+   * @var boolean
+   */
+  public $_generateQFKey = TRUE;
+
+  /**
+   * QF response type
+   */
+  public $_QFResponseType = 'html';
+
+  /**
    * cache the smarty template for efficiency reasons
    *
    * @var CRM_Core_Smarty
@@ -147,16 +159,30 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
    * @return void
    *
    */
-
-  function __construct($title = NULL, $modal = TRUE,
-    $mode = NULL, $scope = NULL,
-    $addSequence = FALSE, $ignoreKey = FALSE
+  function __construct(
+    $title = NULL,
+    $modal = TRUE,
+    $mode = NULL,
+    $scope = NULL,
+    $addSequence = FALSE,
+    $ignoreKey = FALSE
   ) {
     // this has to true for multiple tab session fix
     $addSequence = TRUE;
 
+    // let the constructor initialize this, should happen only once
+    if (!isset(self::$_template)) {
+      self::$_template = CRM_Core_Smarty::singleton();
+      self::$_session = CRM_Core_Session::singleton();
+    }
+
     // add a unique validable key to the name
     $name         = CRM_Utils_System::getClassName($this);
+    if ($name == 'CRM_Core_Controller_Simple' && !empty($scope)) {
+      // use form name if we have, since its a lot better and
+      // definitely different for different forms
+      $name = $scope;
+    }
     $name         = $name . '_' . $this->key($name, $addSequence, $ignoreKey);
     $this->_title = $title;
     if ($scope) {
@@ -178,24 +204,25 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
 
     $this->HTML_QuickForm_Controller($name, $modal);
 
-    // let the constructor initialize this, should happen only once
-    if (!isset(self::$_template)) {
-      self::$_template = CRM_Core_Smarty::singleton();
-      self::$_session = CRM_Core_Session::singleton();
-    }
-
     $snippet = CRM_Utils_Array::value('snippet', $_REQUEST);
-    //$snippet = CRM_Utils_Request::retrieve( 'snippet', 'Integer', $this, false, null, $_REQUEST );
     if ($snippet) {
       if ($snippet == 3) {
         $this->_print = CRM_Core_Smarty::PRINT_PDF;
       }
       elseif ($snippet == 4) {
+        // this is used to embed fragments of a form
         $this->_print = CRM_Core_Smarty::PRINT_NOFORM;
         self::$_template->assign('suppressForm', TRUE);
+        $this->_generateQFKey = FALSE;
       }
       elseif ($snippet == 5) {
+        // this is used for popups and inlined ajax forms
+        // also used for the various tabs via TabHeader
         $this->_print = CRM_Core_Smarty::PRINT_NOFORM;
+      }
+      elseif ($snippet == 6) {
+        $this->_print = CRM_Core_Smarty::PRINT_NOFORM;
+        $this->_QFResponseType = 'json';
       }
       else {
         $this->_print = CRM_Core_Smarty::PRINT_SNIPPET;
@@ -231,15 +258,15 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
   function key($name, $addSequence = FALSE, $ignoreKey = FALSE) {
     $config = CRM_Core_Config::singleton();
 
-    if ($ignoreKey ||
+    if (
+      $ignoreKey ||
       (isset($config->keyDisable) && $config->keyDisable)
     ) {
       return NULL;
     }
 
-
     $key = CRM_Utils_Array::value('qfKey', $_REQUEST, NULL);
-    if (!$key) {
+    if (!$key && $_SERVER['REQUEST_METHOD'] === 'GET') {
       $key = CRM_Core_Key::get($name, $addSequence);
     }
     else {
@@ -328,14 +355,14 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
       'process' => 'CRM_Core_QuickForm_Action_Process',
       'cancel' => 'CRM_Core_QuickForm_Action_Cancel',
       'refresh' => 'CRM_Core_QuickForm_Action_Refresh',
+      'reload' => 'CRM_Core_QuickForm_Action_Reload',
       'done' => 'CRM_Core_QuickForm_Action_Done',
       'jump' => 'CRM_Core_QuickForm_Action_Jump',
       'submit' => 'CRM_Core_QuickForm_Action_Submit',
     );
 
     foreach ($names as $name => $classPath) {
-      require_once (str_replace('_', DIRECTORY_SEPARATOR, $classPath) . '.php');
-      $action = &new $classPath($this->_stateMachine);
+      $action = new $classPath($this->_stateMachine);
       $this->addAction($name, $action);
     }
 
@@ -390,7 +417,7 @@ class CRM_Core_Controller extends HTML_QuickForm_Controller {
         $formName = CRM_Utils_String::getClassName($name);
       }
 
-      $ext = new CRM_Core_Extensions();
+      $ext = CRM_Extension_System::singleton()->getMapper();
       if ($ext->isExtensionClass($className)) {
         require_once ($ext->classToPath($className));
       }

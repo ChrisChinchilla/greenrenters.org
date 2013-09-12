@@ -6,11 +6,11 @@
  * @package CiviCRM_APIv3
  * @subpackage API
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: api.php 30486 2010-11-02 16:12:09Z shot $
  */
 
-/*
+/**
  * @param string $entity
  *   type of entities to deal with
  * @param string $action
@@ -19,15 +19,15 @@
  *   array to be passed to function
  */
 function civicrm_api($entity, $action, $params, $extra = NULL) {
+  $apiWrappers = array(CRM_Core_HTMLInputCoder::singleton());
   try {
     require_once ('api/v3/utils.php');
     require_once 'api/Exception.php';
     if (!is_array($params)) {
       throw new API_Exception('Input variable `params` is not an array', 2000);
     }
-    _civicrm_api3_initialize(TRUE);
-    require_once 'CRM/Utils/String.php';
-    require_once 'CRM/Utils/Array.php';
+    _civicrm_api3_initialize();
+    $errorScope = CRM_Core_TemporaryErrorScope::useException();
     $apiRequest = array();
     $apiRequest['entity'] = CRM_Utils_String::munge($entity);
     $apiRequest['action'] = CRM_Utils_String::munge($action);
@@ -38,21 +38,30 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
     $apiRequest += _civicrm_api_resolve($apiRequest);
     if (strtolower($action) == 'create' || strtolower($action) == 'delete') {
       $apiRequest['is_transactional'] = 1;
-      $tx = new CRM_Core_Transaction();
+      $transaction = new CRM_Core_Transaction();
     }
-    $errorFnName = ($apiRequest['version'] == 2) ? 'civicrm_create_error' : 'civicrm_api3_create_error';
-    if ($apiRequest['version'] > 2) {
-      _civicrm_api3_api_check_permission($apiRequest['entity'], $apiRequest['action'], $apiRequest['params']);
+
+    // support multi-lingual requests
+    if ($language = CRM_Utils_Array::value('option.language', $params)) {
+      _civicrm_api_set_locale($language);
     }
+
+    _civicrm_api3_api_check_permission($apiRequest['entity'], $apiRequest['action'], $apiRequest['params']);
+
     // we do this before we
     _civicrm_api3_swap_out_aliases($apiRequest);
     if (strtolower($action) != 'getfields') {
-      if (!CRM_Utils_Array::value('id', $params)) {
+      if (!CRM_Utils_Array::value('id', $apiRequest['params'])) {
         $apiRequest['params'] = array_merge(_civicrm_api3_getdefaults($apiRequest), $apiRequest['params']);
       }
       //if 'id' is set then only 'version' will be checked but should still be checked for consistency
       civicrm_api3_verify_mandatory($apiRequest['params'], NULL, _civicrm_api3_getrequired($apiRequest));
     }
+
+    foreach ($apiWrappers as $apiWrapper) {
+      $apiRequest = $apiWrapper->fromApiInput($apiRequest);
+    }
+
     $function = $apiRequest['function'];
     if ($apiRequest['function'] && $apiRequest['is_generic']) {
       // Unlike normal API implementations, generic implementations require explicit
@@ -62,10 +71,15 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
     }
     elseif ($apiRequest['function'] && !$apiRequest['is_generic']) {
       _civicrm_api3_validate_fields($apiRequest['entity'], $apiRequest['action'], $apiRequest['params']);
+
       $result = isset($extra) ? $function($apiRequest['params'], $extra) : $function($apiRequest['params']);
     }
     else {
-      return $errorFnName("API (" . $apiRequest['entity'] . "," . $apiRequest['action'] . ") does not exist (join the API team and implement it!)");
+      return civicrm_api3_create_error("API (" . $apiRequest['entity'] . "," . $apiRequest['action'] . ") does not exist (join the API team and implement it!)");
+    }
+
+    foreach ($apiWrappers as $apiWrapper) {
+      $result = $apiWrapper->toApiOutput($apiRequest, $result);
     }
 
     if (CRM_Utils_Array::value('format.is_success', $apiRequest['params']) == 1) {
@@ -81,9 +95,6 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
     }
     if (CRM_Utils_Array::value('is_error', $result, 0) == 0) {
       _civicrm_api_call_nested_api($apiRequest['params'], $result, $apiRequest['action'], $apiRequest['entity'], $apiRequest['version']);
-    }
-    if (CRM_Utils_Array::value('format.smarty', $apiRequest['params']) || CRM_Utils_Array::value('format_smarty', $apiRequest['params'])) {
-      // return _civicrm_api_parse_result_through_smarty($result,$apiRequest['params']);
     }
     if (function_exists('xdebug_time_index')
       && CRM_Utils_Array::value('debug', $apiRequest['params'])
@@ -101,16 +112,21 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
     if (CRM_Utils_Array::value('format.is_success', $apiRequest['params']) == 1) {
       return 0;
     }
-    $data = array();
-    $err = civicrm_api3_create_error($e->getMessage(), $data, $apiRequest);
+    $error = $e->getCause();
+    if ($error instanceof DB_Error) {
+      $data["error_code"] = DB::errorMessage($error->getCode());
+      $data["sql"] = $error->getDebugInfo();
+    }
     if (CRM_Utils_Array::value('debug', $apiRequest['params'])) {
-      $err['trace'] = $e->getTraceSafe();
+      $data['debug_info'] = $error->getUserInfo();
+      $data['trace'] = $e->getTraceAsString();
     }
-    else {
-      $err['tip'] = "add debug=1 to your API call to have more info about the error";
+    else{
+      $data['tip'] = "add debug=1 to your API call to have more info about the error";
     }
+    $err = civicrm_api3_create_error($e->getMessage(), $data, $apiRequest);
     if (CRM_Utils_Array::value('is_transactional', $apiRequest)) {
-      $tx->rollback();
+      $transaction->rollback();
     }
     return $err;
   }
@@ -122,12 +138,16 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
       return 0;
     }
     $data = $e->getExtraParams();
+    $data['entity'] = CRM_Utils_Array::value('entity', $apiRequest);
+    $data['action'] = CRM_Utils_Array::value('action', $apiRequest);
     $err = civicrm_api3_create_error($e->getMessage(), $data, $apiRequest, $e->getCode());
-    if (CRM_Utils_Array::value('debug', CRM_Utils_Array::value('params',$apiRequest))) {
+    if (CRM_Utils_Array::value('debug', CRM_Utils_Array::value('params',$apiRequest))
+      && empty($data['trace']) // prevent recursion
+    ) {
       $err['trace'] = $e->getTraceAsString();
     }
-    if (CRM_Utils_Array::value('is_transactional', CRM_Utils_Array::value('params',$apiRequest))) {
-      $tx->rollback();
+    if (CRM_Utils_Array::value('is_transactional', $apiRequest)) {
+      $transaction->rollback();
     }
     return $err;
   }
@@ -141,7 +161,7 @@ function civicrm_api($entity, $action, $params, $extra = NULL) {
       $err['trace'] = $e->getTraceAsString();
     }
     if (CRM_Utils_Array::value('is_transactional', $apiRequest)) {
-      $tx->rollback();
+      $transaction->rollback();
     }
     return $err;
   }
@@ -218,45 +238,88 @@ function _civicrm_api_resolve($apiRequest) {
   $cache[$cachekey] = array('function' => FALSE, 'is_generic' => FALSE);
   return $cache[$cachekey];
 }
+/**
+ * Version 3 wrapper for civicrm_api. Throws exception
+ * @param string $entity type of entities to deal with
+ * @param string $action create, get, delete or some special action name.
+ * @param array $params array to be passed to function
+ *
+ * @return array
+ *
+ */
+function civicrm_api3($entity, $action, $params){
+  $params['version'] = 3;
+  $result = civicrm_api($entity, $action, $params);
+  if($result['is_error']){
+    throw new CiviCRM_API3_Exception($result['error_message'], CRM_Utils_Array::value('error_code', $result, 'undefined'), $result);
+  }
+}
+
+/**
+ * Load/require all files related to an entity.
+ *
+ * This should not normally be called because it's does a file-system scan; it's
+ * only appropriate when introspection is really required (eg for "getActions").
+ *
+ * @param string $entity
+ * @return void
+ */
+function _civicrm_api_loadEntity($entity, $version = 3) {
+  /*
+  $apiRequest = array();
+  $apiRequest['entity'] = $entity;
+  $apiRequest['action'] = 'pretty sure it will never exist. Trick to [try to] force resolve to scan everywhere';
+  $apiRequest['version'] = $version;
+  // look up function, file, is_generic
+  $apiRequest = _civicrm_api_resolve($apiRequest);
+  */
+
+  $camelName = _civicrm_api_get_camel_name($entity, $version);
+
+  // Check for master entity file; to match _civicrm_api_resolve(), only load the first one
+  require_once 'CRM/Utils/File.php';
+  $stdFile = 'api/v' . $version . '/' . $camelName . '.php';
+  if (CRM_Utils_File::isIncludable($stdFile)) {
+    require_once $stdFile;
+  }
+
+  // Check for standalone action files; to match _civicrm_api_resolve(), only load the first one
+  $loaded_files = array(); // array($relativeFilePath => TRUE)
+  $include_dirs = array_unique(explode(PATH_SEPARATOR, get_include_path()));
+  foreach ($include_dirs as $include_dir) {
+    $action_dir = implode(DIRECTORY_SEPARATOR, array($include_dir, 'api', "v${version}", $camelName));
+    if (! is_dir($action_dir)) {
+      continue;
+    }
+
+    $iterator = new DirectoryIterator($action_dir);
+    foreach ($iterator as $fileinfo) {
+      $file = $fileinfo->getFilename();
+      if (array_key_exists($file, $loaded_files)) {
+        continue; // action provided by an earlier item on include_path
+      }
+
+      $parts = explode(".", $file);
+      if (end($parts) == "php" && !preg_match('/Tests?\.php$/', $file) ) {
+        require_once $action_dir . DIRECTORY_SEPARATOR . $file;
+        $loaded_files[$file] = TRUE;
+      }
+    }
+  }
+}
 
 /**
  *
  * @deprecated
  */
 function civicrm_api_get_function_name($entity, $action, $version = NULL) {
-  static $_map = NULL;
 
   if (empty($version)) {
     $version = civicrm_get_api_version();
   }
 
-  if (!isset($_map[$version])) {
-
-    if ($version === 2) {
-      $_map[$version]['event']['get'] = 'civicrm_event_search';
-      $_map[$version]['group_roles']['create'] = 'civicrm_group_roles_add_role';
-      $_map[$version]['group_contact']['create'] = 'civicrm_group_contact_add';
-      $_map[$version]['group_contact']['delete'] = 'civicrm_group_contact_remove';
-      $_map[$version]['entity_tag']['create'] = 'civicrm_entity_tag_add';
-      $_map[$version]['entity_tag']['delete'] = 'civicrm_entity_tag_remove';
-      $_map[$version]['group']['create'] = 'civicrm_group_add';
-      $_map[$version]['contact']['create'] = 'civicrm_contact_add';
-      $_map[$version]['relationship_type']['get'] = 'civicrm_relationship_types_get';
-      $_map[$version]['uf_join']['create'] = 'civicrm_uf_join_add';
-
-      if (isset($_map[$version][$entity][$action])) {
-        return $_map[$version][$entity][$action];
-      }
-    }
-  }
   $entity = _civicrm_api_get_entity_name_from_camel($entity);
-  // $action = _civicrm_api_get_entity_name_from_camel($action);
-  if ($version === 2) {
-    return 'civicrm' . '_' . $entity . '_' . $action;
-  }
-  else {
-    return 'civicrm_api3' . '_' . $entity . '_' . $action;
-  }
+  return 'civicrm_api3' . '_' . $entity . '_' . $action;
 }
 
 /**
@@ -265,8 +328,7 @@ function civicrm_api_get_function_name($entity, $action, $version = NULL) {
  * @param $desired_version : array or integer
  *   One chance to set the version number.
  *   After that, this version number will be used for the remaining request.
- *   This can either be a number, or an array(
-   .., 'version' => $version, ..).
+ *   This can either be a number, or an array(.., 'version' => $version, ..).
  *   This allows to directly pass the $params array.
  */
 function civicrm_get_api_version($desired_version = NULL) {
@@ -278,12 +340,10 @@ function civicrm_get_api_version($desired_version = NULL) {
   }
   if (isset($desired_version) && is_integer($desired_version)) {
     $_version = $desired_version;
-    // echo "\n".'version: '. $_version ." (parameter)\n";
   }
   else {
     // we will set the default to version 3 as soon as we find that it works.
     $_version = 3;
-    // echo "\n".'version: '. $_version ." (default)\n";
   }
   return $_version;
 }
@@ -316,17 +376,6 @@ function _civicrm_api_get_camel_name($entity, $version = NULL) {
     $version = civicrm_get_api_version();
   }
 
-  if (!isset($_map[$version])) {
-    $_map[$version]['utils'] = 'utils';
-    if ($version === 2) {
-      // TODO: Check if $_map needs to contain anything.
-      $_map[$version]['contribution'] = 'Contribute';
-      $_map[$version]['custom_field'] = 'CustomGroup';
-    }
-    else {
-      // assume $version == 3.
-    }
-  }
   if (isset($_map[$version][strtolower($entity)])) {
     return $_map[$version][strtolower($entity)];
   }
@@ -342,11 +391,18 @@ function _civicrm_api_get_camel_name($entity, $version = NULL) {
   return implode('', $fragments);
 }
 
-/*
+/**
  * Call any nested api calls
  */
 function _civicrm_api_call_nested_api(&$params, &$result, $action, $entity, $version) {
   $entity = _civicrm_api_get_entity_name_from_camel($entity);
+  if(strtolower($action) == 'getsingle'){
+    // I don't understand the protocol here, but we don't want
+    // $result to be a recursive array
+    // $result['values'][0] = $result;
+    $oldResult = $result;
+    $result = array('values' => array(0 => $oldResult));
+  }
   foreach ($params as $field => $newparams) {
     if ((is_array($newparams) || $newparams === 1) && $field <> 'api.has_parent' && substr($field, 0, 3) == 'api') {
 
@@ -362,7 +418,9 @@ function _civicrm_api_call_nested_api(&$params, &$result, $action, $entity, $ver
       $subAPI = explode($separator, $field);
 
       $subaction = empty($subAPI[2]) ? $action : $subAPI[2];
-      $subParams = array();
+      $subParams = array(
+        'debug' => CRM_Utils_Array::value('debug', $params),
+      );
       $subEntity = $subAPI[1];
 
       foreach ($result['values'] as $idIndex => $parentAPIValues) {
@@ -395,6 +453,9 @@ function _civicrm_api_call_nested_api(&$params, &$result, $action, $entity, $ver
 
 
         $subParams['version'] = $version;
+        if(!empty($params['check_permissions'])){
+          $subParams['check_permissions'] = $params['check_permissions'];
+        }
         $subParams['sequential'] = 1;
         $subParams['api.has_parent'] = 1;
         if (array_key_exists(0, $newparams)) {
@@ -413,16 +474,19 @@ function _civicrm_api_call_nested_api(&$params, &$result, $action, $entity, $ver
           $subParams = array_merge($subParams, $newparams);
           _civicrm_api_replace_variables($subAPI[1], $subaction, $subParams, $result['values'][$idIndex], $separator);
           $result['values'][$idIndex][$field] = civicrm_api($subEntity, $subaction, $subParams);
-          if ($result['is_error'] === 1) {
+          if (!empty($result['is_error'])) {
             throw new Exception($subEntity . ' ' . $subaction . 'call failed with' . $result['error_message']);
           }
         }
       }
     }
   }
+  if(strtolower($action) == 'getsingle'){
+    $result = $result['values'][0];
+  }
 }
 
-/*
+/**
  * Swap out any $values vars - ie. the value after $value is swapped for the parent $result
  * 'activity_type_id' => '$value.testfield',
    'tag_id'  => '$value.api.tag.create.id',
@@ -453,7 +517,7 @@ function _civicrm_api_replace_variables($entity, $action, &$params, &$parentResu
           if (array_key_exists($fieldname, $parentResult) && is_array($parentResult[$fieldname])) {
             $arrayLocation = $parentResult[$fieldname];
             foreach ($stringParts as $key => $value) {
-              $arrayLocation = $arrayLocation[$value];
+              $arrayLocation = CRM_Utils_Array::value($value, $arrayLocation);
             }
             $params[$field] = $arrayLocation;
           }
@@ -464,11 +528,13 @@ function _civicrm_api_replace_variables($entity, $action, &$params, &$parentResu
   }
 }
 
-/*
+/**
  * Convert possibly camel name to underscore separated entity name
  *
  * @param string $entity entity name in various formats e.g. Contribution, contribution, OptionValue, option_value, UFJoin, uf_join
  * @return string $entity entity name in underscore separated format
+ *
+ * FIXME: Why isn't this called first thing in civicrm_api wrapper?
  */
 function _civicrm_api_get_entity_name_from_camel($entity) {
   if ($entity == strtolower($entity)) {
@@ -483,28 +549,64 @@ function _civicrm_api_get_entity_name_from_camel($entity) {
   }
   return $entity;
 }
-/*
+
+/**
  * Having a DAO object find the entity name
  * @param object $bao DAO being passed in
  */
 function _civicrm_api_get_entity_name_from_dao($bao){
   $daoName = str_replace("BAO", "DAO", get_class($bao));
   $dao = array();
-  require ('CRM/Core/DAO/.listAll.php');
+  require ('CRM/Core/DAO/listAll.php');
   $daos = array_flip($dao);
   return _civicrm_api_get_entity_name_from_camel($daos[$daoName]);
 
 }
 
-/*
- * Parses result through smarty
- * @param array $result result of API call
- */
-function _civicrm_api_parse_result_through_smarty(&$result, &$params) {
-  require_once 'CRM/Core/Smarty.php';
-  $smarty = CRM_Core_Smarty::singleton();
-  $smarty->assign('result', $result);
-  $template = CRM_Utils_Array::value('format.smarty', $params, $params['format_smarty']);
-  return $smarty->fetch("../templates/" . $template);
-}
 
+/**
+ * Sets the tsLocale and dbLocale for multi-lingual sites.
+ * Some code duplication from CRM/Core/BAO/ConfigSetting.php retrieve()
+ * to avoid regressions from refactoring.
+ */
+function _civicrm_api_set_locale($lcMessagesRequest) {
+  // We must validate whether the locale is valid, otherwise setting a bad
+  // dbLocale could probably lead to sql-injection.
+  $domain = new CRM_Core_DAO_Domain();
+  $domain->id = CRM_Core_Config::domainID();
+  $domain->find(TRUE);
+
+  if ($domain->config_backend) {
+    $defaults = unserialize($domain->config_backend);
+
+    // are we in a multi-language setup?
+    $multiLang = $domain->locales ? TRUE : FALSE;
+    $lcMessages = NULL;
+
+    // on multi-lang sites based on request and civicrm_uf_match
+    if ($multiLang) {
+      $languageLimit = array();
+      if (array_key_exists('languageLimit', $defaults) && is_array($defaults['languageLimit'])) {
+        $languageLimit = $defaults['languageLimit'];
+      }
+
+      if (in_array($lcMessagesRequest, array_keys($languageLimit))) {
+        $lcMessages = $lcMessagesRequest;
+      }
+      else {
+        throw new API_Exception(ts('Language not enabled: %1', array(1 => $lcMessagesRequest)));
+      }
+    }
+
+    global $dbLocale;
+
+    // set suffix for table names - use views if more than one language
+    if ($lcMessages) {
+      $dbLocale = $multiLang && $lcMessages ? "_{$lcMessages}" : '';
+
+      // FIXME: an ugly hack to fix CRM-4041
+      global $tsLocale;
+      $tsLocale = $lcMessages;
+    }
+  }
+}

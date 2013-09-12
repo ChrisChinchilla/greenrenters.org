@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,18 +42,19 @@ class CRM_Contact_Form_Edit_Website {
    * build the form elements for an Website object
    *
    * @param CRM_Core_Form $form       reference to the form object
-   * @param array         $location   the location object to store all the form elements in
-   * @param int           $locationId the locationId we are dealing with
-   * @param int           $count      the number of blocks to create
+   * @param int           $blockCount block number to build
    *
    * @return void
    * @access public
    * @static
    */
-  static
-  function buildQuickForm(&$form) {
-
-    $blockId = ($form->get('Website_Block_Count')) ? $form->get('Website_Block_Count') : 1;
+  static function buildQuickForm(&$form, $blockCount = NULL) {
+    if (!$blockCount) {
+      $blockId = ($form->get('Website_Block_Count')) ? $form->get('Website_Block_Count') : 1;
+    }
+    else {
+      $blockId = $blockCount;
+    }
 
     $form->applyFilter('__ALL__', 'trim');
 

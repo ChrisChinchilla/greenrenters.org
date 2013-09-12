@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +33,7 @@
  * @package CiviCRM_APIv3
  * @subpackage API_Group
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: GroupNesting.php 21624 2009-08-07 22:02:55Z wmorgan $
  *
  */
@@ -71,7 +71,8 @@ function civicrm_api3_group_nesting_create($params) {
   $result = array('is_error' => 0);
   return civicrm_api3_create_success($result, $params);
 }
-/*
+
+/**
  * Adjust Metadata for Create action
  * 
  * The metadata is used for setting defaults, documentation & validation

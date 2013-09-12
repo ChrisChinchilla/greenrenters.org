@@ -1,7 +1,8 @@
 <?php
 
 /*
- * PxPay Functionality Copyright (C) 2008 Lucas Baker, Logistic Information Systems Limited (Logis)
+ * PxPay Functionality Copyright (C) 2008 Lucas Baker,
+ *   Logistic Information Systems Limited (Logis)
  * PxAccess Functionality Copyright (C) 2008 Eileen McNaughton
  * Licensed to CiviCRM under the Academic Free License version 3.0.
  *
@@ -18,16 +19,16 @@ require_once 'CRM/Core/Config.php';
 $config = CRM_Core_Config::singleton();
 
 /*
- * Get the password from the Payment Processor's table based on the DPS user id being
- *
- * passed back from the server
+ * Get the password from the Payment Processor's table based on the DPS user id
+ * being passed back from the server
  */
 
 $query = "
-SELECT  url_site, password, user_name, signature
- FROM    civicrm_payment_processor
- WHERE   payment_processor_type = 'Payment_Express'
- AND     user_name = %1
+SELECT    url_site, password, user_name, signature
+FROM      civicrm_payment_processor
+LEFT JOIN civicrm_payment_processor_type ON civicrm_payment_processor_type.id = civicrm_payment_processor.payment_processor_type_id
+WHERE     civicrm_payment_processor_type.name = 'Payment_Express'
+AND       user_name = %1
 ";
 $params = array(1 => array($_GET['userid'], 'String'));
 
@@ -49,4 +50,3 @@ else {
 require_once 'CRM/Core/Payment/PaymentExpressIPN.php';
 $rawPostData = $_GET['result'];
 CRM_Core_Payment_PaymentExpressIPN::main($method, $rawPostData, $dpsUrl, $dpsUser, $dpsKey, $dpsMacKey);
-

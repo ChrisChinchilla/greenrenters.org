@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -114,10 +114,10 @@ class CRM_Mailing_Event_BAO_Queue extends CRM_Mailing_Event_DAO_Queue {
   public static function getEmailAddress($queue_id) {
     $email = CRM_Core_BAO_Email::getTableName();
     $eq    = self::getTableName();
-    $query = "  SELECT      $email.email as email
-                    FROM        $email
-                    INNER JOIN  $eq
-                    ON          $eq.email_id = $email.id
+    $query = "  SELECT      $email.email as email 
+                    FROM        $email 
+                    INNER JOIN  $eq 
+                    ON          $eq.email_id = $email.id 
                     WHERE       $eq.id = " . CRM_Utils_Type::rule($queue_id, 'Integer');
 
     $q = new CRM_Mailing_Event_BAO_Queue();

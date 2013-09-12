@@ -3,7 +3,7 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 3.4                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -3333,7 +3333,7 @@ function civicrm_views_data() {
     'help' => t('The contact who is assigned the activity.'),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'assignee_contact_id',
+      'field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('CiviCRM Assignee Contact ID'),
     ),
@@ -3357,7 +3357,7 @@ function civicrm_views_data() {
     'help' => t('The contact who is the activity\'s target.'),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'target_contact_id',
+      'field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('CiviCRM Target Contact ID'),
     ),
@@ -5172,18 +5172,6 @@ function civicrm_views_data() {
 
   $data['civicrm_campaign']['table']['group'] = t('CiviCRM Campaigns');
 
-  $data['civicrm_campaign']['table']['join'] = array(
-
-'civicrm_contribution' => array(
-      'left_field' => 'campaign_id',
-      'field' => 'id',
-    ),
-    
-    'civicrm_activity' => array(
-      'left_field' => 'campaign_id',
-      'field' => 'id',
-    ),
-);    
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla
     'field' => 'id',

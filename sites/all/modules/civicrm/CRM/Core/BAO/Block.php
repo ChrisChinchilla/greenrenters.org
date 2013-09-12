@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  * add static functions to include some common functionality
@@ -205,7 +205,7 @@ class CRM_Core_BAO_Block {
    * @access public
    * @static
    */
-  static function create($blockName, &$params, $entity = NULL) {
+  static function create($blockName, &$params, $entity = NULL, $contactId = NULL) {
     if (!self::blockExists($blockName, $params)) {
       return NULL;
     }
@@ -294,7 +294,7 @@ class CRM_Core_BAO_Block {
             }
           }
           else {
-            if ($blockValue['locationTypeId'] == $value['location_type_id']) {
+            if ($blockValue['locationTypeId'] == CRM_Utils_Array::value('location_type_id', $value)) {
               $valueId = FALSE;
 
               if ($blockName == 'phone') {
@@ -396,7 +396,12 @@ class CRM_Core_BAO_Block {
     eval('$block = new CRM_Core_DAO_' . $name . '( );');
 
     $block->copyValues($params);
+    /*
+     * CRM-11006 add call to pre and post hook for delete action
+     */
+    CRM_Utils_Hook::pre('delete', $name, $block->id, CRM_Core_DAO::$_nullArray);
     $block->delete();
+    CRM_Utils_Hook::post('delete', $name, $block->id, $block);
   }
 
   /**
@@ -430,27 +435,30 @@ class CRM_Core_BAO_Block {
         $table = 'civicrm_address';
         break;
     }
-    // if id is set & we don't have contact_id we need to retrieve it
-    $contactId = null;
-    if (!empty($params['id']) && empty($params['contact_id'])) {
+    // contact_id in params might be empty or the string 'null' so cast to integer
+    $contactId = (int) CRM_Utils_Array::value('contact_id', $params);
+    // If id is set & we haven't been passed a contact_id, retrieve it
+    if (!empty($params['id']) && !isset($params['contact_id'])) {
       $entity = new $class();
       $entity->id = $params['id'];
       $entity->find(TRUE);
       $contactId = $entity->contact_id;
     }
-    elseif (CRM_Utils_Array::value('contact_id', $params)) {
-      $contactId = $params['contact_id'];
-    }
-
-    if ( !$contactId ) {
-      // entity not associated with contact so concept of is_primary not relevant
+    // If entity is not associated with contact, concept of is_primary not relevant
+    if (!$contactId) {
       return;
     }
-    
+
     // if params is_primary then set all others to not be primary & exit out
     if (CRM_Utils_Array::value('is_primary', $params)) {
       $sql = "UPDATE $table SET is_primary = 0 WHERE contact_id = %1";
-      CRM_Core_DAO::executeQuery($sql, array(1 => array($contactId, 'Integer')));
+      $sqlParams = array(1 => array($contactId, 'Integer'));
+      // we don't want to create unecessary entries in the log_ tables so exclude the one we are working on
+      if(!empty($params['id'])){
+        $sql .= " AND id <> %2";
+        $sqlParams[2] = array($params['id'], 'Integer');
+      }
+      CRM_Core_DAO::executeQuery($sql, $sqlParams);
       return;
     }
 
@@ -458,7 +466,7 @@ class CRM_Core_BAO_Block {
     $existingEntities = new $class();
     $existingEntities->contact_id = $contactId;
     $existingEntities->orderBy('is_primary DESC');
-    if (!$existingEntities->find(TRUE)) {
+    if (!$existingEntities->find(TRUE) || (!empty($params['id']) && $existingEntities->id == $params['id'])) {
       // ie. if  no others is set to be primary then this has to be primary set to 1 so change
       $params['is_primary'] = 1;
       return;
@@ -483,6 +491,30 @@ class CRM_Core_BAO_Block {
       $existingEntities->is_primary = 1;
       $existingEntities->save();
     }
+  }
+
+  /**
+   * Sort location array so primary element is first
+   * @param Array $location
+   */
+  static function sortPrimaryFirst(&$locations){
+    uasort($locations, 'self::primaryComparison');
+  }
+
+/**
+ * compare 2 locations to see which should go first based on is_primary
+ * (sort function for sortPrimaryFirst)
+ * @param array $location1
+ * @param array_type $location2
+ * @return number
+ */
+  static function primaryComparison($location1, $location2){
+    $l1 = CRM_Utils_Array::value('is_primary', $location1);
+    $l2 = CRM_Utils_Array::value('is_primary', $location2);
+    if ($l1 == $l2) {
+      return 0;
+    }
+    return ($l1 < $l2) ? -1 : 1;
   }
 }
 

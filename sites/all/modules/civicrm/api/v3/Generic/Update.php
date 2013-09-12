@@ -2,7 +2,11 @@
 // $Id$
 
 /**
- * Update only cherry-picked fields within an entity -- leave other fields alone.
+ * Update function is basically a hack to get around issues listed in
+ * http://issues.civicrm.org/jira/browse/CRM-12144
+ *
+ * It is not recommended & if update doesn't work & fix does then update will not be fixed
+ *
  * To do this, perform a 'get' action to load the existing values, then merge in the updates
  * and call 'create' to save the revised entity.
  *
@@ -14,12 +18,18 @@
  *  - params: array, varies
  */
 function civicrm_api3_generic_update($apiRequest) {
-  $errorFnName = ($apiRequest['version'] == 2) ? 'civicrm_create_error' : 'civicrm_api3_create_error';
+  $errorFnName = 'civicrm_api3_create_error';
 
   //$key_id = strtolower ($apiRequest['entity'])."_id";
   $key_id = "id";
   if (!array_key_exists($key_id, $apiRequest['params'])) {
     return $errorFnName("Mandatory parameter missing $key_id");
+  }
+  // @fixme
+  // tests show that contribution works better with create
+  // this is horrible but to make it work we'll just handle it separately
+  if(strtolower($apiRequest['entity']) == 'contribution'){
+    return civicrm_api($apiRequest['entity'], 'create', $apiRequest['params']);
   }
   $seek = array($key_id => $apiRequest['params'][$key_id], 'version' => $apiRequest['version']);
   $existing = civicrm_api($apiRequest['entity'], 'get', $seek);

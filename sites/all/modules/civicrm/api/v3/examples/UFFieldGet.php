@@ -1,7 +1,5 @@
 <?php
 
-
-
 /*
  
  */
@@ -10,7 +8,6 @@ $params = array(
   'version' => 3,
 );
 
-  require_once 'api/api.php';
   $result = civicrm_api( 'uf_field','get',$params );
 
   return $result;
@@ -30,7 +27,7 @@ function uf_field_get_expectedresult(){
       '1' => array( 
           'id' => '1',
           'uf_group_id' => '11',
-          'field_name' => 'country',
+          'field_name' => 'phone',
           'is_active' => '1',
           'is_view' => 0,
           'is_required' => 0,
@@ -39,8 +36,10 @@ function uf_field_get_expectedresult(){
           'in_selector' => 0,
           'is_searchable' => '1',
           'location_type_id' => '1',
-          'label' => 'Test Country',
+          'phone_type_id' => '1',
+          'label' => 'Test Phone',
           'field_type' => 'Contact',
+          'is_multi_summary' => 0,
         ),
     ),
 );
@@ -49,18 +48,24 @@ function uf_field_get_expectedresult(){
 }
 
 
-
-
 /*
 * This example has been generated from the API test suite. The test that created it is called
-* 
-* testGetUFFieldSuccess and can be found in 
-* http://svn.civicrm.org/civicrm/branches/v3.4/tests/phpunit/CiviTest/api/v3/UFFieldTest.php
-* 
-* You can see the outcome of the API tests at 
+*
+* testGetUFFieldSuccess and can be found in
+* http://svn.civicrm.org/civicrm/trunk/tests/phpunit/CiviTest/api/v3/UFFieldTest.php
+*
+* You can see the outcome of the API tests at
 * http://tests.dev.civicrm.org/trunk/results-api_v3
+*
+* To Learn about the API read
+* http://book.civicrm.org/developer/current/techniques/api/
+*
 * and review the wiki at
 * http://wiki.civicrm.org/confluence/display/CRMDOC/CiviCRM+Public+APIs
+*
 * Read more about testing here
 * http://wiki.civicrm.org/confluence/display/CRM/Testing
+*
+* API Standards documentation:
+* http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
 */

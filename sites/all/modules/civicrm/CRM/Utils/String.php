@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,12 +28,10 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
-
-
 
 require_once 'HTML/QuickForm/Rule/Email.php';
 
@@ -43,6 +41,11 @@ require_once 'HTML/QuickForm/Rule/Email.php';
  */
 class CRM_Utils_String {
   CONST COMMA = ",", SEMICOLON = ";", SPACE = " ", TAB = "\t", LINEFEED = "\n", CARRIAGELINE = "\r\n", LINECARRIAGE = "\n\r", CARRIAGERETURN = "\r";
+
+  /**
+   * List of all letters and numbers
+   */
+  const ALPHANUMERIC = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
 
   /**
    * Convert a display name into a potential variable
@@ -57,8 +60,7 @@ class CRM_Utils_String {
    * @return string (or null)
    * @static
    */
-  static
-  function titleToVar($title, $maxLength = 31) {
+  static function titleToVar($title, $maxLength = 31) {
     $variable = self::munge($title, '_', $maxLength);
 
     if (CRM_Utils_Rule::title($variable, $maxLength)) {
@@ -83,10 +85,11 @@ class CRM_Utils_String {
    * @return string returns the manipulated string
    * @static
    */
-  static
-  function munge($name, $char = '_', $len = 63) {
+  static function munge($name, $char = '_', $len = 63) {
     // replace all white space and non-alpha numeric with $char
-    $name = preg_replace('/\s+|\W+/', $char, trim($name));
+    // we only use the ascii character set since mysql does not create table names / field names otherwise
+    // CRM-11744
+    $name = preg_replace('/[^a-zA-Z0-9]+/', $char, trim($name));
 
     if ($len) {
       // lets keep variable names short
@@ -97,20 +100,18 @@ class CRM_Utils_String {
     }
   }
 
-
-  /* 
-     * Takes a variable name and munges it randomly into another variable name
-     *  
-     * @param  string $name    Initial Variable Name
-     * @param int     $len  length of valid variables
-     *
-     * @return string  Randomized Variable Name
-     * @access public 
-     * @static
-     */
-
-  static
-  function rename($name, $len = 4) {
+  /**
+   *
+   * Takes a variable name and munges it randomly into another variable name
+   *
+   * @param  string $name    Initial Variable Name
+   * @param int     $len  length of valid variables
+   *
+   * @return string  Randomized Variable Name
+   * @access public
+   * @static
+   */
+  static function rename($name, $len = 4) {
     $rand = substr(uniqid(), 0, $len);
     return substr_replace($name, $rand, -$len, $len);
   }
@@ -127,8 +128,7 @@ class CRM_Utils_String {
    * @return string the last component
    * @static
    */
-  static
-  function getClassName($string, $char = '_') {
+  static function getClassName($string, $char = '_') {
     $names = array();
     if (!is_array($string)) {
       $names = explode($char, $string);
@@ -150,8 +150,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function append(&$str, $delim, $name) {
+  static function append(&$str, $delim, $name) {
     if (empty($name)) {
       return;
     }
@@ -189,17 +188,13 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function isAscii($str, $utf8 = TRUE) {
+  static function isAscii($str, $utf8 = TRUE) {
     if (!function_exists('mb_detect_encoding')) {
       // eliminate all white space from the string
       $str = preg_replace('/\s+/', '', $str);
-      /* FIXME:  This is a pretty brutal hack to make utf8 and 8859-1 work.
-             */
-
+      // FIXME:  This is a pretty brutal hack to make utf8 and 8859-1 work.
 
       /* match low- or high-ascii characters */
-
       if (preg_match('/[\x00-\x20]|[\x7F-\xFF]/', $str)) {
         // || // low ascii characters
         // high ascii characters
@@ -236,8 +231,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function regex($str, $regexRules) {
+  static function regex($str, $regexRules) {
     //redact the regular expressions
     if (!empty($regexRules) && isset($str)) {
       static $matches, $totalMatches, $match = array();
@@ -269,8 +263,7 @@ class CRM_Utils_String {
     return CRM_Core_DAO::$_nullArray;
   }
 
-  static
-  function redaction($str, $stringRules) {
+  static function redaction($str, $stringRules) {
     //redact the strings
     if (!empty($stringRules)) {
       foreach ($stringRules as $match => $replace) {
@@ -291,8 +284,7 @@ class CRM_Utils_String {
    *
    * @return boolean
    */
-  static
-  function isUtf8($str) {
+  static function isUtf8($str) {
     if (!function_exists(mb_detect_encoding)) {
       // eliminate all white space from the string
       $str = preg_replace('/\s+/', '', $str);
@@ -322,8 +314,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function match($url1, $url2) {
+  static function match($url1, $url2) {
     $url1 = strtolower($url1);
     $url2 = strtolower($url2);
 
@@ -347,8 +338,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function extractURLVarValue($query) {
+  static function extractURLVarValue($query) {
     $config = CRM_Core_Config::singleton();
     $urlVar = $config->userFrameworkURLVar;
 
@@ -373,8 +363,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function strtobool($str) {
+  static function strtobool($str) {
     if (!is_scalar($str)) {
       return FALSE;
     }
@@ -394,8 +383,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function strtoboolstr($str) {
+  static function strtoboolstr($str) {
     if (!is_scalar($str)) {
       return FALSE;
     }
@@ -420,15 +408,13 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function htmlToText($html) {
-    require_once 'packages/html2text/class.html2text.inc';
-    $converter = new html2text($html);
+  static function htmlToText($html) {
+    require_once 'packages/html2text/rcube_html2text.php';
+    $converter = new rcube_html2text($html);
     return $converter->get_text();
   }
 
-  static
-  function extractName($string, &$params) {
+  static function extractName($string, &$params) {
     $name = trim($string);
     if (empty($name)) {
       return;
@@ -461,7 +447,6 @@ class CRM_Utils_String {
       }
     }
     else {
-
       // name has no comma - assume fname [mname] fname
       $names = explode(' ', $name);
       if (count($names) == 1) {
@@ -479,8 +464,7 @@ class CRM_Utils_String {
     }
   }
 
-  static
-  function &makeArray($string) {
+  static function &makeArray($string) {
     $string = trim($string);
 
     $values = explode("\n", $string);
@@ -496,11 +480,15 @@ class CRM_Utils_String {
 
   /**
    * Function to add include files needed for jquery
+   *
+   * This appears to be used in cases where the normal html-header
+   * provided by CRM_Core_Resources can't be used (e.g. when outputting in
+   * "print" mode, the execution will short-circuit without allowing the
+   * CMS to output JS/CSS tags).
    */
-  static
-  function addJqueryFiles(&$html) {
-    $smarty = CRM_Core_Smarty::singleton();
-    return $smarty->fetch('CRM/common/jquery.tpl') . $html;
+  static function addJqueryFiles(&$html) {
+    CRM_Core_Resources::singleton()->addCoreResources('html-header');
+    return CRM_Core_Region::instance('html-header')->render('', FALSE) . $html;
   }
 
   /**
@@ -511,8 +499,7 @@ class CRM_Utils_String {
    *
    * @return string       only the first alternative found (or the text without alternatives)
    */
-  static
-  function stripAlternatives($full) {
+  static function stripAlternatives($full) {
     $matches = array();
     preg_match('/-ALTERNATIVE ITEM 0-(.*?)-ALTERNATIVE ITEM 1-.*-ALTERNATIVE END-/s', $full, $matches);
 
@@ -536,8 +523,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function stripSpaces($string) {
+  static function stripSpaces($string) {
     return (empty($string)) ? $string : preg_replace("/\s{2,}/", " ", trim($string));
   }
 
@@ -553,8 +539,7 @@ class CRM_Utils_String {
    * @access public
    * @static
    */
-  static
-  function stripPathChars($string,
+  static function stripPathChars($string,
     $search = NULL,
     $replace = NULL
   ) {
@@ -601,9 +586,7 @@ class CRM_Utils_String {
    */
   static function purifyHTML($string) {
     static $_filter = null;
-    if ( ! $_filter ) {
-      require_once 'packages/IDS/vendors/htmlpurifier/HTMLPurifier.auto.php';
-
+    if (!$_filter) {
       $config = HTMLPurifier_Config::createDefault();
       $config->set('Core.Encoding', 'UTF-8');
 
@@ -611,7 +594,7 @@ class CRM_Utils_String {
       $config->set('Cache.DefinitionImpl', null);
 
       $_filter = new HTMLPurifier($config);
-}
+    }
 
     return $_filter->purify($string);
   }
@@ -626,9 +609,26 @@ class CRM_Utils_String {
     $len = strlen($string);
     if ($len <= $maxLen) {
       return $string;
-    } else {
+    }
+    else {
       return substr($string, 0, $maxLen-3) . '...';
     }
+  }
+
+  /**
+   * Generate a random string
+   *
+   * @param $len
+   * @param $alphabet
+   * @return string
+   */
+  public static function createRandom($len, $alphabet) {
+    $alphabetSize = strlen($alphabet);
+    $result = '';
+    for ($i = 0; $i < $len; $i++) {
+      $result .= $alphabet{rand(1, $alphabetSize) - 1};
+    }
+    return $result;
   }
 
 }

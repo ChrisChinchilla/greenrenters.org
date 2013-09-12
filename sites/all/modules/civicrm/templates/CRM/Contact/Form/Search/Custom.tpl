@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,9 +27,8 @@
    custom search .php file. If you want a different layout, clone and customize this file and point to new file using
    templateFile() function.*}
 <div class="crm-block crm-form-block crm-contact-custom-search-form-block">
-<div class="crm-accordion-wrapper crm-custom_search_form-accordion {if $rows}crm-accordion-closed{else}crm-accordion-open{/if}">
+<div class="crm-accordion-wrapper crm-custom_search_form-accordion {if $rows}collapsed{/if}">
     <div class="crm-accordion-header crm-master-accordion-header">
-      <div class="icon crm-accordion-pointer"></div>
       {ts}Edit Search Criteria{/ts}
     </div><!-- /.crm-accordion-header -->
     <div class="crm-accordion-body">
@@ -65,14 +64,14 @@
 {/if}
 
 {if $rows}
-	<div class="crm-results-block">
+  <div class="crm-results-block">
     {* Search request has returned 1 or more matching rows. Display results and collapse the search criteria fieldset. *}
         {* This section handles form elements for action task select and submit *}
-       <div class="crm-search-tasks">        
+       <div class="crm-search-tasks">
         {include file="CRM/Contact/Form/Search/ResultTasks.tpl"}
-		</div>
+    </div>
         {* This section displays the rows along and includes the paging controls *}
-	    <div class="crm-search-results">
+      <div class="crm-search-results">
 
         {include file="CRM/common/pager.tpl" location="top"}
 
@@ -80,7 +79,7 @@
         {if $atoZ}
             {include file="CRM/common/pagerAToZ.tpl"}
         {/if}
-        
+
         {strip}
         <table class="selector" summary="{ts}Search results listings.{/ts}">
             <thead class="sticky">
@@ -121,7 +120,7 @@
 
         <script type="text/javascript">
         {* this function is called to change the color of selected row(s) *}
-        var fname = "{$form.formName}";	
+        var fname = "{$form.formName}";
         on_load_init_checkboxes(fname);
         </script>
 
@@ -140,7 +139,46 @@
 {literal}
 <script type="text/javascript">
 cj(function() {
-   cj().crmaccordions(); 
+   cj().crmAccordions();
 });
+
+function toggleContactSelection( name, qfKey, selection ){
+  var Url  = "{/literal}{crmURL p='civicrm/ajax/markSelection' h=0}{literal}";
+
+  if ( selection == 'multiple' ) {
+    var rowArr = new Array( );
+    {/literal}{foreach from=$rows item=row  key=keyVal}
+      {literal}rowArr[{/literal}{$keyVal}{literal}] = '{/literal}{$row.checkbox}{literal}';
+    {/literal}{/foreach}{literal}
+    var elements = rowArr.join('-');
+
+    if ( cj('#' + name).is(':checked') ){
+      cj.post( Url, { name: elements , qfKey: qfKey , variableType: 'multiple' } );
+    }
+    else {
+      cj.post( Url, { name: elements , qfKey: qfKey , variableType: 'multiple' , action: 'unselect' } );
+    }
+  }
+  else if ( selection == 'single' ) {
+    if ( cj('#' + name).is(':checked') ){
+      cj.post( Url, { name: name , qfKey: qfKey } );
+    }
+    else {
+      cj.post( Url, { name: name , qfKey: qfKey , state: 'unchecked' } );
+    }
+  }
+  else if ( name == 'resetSel' && selection == 'reset' ) {
+    cj.post( Url, {  qfKey: qfKey , variableType: 'multiple' , action: 'unselect' } );
+    {/literal}
+    {foreach from=$rows item=row}{literal}
+      cj("#{/literal}{$row.checkbox}{literal}").removeAttr('checked');{/literal}
+    {/foreach}
+    {literal}
+    cj("#toggleSelect").removeAttr('checked');
+    var formName = "{/literal}{$form.formName}{literal}";
+    on_load_init_checkboxes(formName);
+  }
+}
 </script>
+
 {/literal}

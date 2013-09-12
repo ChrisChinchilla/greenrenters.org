@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -134,10 +134,6 @@ class CRM_UF_Page_Field extends CRM_Core_Page {
 
     $fields = CRM_Contact_BAO_Contact::exportableFields('All', FALSE, TRUE);
     $fields = array_merge(CRM_Contribute_BAO_Contribution::getContributionFields(), $fields);
-
-    if (CRM_Core_Permission::access('Quest')) {
-      $fields = array_merge(CRM_Quest_BAO_Student::exportableFields(), $fields);
-    }
 
     $select = array();
     foreach ($fields as $name => $field) {

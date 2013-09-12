@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -97,6 +97,11 @@
             <tr class="crm-localization-form-block-defaultContactCountry">
                 <td class="label">{$form.defaultContactCountry.label}</td>
                 <td>{$form.defaultContactCountry.html}<br />
+                <span class="description">{ts}This value is selected by default when adding a new contact address.{/ts}</span></td>
+            </tr>
+	         <tr class="crm-localization-form-block-defaultContactStateProvince">
+                <td class="label">{$form.defaultContactStateProvince.label}</td>
+                <td>{$form.defaultContactStateProvince.html}<br />
                 <span class="description">{ts}This value is selected by default when adding a new contact address.{/ts}</span></td>
             </tr>
             <tr class="crm-localization-form-block-countryLimit">

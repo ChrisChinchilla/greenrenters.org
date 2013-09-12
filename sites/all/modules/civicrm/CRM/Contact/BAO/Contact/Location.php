@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,8 +43,7 @@ class CRM_Contact_BAO_Contact_Location {
    * @static
    * @access public
    */
-  static
-  function getEmailDetails($id, $isPrimary = TRUE, $locationTypeID = NULL) {
+  static function getEmailDetails($id, $isPrimary = TRUE, $locationTypeID = NULL) {
     $primaryClause = NULL;
     if ($isPrimary) {
       $primaryClause = " AND civicrm_email.is_primary = 1";
@@ -82,8 +81,7 @@ WHERE     civicrm_contact.id = %1";
    * @static
    * @access public
    */
-  static
-  function getPhoneDetails($id, $type = NULL) {
+  static function getPhoneDetails($id, $type = NULL) {
     if (!$id) {
       return array(NULL, NULL);
     }
@@ -120,8 +118,7 @@ LEFT JOIN civicrm_phone ON ( civicrm_phone.contact_id = civicrm_contact.id )
    * @static
    * @access public
    */
-  static
-  function &getMapInfo($ids, $locationTypeID = NULL, $imageUrlOnly = FALSE) {
+  static function &getMapInfo($ids, $locationTypeID = NULL, $imageUrlOnly = FALSE) {
     $idString = ' ( ' . implode(',', $ids) . ' ) ';
     $sql = "
    SELECT civicrm_contact.id as contact_id,

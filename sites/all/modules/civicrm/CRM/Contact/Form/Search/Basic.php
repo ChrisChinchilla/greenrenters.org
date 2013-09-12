@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,14 +42,14 @@
  * contacts
  */
 class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
-  /*
-     * csv - common search values
-     *
-     * @var array
-     * @access protected
-     * @static
-     */
 
+  /*
+   * csv - common search values
+   *
+   * @var array
+   * @access protected
+   * @static
+   */
   static $csv = array('contact_type', 'group', 'tag');
 
   /**
@@ -78,33 +78,12 @@ class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
     }
 
     if (CRM_Utils_Array::value('groups', $searchOptions)) {
-      if ($config->groupTree) {
-        $this->add('hidden', 'group', NULL, array('id' => 'group'));
+      // Arrange groups into hierarchical listing (child groups follow their parents and have indentation spacing in title)
+      $groupHierarchy = CRM_Contact_BAO_Group::getGroupsHierarchy($this->_group, NULL, '&nbsp;&nbsp;', TRUE);
 
-        $group = CRM_Utils_Array::value('group', $this->_formValues);
-        $selectedGroups = explode(',', $group);
-
-        if (is_array($selectedGroups)) {
-          $groupNames = NULL;
-          $groupIds = array();
-          foreach ($selectedGroups as $groupId) {
-            if ($groupNames) {
-              $groupNames .= '<br/>';
-            }
-            $groupNames .= $this->_group[$groupId];
-          }
-          $groupIds[] = $groupId;
-        }
-
-        $this->assign('groupIds', implode(',', $groupIds));
-        $this->assign('groupNames', $groupNames);
-      }
-      else {
-        // add select for groups
-        $group = array(
-          '' => ts('- any group -')) + $this->_group;
-        $this->_groupElement = &$this->addElement('select', 'group', ts('in'), $group);
-      }
+      // add select for groups
+      $group = array('' => ts('- any group -')) + $groupHierarchy;
+      $this->_groupElement = &$this->addElement('select', 'group', ts('in'), $group);
     }
 
     if (CRM_Utils_Array::value('tags', $searchOptions)) {
@@ -126,7 +105,7 @@ class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
    *
    * @return array the default array reference
    */
-  function &setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
 
     $defaults['sort_name'] = CRM_Utils_Array::value('sort_name', $this->_formValues);
@@ -228,8 +207,6 @@ class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
     $this->_params = CRM_Contact_BAO_Query::convertFormValues($this->_formValues);
     $this->_returnProperties = &$this->returnProperties();
 
-    // CRM_Core_Error::debug( 'f', $this->_formValues );
-    // CRM_Core_Error::debug( 'p', $this->_params );
     parent::postProcess();
   }
 
@@ -250,12 +227,10 @@ class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
 
     $config = CRM_Core_Config::singleton();
 
-    if (!$config->groupTree) {
-      $group = CRM_Utils_Array::value('group', $this->_formValues);
-      if ($group && !is_array($group)) {
-        unset($this->_formValues['group']);
-        $this->_formValues['group'][$group] = 1;
-      }
+    $group = CRM_Utils_Array::value('group', $this->_formValues);
+    if ($group && !is_array($group)) {
+      unset($this->_formValues['group']);
+      $this->_formValues['group'][$group] = 1;
     }
 
     $tag = CRM_Utils_Array::value('tag', $this->_formValues);
@@ -271,8 +246,7 @@ class CRM_Contact_Form_Search_Basic extends CRM_Contact_Form_Search {
    * Add a form rule for this form. If Go is pressed then we must select some checkboxes
    * and an action
    */
-  static
-  function formRule($fields) {
+  static function formRule($fields) {
     // check actionName and if next, then do not repeat a search, since we are going to the next page
     if (array_key_exists('_qf_Search_next', $fields)) {
       if (!CRM_Utils_Array::value('task', $fields)) {

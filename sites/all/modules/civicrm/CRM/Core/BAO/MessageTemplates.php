@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -84,12 +84,15 @@ class CRM_Core_BAO_MessageTemplates extends CRM_Core_DAO_MessageTemplates {
    * @return object
    */
   static function add(&$params) {
-    $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
+    $hook = empty($params['id']) ? 'create' : 'edit';
+    CRM_Utils_Hook::pre($hook, 'MessageTemplate', CRM_Utils_Array::value('id', $params), $params);
 
+    $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
     $messageTemplates = new CRM_Core_DAO_MessageTemplates();
     $messageTemplates->copyValues($params);
-
     $messageTemplates->save();
+
+    CRM_Utils_Hook::post($hook, 'MessageTemplate', $messageTemplates->id, $messageTemplates);
     return $messageTemplates;
   }
 
@@ -107,22 +110,18 @@ class CRM_Core_BAO_MessageTemplates extends CRM_Core_DAO_MessageTemplates {
       CRM_Core_Error::fatal(ts('Invalid Message template'));
     }
 
-    // set membership_type to null
-    $query = "UPDATE civicrm_membership_type
-                  SET renewal_msg_id = NULL
-                  WHERE renewal_msg_id = %1";
-    $params = array(1 => array($messageTemplatesID, 'Integer'));
-    CRM_Core_DAO::executeQuery($query, $params);
-
+    // Set mailing msg template col to NULL
     $query = "UPDATE civicrm_mailing
                   SET msg_template_id = NULL
                   WHERE msg_template_id = %1";
+
+    $params = array(1 => array($messageTemplatesID, 'Integer'));
     CRM_Core_DAO::executeQuery($query, $params);
 
     $messageTemplates = new CRM_Core_DAO_MessageTemplates();
     $messageTemplates->id = $messageTemplatesID;
     $messageTemplates->delete();
-    CRM_Core_Session::setStatus(ts('Selected message templates has been deleted.'));
+    CRM_Core_Session::setStatus(ts('Selected message template has been deleted.'), ts('Deleted'), 'success');
   }
 
   /**
@@ -186,9 +185,9 @@ class CRM_Core_BAO_MessageTemplates extends CRM_Core_DAO_MessageTemplates {
 
       // get replacement text for these tokens
       $returnProperties = array("preferred_mail_format" => 1);
-      if (isset($tokens['contact'])) { 
+      if (isset($tokens['contact'])) {
         foreach ($tokens['contact'] as $key => $value) {
-          $returnProperties[$value] = 1; 
+          $returnProperties[$value] = 1;
         }
       }
       list($details) = CRM_Utils_Token::getTokenDetails(array($contactId),
@@ -199,12 +198,12 @@ class CRM_Core_BAO_MessageTemplates extends CRM_Core_DAO_MessageTemplates {
       $contact = reset( $details );
 
       // call token hook
-      $hookTokens = array();            
+      $hookTokens = array();
       CRM_Utils_Hook::tokens($hookTokens);
       $categories = array_keys($hookTokens);
 
-      // do replacements in text and html body            
-      $type = array('html', 'text');            
+      // do replacements in text and html body
+      $type = array('html', 'text');
       foreach ($type as $key => $value) {
         $bodyType = "body_{$value}";
         if ($$bodyType) {

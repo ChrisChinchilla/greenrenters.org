@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -25,9 +25,8 @@
 *}
 
 <div class="crm-block crm-form-block crm-search-form-block">
-	<div class="crm-accordion-wrapper crm-member_search_form-accordion {if $rows}crm-accordion-closed{else}crm-accordion-open{/if}">
+	<div class="crm-accordion-wrapper crm-member_search_form-accordion {if $rows}collapsed{/if}">
 	 <div class="crm-accordion-header crm-master-accordion-header">
-	    <div class="icon crm-accordion-pointer"></div> 
 	    {ts}Edit Search Criteria{/ts}
  	 </div><!-- /.crm-accordion-header -->
 	<div class="crm-accordion-body">
@@ -74,7 +73,7 @@
 {literal}
 <script type="text/javascript">
 cj(function() {
-   cj().crmaccordions(); 
+   cj().crmAccordions(); 
 });
 </script>
 {/literal}

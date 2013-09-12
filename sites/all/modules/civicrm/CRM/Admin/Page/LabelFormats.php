@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -130,7 +130,7 @@ class CRM_Admin_Page_LabelFormats extends CRM_Core_Page_Basic {
     // Add action links to each of the Label Formats
     foreach ($labelFormatList as & $format) {
       $action = array_sum(array_keys($this->links()));
-      if ($format['is_reserved']) {
+      if (CRM_Utils_Array::value('is_reserved', $format)) {
         $action -= CRM_Core_Action::DELETE;
       }
       $format['action'] = CRM_Core_Action::formLink(self::links(), $action, array('id' => $format['id']));

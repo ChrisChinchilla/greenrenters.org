@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
  *
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,6 +39,23 @@
  *
  */
 class CRM_Core_BAO_ConfigSetting {
+
+  /**
+   * Function to create civicrm settings. This is the same as add but it clears the cache and
+   * reloads the config object
+   *
+   * @params array $params associated array of civicrm variables
+   *
+   * @return null
+   * @static
+   */
+  static function create($params) {
+    self::add($params);
+    $cache = CRM_Utils_Cache::singleton();
+    $cache->delete('CRM_Core_Config');
+    $cache->delete('CRM_Core_Config' . CRM_Core_Config::domainID());
+    $config = CRM_Core_Config::singleton(TRUE, TRUE);
+  }
 
   /**
    * Function to add civicrm settings
@@ -54,10 +71,15 @@ class CRM_Core_BAO_ConfigSetting {
     // also set a template url so js files can use this
     // CRM-6194
     $params['civiRelativeURL'] = CRM_Utils_System::url('CIVI_BASE_TEMPLATE');
-    $params['civiRelativeURL'] = str_replace('CIVI_BASE_TEMPLATE',
-      '',
+    $params['civiRelativeURL'] =
+      str_replace(
+        'CIVI_BASE_TEMPLATE',
+        '',
       $params['civiRelativeURL']
     );
+
+    // also add the version number for use by template / js etc
+    $params['civiVersion'] = CRM_Utils_System::version();
 
     $domain = new CRM_Core_DAO_Domain();
     $domain->id = CRM_Core_Config::domainID();
@@ -202,9 +224,7 @@ class CRM_Core_BAO_ConfigSetting {
     $domain->find(TRUE);
     if ($domain->config_backend) {
       $defaults = unserialize($domain->config_backend);
-      if ($defaults === FALSE ||
-        !is_array($defaults)
-      ) {
+      if ($defaults === FALSE || !is_array($defaults)) {
         $defaults = array();
         return;
       }
@@ -340,7 +360,8 @@ class CRM_Core_BAO_ConfigSetting {
 
     $url = $dir = $siteName = $siteRoot = NULL;
     if ($config->userFramework == 'Joomla') {
-      $url = preg_replace('|administrator/components/com_civicrm/civicrm/|',
+      $url = preg_replace(
+        '|administrator/components/com_civicrm/civicrm/|',
         '',
         $config->userFrameworkResourceURL
       );
@@ -348,17 +369,41 @@ class CRM_Core_BAO_ConfigSetting {
       // lets use imageUploadDir since we dont mess around with its values
       // in the config object, lets kep it a bit generic since folks
       // might have different values etc
-      $dir = preg_replace('|civicrm/templates_c/.*$|',
+      $dir = preg_replace(
+        '|civicrm/templates_c/.*$|',
         '',
         $config->templateCompileDir
       );
-      $siteRoot = preg_replace('|/media/civicrm/.*$|',
+      $siteRoot = preg_replace(
+        '|/media/civicrm/.*$|',
+        '',
+        $config->imageUploadDir
+      );
+    }
+    else if ($config->userFramework == 'WordPress') {
+      $url = preg_replace(
+        '|wp-content/plugins/civicrm/civicrm/|',
+        '',
+        $config->userFrameworkResourceURL
+      );
+
+      // lets use imageUploadDir since we dont mess around with its values
+      // in the config object, lets kep it a bit generic since folks
+      // might have different values etc
+      $dir = preg_replace(
+        '|civicrm/templates_c/.*$|',
+        '',
+        $config->templateCompileDir
+      );
+      $siteRoot = preg_replace(
+        '|/wp-content/plugins/files/civicrm/.*$|',
         '',
         $config->imageUploadDir
       );
     }
     else {
-      $url = preg_replace('|sites/[\w\.\-\_]+/modules/civicrm/|',
+      $url = preg_replace(
+        '|sites/[\w\.\-\_]+/modules/civicrm/|',
         '',
         $config->userFrameworkResourceURL
       );
@@ -366,13 +411,15 @@ class CRM_Core_BAO_ConfigSetting {
       // lets use imageUploadDir since we dont mess around with its values
       // in the config object, lets kep it a bit generic since folks
       // might have different values etc
-      $dir = preg_replace('|/files/civicrm/.*$|',
+      $dir = preg_replace(
+        '|/files/civicrm/.*$|',
         '/files/',
         $config->imageUploadDir
       );
 
       $matches = array();
-      if (preg_match('|/sites/([\w\.\-\_]+)/|',
+      if (preg_match(
+          '|/sites/([\w\.\-\_]+)/|',
           $config->imageUploadDir,
           $matches
         )) {
@@ -397,23 +444,28 @@ class CRM_Core_BAO_ConfigSetting {
     $url = $config->userFrameworkBaseURL;
     $siteName = $siteRoot = NULL;
     if ($config->userFramework == 'Joomla') {
-      $url = preg_replace('|/administrator|',
+      $url = preg_replace(
+        '|/administrator|',
         '',
         $config->userFrameworkBaseURL
       );
-      $siteRoot = preg_replace('|/media/civicrm/.*$|',
+      $siteRoot = preg_replace(
+        '|/media/civicrm/.*$|',
         '',
         $config->imageUploadDir
       );
     }
-    $dir = preg_replace('|civicrm/templates_c/.*$|',
+
+    $dir = preg_replace(
+      '|civicrm/templates_c/.*$|',
       '',
       $config->templateCompileDir
     );
 
-    if ($config->userFramework != 'Joomla') {
+    if ($config->userSystem->is_drupal) {
       $matches = array();
-      if (preg_match('|/sites/([\w\.\-\_]+)/|',
+      if (preg_match(
+          '|/sites/([\w\.\-\_]+)/|',
           $config->templateCompileDir,
           $matches
         )) {

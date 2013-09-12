@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -170,8 +170,7 @@ class CRM_Utils_OpenFlashChart {
    * @return object $chart   object of open flash chart.
    * @static
    */
-  static
-  function &pieChart(&$params) {
+  static function &pieChart(&$params) {
     $chart = NULL;
     if (empty($params)) {
       return $chart;
@@ -234,8 +233,7 @@ class CRM_Utils_OpenFlashChart {
    * @return object $chart   object of open flash chart.
    * @static
    */
-  static
-  function &bar_3dChart(&$params) {
+  static function &bar_3dChart(&$params) {
     $chart = NULL;
     if (empty($params)) {
       return $chart;
@@ -373,8 +371,7 @@ class CRM_Utils_OpenFlashChart {
     return $chart;
   }
 
-  static
-  function chart($rows, $chart, $interval) {
+  static function chart($rows, $chart, $interval) {
     $chartData = array();
 
     switch ($interval) {
@@ -447,8 +444,7 @@ class CRM_Utils_OpenFlashChart {
     return self::buildChart($chartData, $chart);
   }
 
-  static
-  function reportChart($rows, $chart, $interval, &$chartInfo) {
+  static function reportChart($rows, $chart, $interval, &$chartInfo) {
     foreach ($interval as $key => $val) {
       $graph[$val] = $rows['value'][$key];
     }
@@ -477,7 +473,7 @@ class CRM_Utils_OpenFlashChart {
     return self::buildChart($chartData, $chart);
   }
 
-  function buildChart(&$params, $chart) {
+  static function buildChart(&$params, $chart) {
     $openFlashChart = array();
     if ($chart && is_array($params) && !empty($params)) {
       // build the chart objects.

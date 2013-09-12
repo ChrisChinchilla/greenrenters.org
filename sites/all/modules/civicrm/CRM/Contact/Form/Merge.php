@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -238,7 +238,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
       $element = $this->addElement($relTableElement[0], $relTableElement[1]);
       $element->setChecked(TRUE);
     }
-    
+
     $this->assign('rel_tables', $rowsElementsAndInfo['rel_tables']);
     $this->assign('userContextURL', $session->readUserContext());
   }
@@ -268,6 +268,10 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
           'name' => ts('Merge and Goto Listing'),
         ),
         array(
+          'type' => 'done',
+          'name' => ts('Merge and View Result'),
+        ),
+        array(
           'type' => 'cancel',
           'name' => ts('Cancel'),
         ),
@@ -292,7 +296,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
 
   public function postProcess() {
     $formValues = $this->exportValues();
-
+ 
     // reset all selected contact ids from session
     // when we came from search context, CRM-3526
     $session = CRM_Core_Session::singleton();
@@ -307,7 +311,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
 
     CRM_Dedupe_Merger::moveAllBelongings($this->_cid, $this->_oid, $formValues);
 
-    CRM_Core_Session::setStatus(ts('The contacts have been merged.'));
+    CRM_Core_Session::setStatus(ts('Contact id %1 has been updated and contact id %2 has been deleted.', array(1 => $this->_cid, 2 => $this->_oid)), ts('Contacts Merged'), 'success');
     $url = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$this->_cid}");
     if (CRM_Utils_Array::value('_qf_Merge_submit', $formValues)) {
       $listParamsURL = "reset=1&action=update&rgid={$this->_rgid}";
@@ -318,6 +322,9 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
         $listParamsURL
       );
       CRM_Utils_System::redirect($lisitingURL);
+    }
+     if (CRM_Utils_Array::value('_qf_Merge_done', $formValues)) {
+      CRM_Utils_System::redirect($url);
     }
 
     if ($this->next && $this->_mergeId) {

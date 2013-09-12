@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -47,8 +47,7 @@ Class CRM_Core_Form_Date {
    * @static
    * @access public
    */
-  static
-  function buildAllowedDateFormats(&$form) {
+  static function buildAllowedDateFormats(&$form) {
 
     $dateOptions = array();
 
@@ -78,9 +77,9 @@ Class CRM_Core_Form_Date {
    * @static
    * @access public
    */
-  static
-  function buildDateRange(&$form, $fieldName, $count = 1, $from = '_from', $to = '_to', $fromLabel = 'From:', $required = FALSE, $addReportFilters = TRUE, $dateFormat = 'searchDate') {
-    $selector = array(ts('Choose Date Range'),
+  static function buildDateRange(&$form, $fieldName, $count = 1, $from = '_from', $to = '_to', $fromLabel = 'From:', $required = FALSE, $addReportFilters = TRUE, $dateFormat = 'searchDate', $displayTime = FALSE) {
+    $selector = array('' => ts('- any -'),
+      0 => ts('Choose Date Range'),
       'this.year' => ts('This Year'),
       'this.fiscal_year' => ts('This Fiscal Year'),
       'this.quarter' => ts('This Quarter'),
@@ -133,11 +132,10 @@ Class CRM_Core_Form_Date {
       "{$fieldName}_relative",
       ts('Relative Date Range'),
       $selector,
-      $required,
-      array('onclick' => "showAbsoluteRange(this.value, '{$fieldName}_relative');")
+      $required
     );
 
-    $form->addDateRange($fieldName, $from, $to, $fromLabel, $dateFormat);
+    $form->addDateRange($fieldName, $from, $to, $fromLabel, $dateFormat, FALSE, $displayTime);
   }
 }
 

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,7 +31,7 @@
  * The default values in general, should reflect production values (minimizes chances of screwing up)
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -158,7 +158,8 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
    * @return void
    * @access private
    */
-  private function __construct() {}
+  private function __construct() {
+  }
 
   /**
    * Singleton function used to manage this object.
@@ -183,9 +184,7 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
 
       // first, attempt to get configuration object from cache
       $cache = CRM_Utils_Cache::singleton();
-      self::$_singleton = $cache->get('CRM_Core_Config');
-
-
+      self::$_singleton = $cache->get('CRM_Core_Config' . CRM_Core_Config::domainID());
       // if not in cache, fire off config construction
       if (!self::$_singleton) {
         self::$_singleton = new CRM_Core_Config;
@@ -199,7 +198,7 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
           // retrieve and overwrite stuff from the settings file
           self::$_singleton->setCoreVariables();
         }
-        $cache->set('CRM_Core_Config', self::$_singleton);
+        $cache->set('CRM_Core_Config' . CRM_Core_Config::domainID(), self::$_singleton);
       }
       else {
         // we retrieve the object from memcache, so we now initialize the objects
@@ -246,9 +245,9 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
 
     $this->userFrameworkClass = 'CRM_Utils_System_' . $userFramework;
     $this->userHookClass = 'CRM_Utils_Hook_' . $userFramework;
-    $this->userPermissionClass = 'CRM_Core_Permission_' . $userFramework;
+    $userPermissionClass = 'CRM_Core_Permission_' . $userFramework;
+    $this->userPermissionClass = new $userPermissionClass();
 
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $this->userFrameworkClass) . '.php');
     $class = $this->userFrameworkClass;
     // redundant with _initVariables
     $userSystem = $this->userSystem = new $class();
@@ -323,7 +322,9 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
 
       // also make sure we create the config directory within this directory
       // the below statement will create both the templates directory and the config and log directory
-      $this->configAndLogDir = CRM_Utils_File::baseFilePath($this->templateCompileDir) . 'ConfigAndLog' . DIRECTORY_SEPARATOR;
+      $this->configAndLogDir =
+        CRM_Utils_File::baseFilePath($this->templateCompileDir) .
+        'ConfigAndLog' . DIRECTORY_SEPARATOR;
       CRM_Utils_File::createDir($this->configAndLogDir);
 
       // we're automatically prefixing compiled templates directories with country/language code
@@ -342,6 +343,8 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
       exit();
     }
 
+    $this->_initDAO();
+
     if (defined('CIVICRM_UF')) {
       $this->userFramework = CIVICRM_UF;
       $this->_setUserFrameworkConfig($this->userFramework);
@@ -350,8 +353,6 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
       echo 'You need to define CIVICRM_UF in civicrm.settings.php';
       exit();
     }
-
-    $this->_initDAO();
 
     // also initialize the logger
     self::$_log = Log::singleton('display');
@@ -374,6 +375,9 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
     $factoryClass = $this->DAOFactoryClass;
     require_once str_replace('_', DIRECTORY_SEPARATOR, $factoryClass) . '.php';
     CRM_Core_DAO::setFactory(new $factoryClass());
+    if (CRM_Utils_Constant::value('CIVICRM_MYSQL_STRICT', CRM_Utils_System::isDevelopment())) {
+      CRM_Core_DAO::executeQuery('SET SESSION sql_mode = STRICT_TRANS_TABLES');
+    }
   }
 
   /**
@@ -431,8 +435,9 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
         $value = CRM_Utils_File::addTrailingSlash($value, '/');
       }
       elseif (in_array($key, $dirArray)) {
-        if ($value)
+        if ($value) {
           $value = CRM_Utils_File::addTrailingSlash($value);
+        }
         if (empty($value) || (CRM_Utils_File::createDir($value, FALSE) === FALSE)) {
           // seems like we could not create the directories
           // settings might have changed, lets suppress a message for now
@@ -441,7 +446,10 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
           // CRM-4949
           $value = $this->templateCompileDir;
           $url = CRM_Utils_System::url('civicrm/admin/setting/path', 'reset=1');
-          CRM_Core_Session::setStatus(ts('%1 has an incorrect directory path. Please go to the <a href="%2">path setting page</a> and correct it.', array(1 => $key, 2 => $url)) . '<br/>');
+          CRM_Core_Session::setStatus(ts('%1 has an incorrect directory path. Please go to the <a href="%2">path setting page</a> and correct it.', array(
+            1 => $key,
+            2 => $url
+          )), ts('Check Settings'), 'alert');
         }
       }
       elseif ($key == 'lcMessages') {
@@ -503,16 +511,15 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
         'mailing_backend'
       );
 
-      if (defined('CIVICRM_MAILER_SPOOL') &&
-        CIVICRM_MAILER_SPOOL
+      if ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_REDIRECT_TO_DB ||
+        (defined('CIVICRM_MAILER_SPOOL') && CIVICRM_MAILER_SPOOL)
       ) {
         self::$_mail = new CRM_Mailing_BAO_Spool();
       }
-      elseif ($mailingInfo['outBound_option'] == 0) {
-        if ($mailingInfo['smtpServer'] == '' ||
-          !$mailingInfo['smtpServer']
-        ) {
-          CRM_Core_Error::fatal(ts('There is no valid smtp server setting. Click <a href=\'%1\'>Administer CiviCRM >> Global Settings</a> to set the SMTP Server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting', 'reset=1'))));
+      elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_SMTP) {
+        if ($mailingInfo['smtpServer'] == '' || !$mailingInfo['smtpServer']) {
+          CRM_Core_Error::debug_log_message(ts('There is no valid smtp server setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the SMTP Server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+          CRM_Core_Error::fatal(ts('There is no valid smtp server setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the SMTP Server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
         }
 
         $params['host'] = $mailingInfo['smtpServer'] ? $mailingInfo['smtpServer'] : 'localhost';
@@ -521,7 +528,7 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
         if ($mailingInfo['smtpAuth']) {
           $params['username'] = $mailingInfo['smtpUsername'];
           $params['password'] = CRM_Utils_Crypt::decrypt($mailingInfo['smtpPassword']);
-          $params['auth']     = TRUE;
+          $params['auth'] = TRUE;
         }
         else {
           $params['auth'] = FALSE;
@@ -539,26 +546,33 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
 
         self::$_mail = Mail::factory('smtp', $params);
       }
-      elseif ($mailingInfo['outBound_option'] == 1) {
+      elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_SENDMAIL) {
         if ($mailingInfo['sendmail_path'] == '' ||
           !$mailingInfo['sendmail_path']
         ) {
-          CRM_Core_Error::fatal(ts('There is no valid sendmail path setting. Click <a href=\'%1\'>Administer CiviCRM >> Global Settings</a> to set the Sendmail Server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting', 'reset=1'))));
+          CRM_Core_Error::debug_log_message(ts('There is no valid sendmail path setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the sendmail server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+          CRM_Core_Error::fatal(ts('There is no valid sendmail path setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the sendmail server.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
         }
         $params['sendmail_path'] = $mailingInfo['sendmail_path'];
         $params['sendmail_args'] = $mailingInfo['sendmail_args'];
 
         self::$_mail = Mail::factory('sendmail', $params);
       }
-      elseif ($mailingInfo['outBound_option'] == 3) {
+      elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_MAIL) {
         $params = array();
         self::$_mail = Mail::factory('mail', $params);
       }
-      elseif ($mailingInfo['outBound_option'] == 4) {
+      elseif ($mailingInfo['outBound_option'] == CRM_Mailing_Config::OUTBOUND_OPTION_MOCK) {
         self::$_mail = Mail::factory('mock', $params);
       }
-      else {
-        CRM_Core_Session::setStatus(ts('There is no valid SMTP server Setting Or SendMail path setting. Click <a href=\'%1\'>Administer CiviCRM >> Global Settings</a> to set the OutBound Email.', array(1 => CRM_Utils_System::url('civicrm/admin/setting', 'reset=1'))));
+      elseif ($mailingInfo['outBound_option'] == 2) {
+        CRM_Core_Error::debug_log_message(ts('Outbound mail has been disabled. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the OutBound Email.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+        CRM_Core_Session::setStatus(ts('Outbound mail has been disabled. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the OutBound Email.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+      }
+      else{
+        CRM_Core_Error::debug_log_message(ts('There is no valid SMTP server Setting Or SendMail path setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the OutBound Email.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+        CRM_Core_Session::setStatus(ts('There is no valid SMTP server Setting Or sendMail path setting. Click <a href=\'%1\'>Administer >> System Setting >> Outbound Email</a> to set the OutBound Email.', array(1 => CRM_Utils_System::url('civicrm/admin/setting/smtp', 'reset=1'))));
+        CRM_Core_Error::debug_var('mailing_info', $mailingInfo);
       }
     }
     return self::$_mail;
@@ -620,8 +634,16 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
   /**
    * one function to get domain ID
    */
-  static function domainID() {
-    return defined('CIVICRM_DOMAIN_ID') ? CIVICRM_DOMAIN_ID : 1;
+  static function domainID($domainID = NULL, $reset = FALSE) {
+    static $domain;
+    if ($domainID) {
+      $domain = $domainID;
+    }
+    if ($reset || empty($domain)) {
+      $domain = defined('CIVICRM_DOMAIN_ID') ? CIVICRM_DOMAIN_ID : 1;
+    }
+
+    return $domain;
   }
 
   /**
@@ -633,7 +655,7 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
     $this->cleanup(1, FALSE);
 
     // clear db caching
-    $this->clearDBCache();
+    self::clearDBCache();
 
     if ($sessionReset) {
       $session = CRM_Core_Session::singleton();
@@ -642,9 +664,39 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
   }
 
   /**
+   * Do general cleanup of module permissions.
+   */
+  function cleanupPermissions() {
+    $module_files = CRM_Extension_System::singleton()->getMapper()->getActiveModuleFiles();
+    if ($this->userPermissionClass->isModulePermissionSupported()) {
+      // Can store permissions -- so do it!
+      $this->userPermissionClass->upgradePermissions(
+        CRM_Core_Permission::basicPermissions()
+      );
+    } else {
+      // Cannot store permissions -- warn if any modules require them
+      $modules_with_perms = array();
+      foreach ($module_files as $module_file) {
+        $perms = $this->userPermissionClass->getModulePermissions($module_file['prefix']);
+        if (!empty($perms)) {
+          $modules_with_perms[] = $module_file['prefix'];
+        }
+      }
+      if (!empty($modules_with_perms)) {
+        CRM_Core_Session::setStatus(
+          ts('Some modules define permissions, but the CMS cannot store them: %1', array(1 => implode(', ', $modules_with_perms))),
+          ts('Permission Error'),
+          'error'
+        );
+      }
+    }
+  }
+
+  /**
    * Flush information about loaded modules
    */
   function clearModuleList() {
+    CRM_Extension_System::singleton()->getCache()->flush();
     CRM_Utils_Hook::singleton(TRUE);
     CRM_Core_PseudoConstant::getModuleExtensions(TRUE);
     CRM_Core_Module::getAll(TRUE);
@@ -653,7 +705,7 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
   /**
    * clear db cache
    */
-  function clearDBCache() {
+  public static function clearDBCache() {
     $queries = array(
       'TRUNCATE TABLE civicrm_acl_cache',
       'TRUNCATE TABLE civicrm_acl_contact_cache',
@@ -677,21 +729,24 @@ class CRM_Core_Config extends CRM_Core_Config_Variables {
   /**
    * clear leftover temporary tables
    */
-  function clearTempTables() {
+  public static function clearTempTables() {
     // CRM-5645
     $dao = CRM_Core_DAO::executeQuery("SELECT DATABASE();");
     $query = "
 SELECT TABLE_NAME as tableName
 FROM   INFORMATION_SCHEMA.TABLES
 WHERE  TABLE_SCHEMA = %1
-AND    ( TABLE_NAME LIKE 'civicrm_import_job_%'
-OR       TABLE_NAME LIKE 'civicrm_export_temp%'
-OR       TABLE_NAME LIKE 'civicrm_task_action_temp%' )
+AND
+  ( TABLE_NAME LIKE 'civicrm_import_job_%'
+  OR       TABLE_NAME LIKE 'civicrm_export_temp%'
+  OR       TABLE_NAME LIKE 'civicrm_task_action_temp%'
+  OR       TABLE_NAME LIKE 'civicrm_report_temp%'
+  )
 ";
 
-    $params   = array(1 => array($dao->database(), 'String'));
+    $params = array(1 => array($dao->database(), 'String'));
     $tableDAO = CRM_Core_DAO::executeQuery($query, $params);
-    $tables   = array();
+    $tables = array();
     while ($tableDAO->fetch()) {
       $tables[] = $tableDAO->tableName;
     }

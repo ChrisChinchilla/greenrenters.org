@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,7 +31,7 @@
  * Serves as a wrapper between the UserFrameWork and Core CRM
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,43 +42,101 @@ class CRM_Core_Invoke {
    * respective functions are called
    *
    * @param $args array this array contains the arguments of the url
+   * @return string, HTML
    *
    * @static
    * @access public
    */
-  static
-  function invoke($args) {
+  static function invoke($args) {
+    try {
+      return self::_invoke($args);
+    } catch (Exception $e) {
+      return CRM_Core_Error::handleUnhandledException($e);
+    }
+  }
+
+  protected static function _invoke($args) {
     if ($args[0] !== 'civicrm') {
       return;
     }
 
-    require_once 'CRM/Core/I18n.php';
-
-    $config = CRM_Core_Config::singleton();
-
-    if (isset($args[1]) and $args[1] == 'menu' and
-      isset($args[2]) and $args[2] == 'rebuild'
-    ) {
+    if (!defined('CIVICRM_SYMFONY_PATH')) {
+      try {
+        // Traditional Civi invocation path
+        self::hackMenuRebuild($args); // may exit
+        self::init($args);
+        self::hackStandalone($args);
+        $item = self::getItem($args);
+        return self::runItem($item);
+      } catch (Exception $e) {
+        // Recall: CRM_Core_Config is initialized before calling CRM_Core_Invoke
+        $config = CRM_Core_Config::singleton();
+        return CRM_Core_Error::handleUnhandledException($e);
+        /*
+        if ($config->backtrace) {
+          return CRM_Core_Error::formatHtmlException($e);
+        } else {
+         // TODO
+        }*/
+      }
+    } else {
+      // Symfony-based invocation path
+      require_once CIVICRM_SYMFONY_PATH . '/app/bootstrap.php.cache';
+      require_once CIVICRM_SYMFONY_PATH . '/app/AppKernel.php';
+      $kernel = new AppKernel('dev', true);
+      $kernel->loadClassCache();
+      $response = $kernel->handle(Symfony\Component\HttpFoundation\Request::createFromGlobals());
+      // $response->send();
+      return $response->getContent();
+    }
+  }
+  /**
+   * Hackish support /civicrm/menu/rebuild
+   *
+   * @param array $args list of path parts
+   * @void
+   */
+  static public function hackMenuRebuild($args) {
+    if (array('civicrm','menu','rebuild') == $args || array('civicrm', 'clearcache') == $args) {
       // ensure that the user has a good privilege level
       if (CRM_Core_Permission::check('administer CiviCRM')) {
         self::rebuildMenuAndCaches();
-        CRM_Core_Session::setStatus(ts('Menu has been rebuilt'));
-        return CRM_Utils_System::redirect();
+        CRM_Core_Session::setStatus(ts('Cleared all CiviCRM caches (database, menu, templates)'), ts('Complete'), 'success');
+        return CRM_Utils_System::redirect(); // exits
       }
       else {
         CRM_Core_Error::fatal('You do not have permission to execute this url');
       }
     }
+  }
 
+  /**
+   * Perform general setup
+   *
+   * @param array $args list of path parts
+   * @void
+   */
+  static public function init($args) {
     // first fire up IDS and check for bad stuff
+    $config = CRM_Core_Config::singleton();
     if ($config->useIDS) {
       $ids = new CRM_Core_IDS();
       $ids->check($args);
     }
 
     // also initialize the i18n framework
+    require_once 'CRM/Core/I18n.php';
     $i18n = CRM_Core_I18n::singleton();
+  }
 
+  /**
+   * Hackish support for /standalone/*
+   *
+   * @param array $args list of path parts
+   * @void
+   */
+  static public function hackStandalone($args) {
+    $config = CRM_Core_Config::singleton();
     if ($config->userFramework == 'Standalone') {
       $session = CRM_Core_Session::singleton();
       if ($session->get('new_install') !== TRUE) {
@@ -88,9 +146,21 @@ class CRM_Core_Invoke {
         CRM_Core_Menu::store();
       }
     }
+  }
 
-    // get the menu items
-    $path = implode('/', $args);
+  /**
+   * Determine which menu $item corresponds to $args
+   *
+   * @param array $args list of path parts
+   * @return array; see CRM_Core_Menu
+   */
+  static public function getItem($args) {
+    if (is_array($args)) {
+      // get the menu items
+      $path = implode('/', $args);
+    } else {
+      $path = $args;
+    }
     $item = CRM_Core_Menu::get($path);
 
     // we should try to compute menus, if item is empty and stay on the same page,
@@ -100,6 +170,17 @@ class CRM_Core_Invoke {
       $item = CRM_Core_Menu::get($path);
     }
 
+    return $item;
+  }
+
+  /**
+   * Given a menu item, call the appropriate controller and return the response
+   *
+   * @param array $item see CRM_Core_Menu
+   * @return string, HTML
+   */
+  static public function runItem($item) {
+    $config = CRM_Core_Config::singleton();
     if ($config->userFramework == 'Joomla' && $item) {
       $config->userFrameworkURLVar = 'task';
 
@@ -116,7 +197,8 @@ class CRM_Core_Invoke {
 
     if ($item) {
       // CRM-7656 - make sure we send a clean sanitized path to create printer friendly url
-      $printerFriendly = CRM_Utils_System::makeURL('snippet', FALSE, FALSE,
+      $printerFriendly = CRM_Utils_System::makeURL(
+        'snippet', FALSE, FALSE,
         CRM_Utils_Array::value('path', $item)
       ) . '2';
       $template->assign('printerFriendly', $printerFriendly);
@@ -151,55 +233,41 @@ class CRM_Core_Invoke {
       }
 
       $template = CRM_Core_Smarty::singleton();
-      if (isset($item['is_public']) &&
-        $item['is_public']
-      ) {
+      if (!empty($item['is_public'])) {
         $template->assign('urlIsPublic', TRUE);
       }
       else {
         $template->assign('urlIsPublic', FALSE);
+        self::versionCheck($template);
       }
 
       if (isset($item['return_url'])) {
         $session = CRM_Core_Session::singleton();
-        $args = CRM_Utils_Array::value('return_url_args',
+        $args = CRM_Utils_Array::value(
+          'return_url_args',
           $item,
           'reset=1'
         );
-        $session->pushUserContext(CRM_Utils_System::url($item['return_url'],
-            $args
-          ));
+        $session->pushUserContext(CRM_Utils_System::url($item['return_url'], $args));
       }
 
-      // CRM_Core_Error::debug( $item ); exit( );
       $result = NULL;
       if (is_array($item['page_callback'])) {
-        $newArgs = explode('/',
-          $_GET[$config->userFrameworkURLVar]
-        );
-        require_once (str_replace('_',
-            DIRECTORY_SEPARATOR,
-            $item['page_callback'][0]
-          ) . '.php');
-        $result = call_user_func($item['page_callback'],
-          $newArgs
-        );
+        $newArgs = explode('/', $_GET[$config->userFrameworkURLVar]);
+        require_once (str_replace('_', DIRECTORY_SEPARATOR, $item['page_callback'][0]) . '.php');
+        $result = call_user_func($item['page_callback'], $newArgs);
       }
       elseif (strstr($item['page_callback'], '_Form')) {
         $wrapper = new CRM_Utils_Wrapper();
-        $result = $wrapper->run(CRM_Utils_Array::value('page_callback', $item),
+        $result = $wrapper->run(
+          CRM_Utils_Array::value('page_callback', $item),
           CRM_Utils_Array::value('title', $item),
           isset($pageArgs) ? $pageArgs : NULL
         );
       }
       else {
-        $newArgs = explode('/',
-          $_GET[$config->userFrameworkURLVar]
-        );
-        require_once (str_replace('_',
-            DIRECTORY_SEPARATOR,
-            $item['page_callback']
-          ) . '.php');
+        $newArgs = explode('/', $_GET[$config->userFrameworkURLVar]);
+        require_once (str_replace('_', DIRECTORY_SEPARATOR, $item['page_callback']) . '.php');
         $mode = 'null';
         if (isset($pageArgs['mode'])) {
           $mode = $pageArgs['mode'];
@@ -207,9 +275,7 @@ class CRM_Core_Invoke {
         }
         $title = CRM_Utils_Array::value('title', $item);
         if (strstr($item['page_callback'], '_Page')) {
-          eval('$object = ' .
-            "new {$item['page_callback']}( \$title, \$mode );"
-          );
+          $object = new $item['page_callback'] ($title, $mode );
         }
         elseif (strstr($item['page_callback'], '_Controller')) {
           $addSequence = 'false';
@@ -218,9 +284,7 @@ class CRM_Core_Invoke {
             $addSequence = $addSequence ? 'true' : 'false';
             unset($pageArgs['addSequence']);
           }
-          eval('$object = ' .
-            "new {$item['page_callback']} ( \$title, true, \$mode, null, \$addSequence );"
-          );
+          $object = new $item['page_callback'] ($title, true, $mode, null, $addSequence );
         }
         else {
           CRM_Core_Error::fatal();
@@ -233,7 +297,7 @@ class CRM_Core_Invoke {
     }
 
     CRM_Core_Menu::store();
-    CRM_Core_Session::setStatus(ts('Menu has been rebuilt'));
+    CRM_Core_Session::setStatus(ts('Menu has been rebuilt'), ts('Complete'), 'success');
     return CRM_Utils_System::redirect();
   }
 
@@ -245,8 +309,7 @@ class CRM_Core_Invoke {
    * @static
    * @access public
    */
-  static
-  function form($action, $contact_type, $contact_sub_type) {
+  static function form($action, $contact_type, $contact_sub_type) {
     CRM_Utils_System::setUserContext(array('civicrm/contact/search/basic', 'civicrm/contact/view'));
     $wrapper = new CRM_Utils_Wrapper();
 
@@ -267,8 +330,7 @@ class CRM_Core_Invoke {
    * @static
    * @access public
    */
-  static
-  function profile($args) {
+  static function profile($args) {
     if ($args[1] !== 'profile') {
       return;
     }
@@ -276,7 +338,8 @@ class CRM_Core_Invoke {
     $secondArg = CRM_Utils_Array::value(2, $args, '');
 
     if ($secondArg == 'map') {
-      $controller = new CRM_Core_Controller_Simple('CRM_Contact_Form_Task_Map',
+      $controller = new CRM_Core_Controller_Simple(
+        'CRM_Contact_Form_Task_Map',
         ts('Map Contact'),
         NULL, FALSE, FALSE, TRUE
       );
@@ -291,26 +354,19 @@ class CRM_Core_Invoke {
         $profileGID = $profileIds[0];
       }
       else {
-        $profileGID = CRM_Utils_Request::retrieve('gid', 'Integer',
-          $controller,
-          TRUE
-        );
+        $profileGID = CRM_Utils_Request::retrieve('gid', 'Integer', $controller, TRUE);
       }
+
 
       // make sure that this profile enables mapping
       // CRM-8609
-      $isMap = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup',
-        $profileGID,
-        'is_map'
-      );
+      $isMap =
+        CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup', $profileGID, 'is_map');
       if (!$isMap) {
         CRM_Core_Error::statusBounce(ts('This profile does not have the map feature turned on.'));
       }
 
-      $profileView = CRM_Utils_Request::retrieve('pv', 'Integer',
-        $controller,
-        FALSE
-      );
+      $profileView = CRM_Utils_Request::retrieve('pv', 'Integer', $controller, FALSE);
 
       // set the userContext stack
       $session = CRM_Core_Session::singleton();
@@ -373,8 +429,21 @@ class CRM_Core_Invoke {
     return $page->run();
   }
 
-  static
-  function rebuildMenuAndCaches($triggerRebuild = FALSE, $sessionReset = FALSE) {
+  /**
+   * Show the message about CiviCRM versions
+   *
+   * @param obj: $template (reference)
+   */
+  static function versionCheck($template) {
+    if (CRM_Core_Config::isUpgradeMode()) {
+      return;
+    }
+    $versionCheck = CRM_Utils_VersionCheck::singleton();
+    $newerVersion = $versionCheck->newerVersion();
+    $template->assign('newer_civicrm_version', $newerVersion);
+  }
+
+  static function rebuildMenuAndCaches($triggerRebuild = FALSE, $sessionReset = FALSE) {
     $config = CRM_Core_Config::singleton();
     $config->clearModuleList();
 
@@ -386,6 +455,12 @@ class CRM_Core_Invoke {
     // also cleanup all caches
     $config->cleanupCaches($sessionReset || CRM_Utils_Request::retrieve('sessionReset', 'Boolean', CRM_Core_DAO::$_nullObject, FALSE, 0, 'GET'));
 
+    // also cleanup module permissions
+    $config->cleanupPermissions();
+
+    CRM_Core_BAO_SETTING::updateSettingsFromMetaData();
+    CRM_Core_Resources::singleton()->resetCacheCode();
+
     // also rebuild triggers if requested explicitly
     if (
       $triggerRebuild ||
@@ -393,7 +468,7 @@ class CRM_Core_Invoke {
     ) {
       CRM_Core_DAO::triggerRebuild();
     }
-    
+
     CRM_Core_ManagedEntities::singleton(TRUE)->reconcile();
   }
 }

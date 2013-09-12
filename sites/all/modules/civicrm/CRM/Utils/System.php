@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -138,33 +138,47 @@ class CRM_Utils_System {
    * if we are using a theming system, invoke theme, else just print the
    * content
    *
-   * @param string  $type    name of theme object/file
    * @param string  $content the content that will be themed
-   * @param array   $args    the args for the themeing function if any
    * @param boolean $print   are we displaying to the screen or bypassing theming?
-   * @param boolean $ret     should we echo or return output
    * @param boolean $maintenance  for maintenance mode
    *
    * @return void           prints content on stdout
    * @access public
    * @static
    */
-  static function theme($type,
+  static function theme(
     &$content,
-    $args        = NULL,
     $print       = FALSE,
-    $ret         = FALSE,
     $maintenance = FALSE
   ) {
     $config = &CRM_Core_Config::singleton();
-    return $config->userSystem->theme($type, $content, $args, $print, $ret, $maintenance);
+    return $config->userSystem->theme($content, $print, $maintenance);
+  }
+
+  /**
+   * Generate a query string if input is an array
+   *
+   * @param mixed $query: array or string
+   * @return str
+   *
+   * @static
+   */
+  static function makeQueryString($query) {
+    if (is_array($query)) {
+      $buf = '';
+      foreach ($query as $key => $value) {
+        $buf .= ($buf ? '&' : '') . urlencode($key) . '=' . urlencode($value);
+      }
+      $query = $buf;
+    }
+    return $query;
   }
 
   /**
    * Generate an internal CiviCRM URL
    *
    * @param $path     string   The path being linked to, such as "civicrm/add"
-     * @param $query    mixed    A query string to append to the link, or an array of key-value pairs
+   * @param $query    mixed    A query string to append to the link, or an array of key-value pairs
    * @param $absolute boolean  Whether to force the output to be an absolute link (beginning with http:).
    *                           Useful for links that will be displayed outside the site, such as in an
    *                           RSS feed.
@@ -174,36 +188,30 @@ class CRM_Utils_System {
    * @access public
    * @static
    */
-  static function url($path = NULL,
+  static function url(
+    $path = NULL,
     $query    = NULL,
     $absolute = FALSE,
     $fragment = NULL,
     $htmlize  = TRUE,
-    $frontend = FALSE
+    $frontend = FALSE,
+    $forceBackend = FALSE
   ) {
-        if (is_array($query)) {
-            $buf = '';
-            foreach ($query as $key => $value) {
-              if ($buf != '') {
-                $buf .= '&';
-              }
-              $buf .= urlencode($key) . '=' . urlencode($value);
-            }
-            $query = $buf;
-        }
+    $query = self::makeQueryString($query);
+
     // we have a valid query and it has not yet been transformed
     if ($htmlize && !empty($query) && strpos($query, '&amp;') === FALSE) {
       $query = htmlentities($query);
     }
 
     $config = CRM_Core_Config::singleton();
-    return $config->userSystem->url($path, $query, $absolute, $fragment, $htmlize, $frontend);
+    return $config->userSystem->url($path, $query, $absolute, $fragment, $htmlize, $frontend, $forceBackend);
   }
 
   function href($text, $path = NULL, $query = NULL, $absolute = TRUE,
-    $fragment = NULL, $htmlize = TRUE, $frontend = FALSE
+    $fragment = NULL, $htmlize = TRUE, $frontend = FALSE, $forceBackend = FALSE
   ) {
-    $url = self::url($path, $query, $absolute, $fragment, $htmlize, $frontend);
+    $url = self::url($path, $query, $absolute, $fragment, $htmlize, $frontend, $forceBackend);
     return "<a href=\"$url\">$text</a>";
   }
 
@@ -251,12 +259,14 @@ class CRM_Utils_System {
       $p = self::currentPath();
     }
 
-    return self::url($p,
+    return self::url(
+      $p,
       CRM_Utils_Array::value('q', $params),
       CRM_Utils_Array::value('a', $params, FALSE),
       CRM_Utils_Array::value('f', $params),
       CRM_Utils_Array::value('h', $params, TRUE),
-      CRM_Utils_Array::value('fe', $params, FALSE)
+      CRM_Utils_Array::value('fe', $params, FALSE),
+      CRM_Utils_Array::value('fb', $params, FALSE)
     );
   }
 
@@ -485,29 +495,31 @@ class CRM_Utils_System {
     $docAdd = "More info at:" . CRM_Utils_System::docURL2("Managing Scheduled Jobs", TRUE, NULL, NULL, NULL, "wiki");
 
     if (!$key) {
-      return self::authenticateAbort("ERROR: You need to send a valid key to execute this file. " . $docAdd . "\n",
+      return self::authenticateAbort(
+        "ERROR: You need to send a valid key to execute this file. " . $docAdd . "\n",
         $abort
       );
     }
 
     $siteKey = defined('CIVICRM_SITE_KEY') ? CIVICRM_SITE_KEY : NULL;
 
-    if (!$siteKey ||
-      empty($siteKey)
-    ) {
-      return self::authenticateAbort("ERROR: You need to set a valid site key in civicrm.settings.php. " . $docAdd . "\n",
+    if (!$siteKey || empty($siteKey)) {
+      return self::authenticateAbort(
+        "ERROR: You need to set a valid site key in civicrm.settings.php. " . $docAdd . "\n",
         $abort
       );
     }
 
     if (strlen($siteKey) < 8) {
-      return self::authenticateAbort("ERROR: Site key needs to be greater than 7 characters in civicrm.settings.php. " . $docAdd . "\n",
+      return self::authenticateAbort(
+        "ERROR: Site key needs to be greater than 7 characters in civicrm.settings.php. " . $docAdd . "\n",
         $abort
       );
     }
 
     if ($key !== $siteKey) {
-      return self::authenticateAbort("ERROR: Invalid key value sent. " . $docAdd . "\n",
+      return self::authenticateAbort(
+        "ERROR: Invalid key value sent. " . $docAdd . "\n",
         $abort
       );
     }
@@ -515,7 +527,7 @@ class CRM_Utils_System {
     return TRUE;
   }
 
-  static function authenticateScript($abort = TRUE, $name = NULL, $pass = NULL, $storeInSession = TRUE, $loadCMSBootstrap = TRUE) {
+  static function authenticateScript($abort = TRUE, $name = NULL, $pass = NULL, $storeInSession = TRUE, $loadCMSBootstrap = TRUE, $requireKey = TRUE) {
     // auth to make sure the user has a login/password to do a shell
     // operation
     // later on we'll link this to acl's
@@ -526,18 +538,20 @@ class CRM_Utils_System {
 
     // its ok to have an empty password
     if (!$name) {
-      return self::authenticateAbort("ERROR: You need to send a valid user name and password to execute this file\n",
+      return self::authenticateAbort(
+        "ERROR: You need to send a valid user name and password to execute this file\n",
         $abort
       );
     }
 
-    if (!self::authenticateKey($abort)) {
+    if ($requireKey && !self::authenticateKey($abort)) {
       return FALSE;
     }
 
     $result = CRM_Utils_System::authenticate($name, $pass, $loadCMSBootstrap);
     if (!$result) {
-      return self::authenticateAbort("ERROR: Invalid username and/or password\n",
+      return self::authenticateAbort(
+        "ERROR: Invalid username and/or password\n",
         $abort
       );
     }
@@ -545,12 +559,12 @@ class CRM_Utils_System {
       // lets store contact id and user id in session
       list($userID, $ufID, $randomNumber) = $result;
       if ($userID && $ufID) {
-        $session = CRM_Core_Session::singleton();
-        $session->set('ufID', $ufID);
-        $session->set('userID', $userID);
+        $config = CRM_Core_Config::singleton();
+        $config->userSystem->setUserSession( array($userID, $ufID) );
       }
       else {
-        return self::authenticateAbort("ERROR: Unexpected error, could not match userID and contactID",
+        return self::authenticateAbort(
+          "ERROR: Unexpected error, could not match userID and contactID",
           $abort
         );
       }
@@ -573,6 +587,16 @@ class CRM_Utils_System {
    */
   static function authenticate($name, $password, $loadCMSBootstrap = FALSE, $realPath = NULL) {
     $config = CRM_Core_Config::singleton();
+
+    // before we do any loading, lets start the session and write to it
+    // we typically call authenticate only when we need to bootstrap the CMS directly via Civi
+    // and hence bypass the normal CMS auth and bootstrap process
+    // typically done in cli and cron scripts
+    // CRM-12648
+    $session = CRM_Core_Session::singleton();
+    $session->set( 'civicrmInitSession', TRUE );
+
+    $dbDrupal = DB::connect($config->userFrameworkDSN);
     return $config->userSystem->authenticate($name, $password, $loadCMSBootstrap, $realPath);
   }
 
@@ -617,7 +641,7 @@ class CRM_Utils_System {
   }
 
   /** parse php modules from phpinfo */
-  function parsePHPModules() {
+  public static function parsePHPModules() {
     ob_start();
     phpinfo(INFO_MODULES);
     $s = ob_get_contents();
@@ -651,7 +675,7 @@ class CRM_Utils_System {
   }
 
   /** get a module setting */
-  function getModuleSetting($pModuleName, $pSetting) {
+  public static function getModuleSetting($pModuleName, $pSetting) {
     $vModules = self::parsePHPModules();
     return $vModules[$pModuleName][$pSetting];
   }
@@ -783,11 +807,6 @@ class CRM_Utils_System {
   }
 
   static function checkURL($url, $addCookie = FALSE) {
-    $config = CRM_Core_Config::singleton();
-    if ($config->userFramework == 'Standalone') {
-      session_write_close();
-    }
-
     // make a GET request to $url
     $ch = curl_init($url);
     if ($addCookie) {
@@ -937,10 +956,16 @@ class CRM_Utils_System {
     }
   }
 
+  /**
+   * Check and determine is this is an SSL request
+   * Note that we inline this function in install/civicrm.php, so if
+   * you change this function, please go and change the code in the install script
+   */
   static function isSSL( ) {
-    return (isset($_SERVER['HTTPS']) &&
-      !empty($_SERVER['HTTPS']) &&
-      strtolower($_SERVER['HTTPS']) != 'off') ? true : false;
+    return
+      (isset($_SERVER['HTTPS']) &&
+        !empty($_SERVER['HTTPS']) &&
+        strtolower($_SERVER['HTTPS']) != 'off') ? true : false;
   }
 
   static function redirectToSSL($abort = FALSE) {
@@ -957,7 +982,7 @@ class CRM_Utils_System {
           CRM_Core_Error::fatal('HTTPS is not set up on this machine');
         }
         else {
-          CRM_Core_Session::setStatus('HTTPS is not set up on this machine');
+      CRM_Core_Session::setStatus(ts('HTTPS is not set up on this machine'), ts('Warning'), 'alert');
           // admin should be the only one following this
           // since we dont want the user stuck in a bad place
           return;
@@ -1185,10 +1210,10 @@ class CRM_Utils_System {
 
       // if db.ver > code.ver, sth really wrong
       if (version_compare($dbVersion, $codeVersion) > 0) {
-        $errorMessage = ts('Your database is marked with an unexpected version number: %1. The v%2 codebase may not be compatible with your database state. You will need to determine the correct version corresponding to your current database state. You may want to revert to the codebase you were using until you resolve this problem.',
+        $errorMessage = '<p>' . ts('Your database is marked with an unexpected version number: %1. The v%2 codebase may not be compatible with your database state. You will need to determine the correct version corresponding to your current database state. You may want to revert to the codebase you were using until you resolve this problem.',
           array(1 => $dbVersion, 2 => $codeVersion)
-        );
-        $errorMessage .= "<p>" . ts('OR if this is an svn install, you might want to fix version.txt file.') . "</p>";
+        ) . '</p>';
+        $errorMessage .= "<p>" . ts('OR if this is a manual install from git, you might want to fix civicrm-version.php file.') . "</p>";
         return FALSE;
       }
     }
@@ -1223,7 +1248,17 @@ class CRM_Utils_System {
     CRM_ACL_BAO_Cache::resetCache();
 
     // reset various static arrays used here
-    CRM_Contact_BAO_Contact::$_importableFields = CRM_Contact_BAO_Contact::$_exportableFields = CRM_Contribute_BAO_Contribution::$_importableFields = CRM_Contribute_BAO_Contribution::$_exportableFields = CRM_Pledge_BAO_Pledge::$_exportableFields = CRM_Contribute_BAO_Query::$_contributionFields = CRM_Core_BAO_CustomField::$_importFields = CRM_Core_DAO::$_dbColumnValueCache = NULL;
+    CRM_Contact_BAO_Contact::$_importableFields =
+      CRM_Contact_BAO_Contact::$_exportableFields =
+      CRM_Contribute_BAO_Contribution::$_importableFields =
+      CRM_Contribute_BAO_Contribution::$_exportableFields =
+      CRM_Pledge_BAO_Pledge::$_exportableFields =
+      CRM_Contribute_BAO_Query::$_contributionFields =
+      CRM_Core_BAO_CustomField::$_importFields =
+      CRM_Core_DAO::$_dbColumnValueCache = NULL;
+
+    CRM_Core_OptionGroup::flushAll();
+    CRM_Utils_PseudoConstant::flushAll();
   }
 
   /**
@@ -1484,8 +1519,55 @@ class CRM_Utils_System {
     $facility->execute(FALSE);
 
     $redirectUrl = self::url('civicrm/admin/job', 'reset=1');
-    CRM_Core_Session::setStatus(ts('Scheduled jobs have been executed according to individual timing settings. Please check log for messages.'));
+
+    CRM_Core_Session::setStatus(
+      ts('Scheduled jobs have been executed according to individual timing settings. Please check log for messages.'),
+      ts('Complete'), 'success');
+
     CRM_Utils_System::redirect($redirectUrl);
+  }
+
+  /**
+   * Evaluate any tokens in a URL
+   *
+   * @param string|FALSE $url
+   * @return string|FALSE
+   */
+  public static function evalUrl($url) {
+    if ($url === FALSE) {
+      return FALSE;
+    }
+    else {
+      $config = CRM_Core_Config::singleton();
+      $vars = array(
+        '{ver}' => CRM_Utils_System::version(),
+        '{uf}' => $config->userFramework,
+        '{php}' => phpversion(),
+        '{sid}' => md5('sid_' . (defined('CIVICRM_SITE_KEY') ? CIVICRM_SITE_KEY : '') . '_' . $config->userFrameworkBaseURL),
+        '{baseUrl}' => $config->userFrameworkBaseURL,
+        '{lang}' => $config->lcMessages,
+        '{co}' => $config->defaultContactCountry,
+      );
+      foreach (array_keys($vars) as $k) {
+        $vars[$k] = urlencode($vars[$k]);
+      }
+      return strtr($url, $vars);
+    }
+  }
+
+
+  /**
+   * Determine whether this is a developmental system.
+   *
+   * @return bool
+   */
+  static function isDevelopment() {
+    static $cache = NULL;
+    if ($cache === NULL) {
+      global $civicrm_root;
+      $cache = file_exists("{$civicrm_root}/.svn") || file_exists("{$civicrm_root}/.git");
+    }
+    return $cache;
   }
 }
 

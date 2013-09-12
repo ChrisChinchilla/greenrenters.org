@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -26,19 +26,18 @@
 *}
 {* This template is used for adding/configuring Label Formats.  *}
 <div class="crm-block crm-form-block crm-labelFormat-form-block">
- <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
-
 {if $action eq 8}
-  <div class="messages status">  
-      <div class="icon inform-icon"></div> 
+  <div class="messages status no-popup">
+      <div class="icon inform-icon"></div>
         {ts 1=$formatName}WARNING: You are about to delete the Label Format titled <strong>%1</strong>.{/ts} {ts}Do you want to continue?{/ts}
   </div>
 {elseif $action eq 16384}
-  <div class="messages status">  
-      <div class="icon inform-icon"></div> 
+  <div class="messages status no-popup">
+      <div class="icon inform-icon"></div>
         {ts 1=$formatName}Are you sure you would like to make a copy of the Label Format titled <strong>%1</strong>?{/ts}
   </div>
 {else}
+  <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
   <table class="form-layout-compressed">
     <tr class="crm-labelFormat-form-block-name">
         <td class="right">{$form.label.label}</td><td colspan="3">{$form.label.html}</td>
@@ -84,18 +83,17 @@
         <td class="right">{$form.lPadding.label}</td><td>{$form.lPadding.html}<br /><span class="description">{ts}Pad inside each label.{/ts}</span></td>
         <td class="right">{$form.tPadding.label}</td><td>{$form.tPadding.html}<br /><span class="description">{ts}Pad inside each label.{/ts}</span></td>
     </tr>
-    <tr class="crm-labelFormat-form-block-weight"> 
+    <tr class="crm-labelFormat-form-block-weight">
         <td class="right">{$form.weight.label}</td><td colspan="3">{$form.weight.html}<br />
         <span class="description">{ts}Weight controls the order in which Label Formats are displayed <br />in selection lists. Enter a positive or negative integer. Lower numbers <br />are displayed ahead of higher numbers.{/ts}</span>
     </tr>
   </table>
-{/if} 
+{/if}
 <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
-
+{if $action neq 8}
 {literal}
 <script type="text/javascript" >
-
 var currentWidth;
 var currentHeight;
 var currentMetric = document.getElementById('metric').value;
@@ -170,3 +168,4 @@ function convertMetric( value, from, to ) {
 
 </script>
 {/literal}
+{/if}

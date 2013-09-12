@@ -1,7 +1,5 @@
 <?php
 
-
-
 /*
  /*this demonstrates the usage of chained api functions. In this case no notes or custom fields have been created 
  */
@@ -17,7 +15,6 @@ $params = array(
   'api.Note.get' => 1,
 );
 
-  require_once 'api/api.php';
   $result = civicrm_api( 'contact','get',$params );
 
   return $result;
@@ -141,10 +138,9 @@ function contact_get_expectedresult(){
                       'contribution_status_id' => '1',
                       'check_number' => '',
                       'contribution_campaign_id' => '',
-                      'contribution_type_id' => '11',
-                      'contribution_type' => 'Prize',
-                      'accounting_code' => '1005',
-                      'instrument_id' => '75',
+                      'financial_type_id' => '1',
+                      'financial_type' => 'Donation',
+                      'instrument_id' => '79',
                       'payment_instrument' => 'Credit Card',
                       'product_id' => '',
                       'product_name' => '',
@@ -155,7 +151,10 @@ function contact_get_expectedresult(){
                       'contribution_start_date' => '',
                       'contribution_end_date' => '',
                       'contribution_recur_id' => '',
+                      'financial_account_id' => '1',
+                      'accounting_code' => '4200',
                       'contribution_note' => '',
+                      'contribution_batch' => '',
                       'contribution_status' => 'Completed',
                       'contribution_payment_instrument' => 'Credit Card',
                       'contribution_check_number' => '',
@@ -183,18 +182,24 @@ function contact_get_expectedresult(){
 }
 
 
-
-
 /*
 * This example has been generated from the API test suite. The test that created it is called
-* 
-* testGetIndividualWithChainedArrays and can be found in 
-* http://svn.civicrm.org/civicrm/branches/v3.4/tests/phpunit/CiviTest/api/v3/ContactTest.php
-* 
-* You can see the outcome of the API tests at 
+*
+* testGetIndividualWithChainedArrays and can be found in
+* http://svn.civicrm.org/civicrm/trunk/tests/phpunit/CiviTest/api/v3/ContactTest.php
+*
+* You can see the outcome of the API tests at
 * http://tests.dev.civicrm.org/trunk/results-api_v3
+*
+* To Learn about the API read
+* http://book.civicrm.org/developer/current/techniques/api/
+*
 * and review the wiki at
 * http://wiki.civicrm.org/confluence/display/CRMDOC/CiviCRM+Public+APIs
+*
 * Read more about testing here
 * http://wiki.civicrm.org/confluence/display/CRM/Testing
+*
+* API Standards documentation:
+* http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
 */

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -53,8 +53,7 @@ class CRM_Contact_BAO_Individual extends CRM_Contact_DAO_Contact {
    * @access public
    * @static
    */
-  static
-  function format(&$params, &$contact) {
+  static function format(&$params, &$contact) {
     if (!self::dataExists($params)) {
       return;
     }
@@ -339,8 +338,7 @@ class CRM_Contact_BAO_Individual extends CRM_Contact_DAO_Contact {
    *
    * @return void
    */
-  static
-  function updateDisplayNames(&$ids, $action) {
+  static function updateDisplayNames(&$ids, $action) {
     // get the proper field name (prefix_id or suffix_id) and its value
     $fieldName = '';
     foreach ($ids as $key => $value) {
@@ -399,8 +397,7 @@ class CRM_Contact_BAO_Individual extends CRM_Contact_DAO_Contact {
    * @access public
    * @static
    */
-  static
-  function dataExists(&$params) {
+  static function dataExists(&$params) {
     if ($params['contact_type'] == 'Individual') {
       return TRUE;
     }

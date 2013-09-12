@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -50,8 +50,7 @@ class CRM_Core_BAO_CMSUser {
    * @static
    * @access public
    */
-  static
-  function synchronize() {
+  static function synchronize() {
     //start of schronization code
     $config = CRM_Core_Config::singleton();
 
@@ -209,7 +208,7 @@ class CRM_Core_BAO_CMSUser {
         'plural' => 'Created %count new contact records.'
       )
     );
-    CRM_Core_Session::setStatus($status, TRUE);
+    CRM_Core_Session::setStatus($status, ts('Saved'), 'success');
     CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/admin', 'reset=1'));
   }
 
@@ -223,8 +222,7 @@ class CRM_Core_BAO_CMSUser {
    * @access public
    * @static
    */
-  static
-  function create(&$params, $mail) {
+  static function create(&$params, $mail) {
     $config = CRM_Core_Config::singleton();
 
     $ufID = $config->userSystem->createUser($params, $mail);
@@ -253,13 +251,13 @@ class CRM_Core_BAO_CMSUser {
    *
    * @param object  $form
    * @param integer $gid id of group of profile
-   * @param string $emailPresent true, if the profile field has email(primary)
+   * @param bool $emailPresent true if the profile field has email(primary)
+   * @return FALSE|void WTF
    *
    * @access public
    * @static
    */
-  static
-  function buildForm(&$form, $gid, $emailPresent, $action = CRM_Core_Action::NONE) {
+  static function buildForm(&$form, $gid, $emailPresent, $action = CRM_Core_Action::NONE) {
     $config = CRM_Core_Config::singleton();
     $showCMS = FALSE;
 
@@ -325,37 +323,22 @@ class CRM_Core_BAO_CMSUser {
       }
     }
 
-
-    $loginUrl = $config->userFrameworkBaseURL;
-    if ($isJoomla) {
-      $loginUrl = str_replace('administrator/', '', $loginUrl);
-      $loginUrl .= 'index.php?option=com_users&view=login';
-    }
-    elseif ($isDrupal) {
-      $loginUrl .= 'user';
-      // append destination so user is returned to form they came from after login
-      $destination = $config->userSystem->getLoginDestination($form);
-      if (!empty($destination)) {
-        $loginUrl .= '?destination=' . urlencode($destination);
-      }
-    }
-
-    $form->assign('loginUrl', $loginUrl);
+    $destination = $config->userSystem->getLoginDestination($form);
+    $loginURL = $config->userSystem->getLoginURL($destination);
+    $form->assign('loginURL', $loginURL);
     $form->assign('showCMS', $showCMS);
   }
 
   /*
-     * Checks that there is a valid username & email 
-     *  optionally checks password is present & matches DB & gets the CMS to validate 
-     *  
-     *  @params array $fields Posted values of form
-     *  @param  array $files uploaded files if any 
-     *  @param array $self reference to form object
-     * 
-     */
-
-  static
-  function formRule($fields, $files, $self) {
+   * Checks that there is a valid username & email
+   *  optionally checks password is present & matches DB & gets the CMS to validate
+   *
+   *  @params array $fields Posted values of form
+   *  @param  array $files uploaded files if any
+   *  @param array $self reference to form object
+   *
+   */
+  static function formRule($fields, $files, $self) {
     if (!CRM_Utils_Array::value('cms_create_account', $fields)) {
       return TRUE;
     }
@@ -381,7 +364,7 @@ class CRM_Core_BAO_CMSUser {
           }
         }
       }
-      
+
       if ($emailName == NULL) {
         $errors['_qf_default'] == ts('Could not find an email address.');
         return $errors;
@@ -433,8 +416,7 @@ class CRM_Core_BAO_CMSUser {
    * @access public
    * @static
    */
-  static
-  function userExists(&$contact) {
+  static function userExists(&$contact) {
     $config = CRM_Core_Config::singleton();
 
     $isDrupal    = $config->userSystem->is_drupal;
@@ -492,8 +474,7 @@ class CRM_Core_BAO_CMSUser {
     return $result;
   }
 
-  static
-  function &dbHandle(&$config) {
+  static function &dbHandle(&$config) {
     CRM_Core_Error::ignoreException();
     $db_uf = DB::connect($config->userFrameworkDSN);
     CRM_Core_Error::setCallback();

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,7 +43,7 @@ class CRM_Contact_Form_Search_Custom extends CRM_Contact_Form_Search {
 
     $csID = CRM_Utils_Request::retrieve('csid', 'Integer', $this);
     $ssID = CRM_Utils_Request::retrieve('ssID', 'Integer', $this);
-    $gID  = CRM_Utils_Request::retrieve('gid', 'Integer', $this);
+    $gID = CRM_Utils_Request::retrieve('gid', 'Integer', $this);
 
     list($this->_customSearchID,
       $this->_customSearchClass,
@@ -67,7 +67,7 @@ class CRM_Contact_Form_Search_Custom extends CRM_Contact_Form_Search {
     CRM_Utils_System::appendBreadCrumb($breadCrumb);
 
     // use the custom selector
-    $this->_selectorName = 'CRM_Contact_Selector_Custom';
+    self::$_selectorName = 'CRM_Contact_Selector_Custom';
 
     $this->set('customSearchID', $this->_customSearchID);
     $this->set('customSearchClass', $this->_customSearchClass);
@@ -79,11 +79,7 @@ class CRM_Contact_Form_Search_Custom extends CRM_Contact_Form_Search {
   }
 
   function setDefaultValues() {
-    if (empty($this->_formValues) &&
-      method_exists($this->_customSearchClass,
-        'setDefaultValues'
-      )
-    ) {
+    if (method_exists($this->_customSearchClass, 'setDefaultValues')) {
       return $this->_customClass->setDefaultValues();
     }
     return $this->_formValues;
@@ -97,7 +93,7 @@ class CRM_Contact_Form_Search_Custom extends CRM_Contact_Form_Search {
 
   function getTemplateFileName() {
 
-    $ext = new CRM_Core_Extensions();
+    $ext = CRM_Extension_System::singleton()->getMapper();
 
     if ($ext->isExtensionClass(CRM_Utils_System::getClassName($this->_customClass))) {
       $fileName = $ext->getTemplatePath(CRM_Utils_System::getClassName($this->_customClass)) . '/' . $ext->getTemplateName(CRM_Utils_System::getClassName($this->_customClass));
@@ -123,7 +119,7 @@ class CRM_Contact_Form_Search_Custom extends CRM_Contact_Form_Search {
     }
 
     //use the custom selector
-    $this->_selectorName = 'CRM_Contact_Selector_Custom';
+    self::$_selectorName = 'CRM_Contact_Selector_Custom';
 
     parent::postProcess();
   }

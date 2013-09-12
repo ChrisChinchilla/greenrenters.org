@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
  * for a component to introduce itself to the system.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -86,30 +86,27 @@ abstract class CRM_Core_Component_Info {
   CONST COMPONENT_MENU_XML = 'Menu';
 
   /*
-     * Stores component information.
-     * @var array component settings as key/value pairs
-     */
-
+   * Stores component information.
+   * @var array component settings as key/value pairs
+   */
   public $info;
 
   /*
-     * Stores component keyword
-     * @var string name of component keyword
-     */
-
+   * Stores component keyword
+   * @var string name of component keyword
+   */
   protected $keyword;
 
   /*
-     * Class constructor, sets name and namespace (those are stored
-     * in the component registry (database) and no need to duplicate
-     * them here, as well as populates the info variable.
-     * 
-     * @param string $name name of the component
-     * @param string $namespace namespace prefix for component's files
-     * @access public
-     * 
-     */
-
+   * Class constructor, sets name and namespace (those are stored
+   * in the component registry (database) and no need to duplicate
+   * them here, as well as populates the info variable.
+   * 
+   * @param string $name name of the component
+   * @param string $namespace namespace prefix for component's files
+   * @access public
+   * 
+   */
   public function __construct($name, $namespace, $componentID) {
     $this->name        = $name;
     $this->namespace   = $namespace;
@@ -134,11 +131,13 @@ abstract class CRM_Core_Component_Info {
    * Needs to be implemented in component's information
    * class.
    *
+   * NOTE: if using conditionally permission return,
+   * implementation of $getAllUnconditionally is required.
    * @return array|null collection of permissions, null if none
    * @access public
    *
    */
-  abstract public function getPermissions();
+  abstract public function getPermissions($getAllUnconditionally = FALSE);
 
   /**
    * Provides information about user dashboard element

@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +33,7 @@
  * @package CiviCRM_APIv3
  * @subpackage API_Address
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: Address.php 2011-02-16 ErikHommel $
  */
 
@@ -79,9 +79,9 @@ function civicrm_api3_address_create(&$params) {
   }
 
   /**
-   * create array for BAO (expects address params in as an
-   * element in array 'address'
-   */
+    * create array for BAO (expects address params in as an
+    * element in array 'address'
+    */
   $addressBAO = CRM_Core_BAO_Address::add($params, TRUE);
   if (empty($addressBAO)) {
     return civicrm_api3_create_error("Address is not created or updated ");
@@ -93,7 +93,7 @@ function civicrm_api3_address_create(&$params) {
   }
 }
 
-/*
+/**
  * Adjust Metadata for Create action
  *
  * @param array $params array or parameters determined by getfields

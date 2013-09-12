@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -53,7 +53,9 @@ class CRM_Report_Form_Case_Detail extends CRM_Report_Form {
   protected $_includeCaseDetailExtra = FALSE;
 
   protected $_caseDetailExtra = array(
-    ); function __construct() {
+    );
+
+  function __construct() {
     $this->case_statuses = CRM_Case_PseudoConstant::caseStatus();
     $this->case_types    = CRM_Case_PseudoConstant::caseType();
     $rels                = CRM_Core_PseudoConstant::relationshipType();
@@ -394,7 +396,7 @@ class CRM_Report_Form_Case_Detail extends CRM_Report_Form {
             $from     = CRM_Utils_Array::value("{$fieldName}_from", $this->_params);
             $to       = CRM_Utils_Array::value("{$fieldName}_to", $this->_params);
 
-            $clause = $this->dateClause($field['name'], $relative, $from, $to, $field['type']);
+            $clause = $this->dateClause($field['dbAlias'], $relative, $from, $to, $field['type']);
           }
           else {
 

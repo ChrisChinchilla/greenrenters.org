@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,20 +38,19 @@
  */
 class CRM_Event_Form_ManageEvent_TabHeader {
 
-  static
-  function build(&$form) {
+  static function build(&$form) {
     $tabs = $form->get('tabHeader');
     if (!$tabs || !CRM_Utils_Array::value('reset', $_GET)) {
       $tabs = self::process($form);
       $form->set('tabHeader', $tabs);
     }
     $form->assign_by_ref('tabHeader', $tabs);
-    $form->assign_by_ref('selectedTab', self::getCurrentTab($tabs));
+    $selectedTab = self::getCurrentTab($tabs);
+    $form->assign_by_ref('selectedTab', $selectedTab);
     return $tabs;
   }
 
-  static
-  function process(&$form) {
+  static function process(&$form) {
     if ($form->getVar('_id') <= 0) {
       return NULL;
     }
@@ -140,18 +139,22 @@ class CRM_Event_Form_ManageEvent_TabHeader {
 
     if (array_key_exists($class, $tabs)) {
       $tabs[$class]['current'] = TRUE;
+      $qfKey = $form->get('qfKey');
+      if ($qfKey) {
+        $tabs[$class]['qfKey'] = "&qfKey={$qfKey}";
+      }
     }
 
     if ($eventID) {
       $reset = CRM_Utils_Array::value('reset', $_GET) ? 'reset=1&' : '';
 
-      //add qf key
-      $qfKey = $form->get('qfKey');
-      $form->assign('qfKey', $qfKey);
-
       foreach ($tabs as $key => $value) {
+        if (!isset($tabs[$key]['qfKey'])) {
+          $tabs[$key]['qfKey'] = NULL;
+        }
+
         $tabs[$key]['link'] = CRM_Utils_System::url("civicrm/event/manage/{$key}",
-          "{$reset}action=update&snippet=4&id={$eventID}&qfKey={$qfKey}&component=event{$new}"
+          "{$reset}action=update&snippet=5&id={$eventID}&component=event{$new}{$tabs[$key]['qfKey']}"
         );
         $tabs[$key]['active'] = $tabs[$key]['valid'] = TRUE;
       }
@@ -186,14 +189,12 @@ WHERE      e.id = %1
     return $tabs;
   }
 
-  static
-  function reset(&$form) {
+  static function reset(&$form) {
     $tabs = self::process($form);
     $form->set('tabHeader', $tabs);
   }
 
-  static
-  function getCurrentTab($tabs) {
+  static function getCurrentTab($tabs) {
     static $current = FALSE;
 
     if ($current) {

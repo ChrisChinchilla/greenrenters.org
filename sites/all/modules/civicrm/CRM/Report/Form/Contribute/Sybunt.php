@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,7 +41,11 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
     'barChart' => 'Bar Chart',
     'pieChart' => 'Pie Chart',
   );
-  protected $_add2groupSupported = FALSE; function __construct() {
+  public $_drilldownReport = array('contribute/detail' => 'Link to Detail Report');
+
+  protected $_add2groupSupported = FALSE;
+
+  function __construct() {
     $yearsInPast   = 10;
     $yearsInFuture = 1;
     $date          = CRM_Core_SelectValues::date('custom', NULL, $yearsInPast, $yearsInFuture);
@@ -61,6 +65,10 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
           'sort_name' =>
           array('title' => ts('Donor Name'),
             'required' => TRUE,
+          ),
+		  'first_name' => array('title' => ts('First Name'),
+          ),
+		  'last_name' => array('title' => ts('Last Name'),
           ),
         ),
         'filters' =>
@@ -90,7 +98,7 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
         'fields' =>
         array(
           'phone' =>
-          array('title' => ts('Phone No'),
+          array('title' => ts('Phone'),
             'default' => TRUE,
           ),
         ),
@@ -129,10 +137,10 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
             'options' => $optionYear,
             'default' => date('Y'),
           ),
-          'contribution_type_id' =>
-          array('title' => ts('Contribution Type'),
+          'financial_type_id' =>
+          array('title' => ts('Financial Type'),
             'operatorType' => CRM_Report_Form::OP_MULTISELECT,
-            'options' => CRM_Contribute_PseudoConstant::contributionType(),
+            'options' => CRM_Contribute_PseudoConstant::financialType(),
           ),
           'contribution_status_id' =>
           array('title' => ts('Contribution Status'),
@@ -223,15 +231,15 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
 
   function from() {
 
-    $this->_from = " 
+    $this->_from = "
         FROM  civicrm_contribution  {$this->_aliases['civicrm_contribution']}
-             INNER JOIN civicrm_contact {$this->_aliases['civicrm_contact']} 
-                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_contribution']}.contact_id 
+             INNER JOIN civicrm_contact {$this->_aliases['civicrm_contact']}
+                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_contribution']}.contact_id
              {$this->_aclFrom}
-             LEFT  JOIN civicrm_email  {$this->_aliases['civicrm_email']} 
-                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id  
+             LEFT  JOIN civicrm_email  {$this->_aliases['civicrm_email']}
+                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id
                          AND {$this->_aliases['civicrm_email']}.is_primary = 1
-             LEFT  JOIN civicrm_phone  {$this->_aliases['civicrm_phone']} 
+             LEFT  JOIN civicrm_phone  {$this->_aliases['civicrm_phone']}
                          ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_phone']}.contact_id AND
                             {$this->_aliases['civicrm_phone']}.is_primary = 1 ";
   }
@@ -266,7 +274,7 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
                 CRM_Utils_Array::value("{$fieldName}_min", $this->_params),
                 CRM_Utils_Array::value("{$fieldName}_max", $this->_params)
               );
-              if (($fieldName == 'contribution_status_id' || $fieldName == 'contribution_type_id') && !empty($clause)) {
+              if (($fieldName == 'contribution_status_id' || $fieldName == 'financial_type_id') && !empty($clause)) {
                 $this->_statusClause .= " AND " . $clause;
               }
             }
@@ -296,7 +304,7 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
 
     if (!empty($rows)) {
       $select = "
-                   SELECT 
+                   SELECT
                         SUM({$this->_aliases['civicrm_contribution']}.total_amount ) as amount ";
 
       $sql = "{$select} {$this->_from} {$this->_where}";
@@ -434,7 +442,7 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
       ) {
         $url = CRM_Report_Utils_Report::getNextUrl('contribute/detail',
           'reset=1&force=1&id_op=eq&id_value=' . $row['civicrm_contribution_contact_id'],
-          $this->_absoluteUrl, $this->_id
+          $this->_absoluteUrl, $this->_id, $this->_drilldownReport
         );
         $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;
         $rows[$rowNum]['civicrm_contact_sort_name_hover'] = ts("View Contribution Details for this Contact.");
@@ -443,7 +451,7 @@ class CRM_Report_Form_Contribute_Sybunt extends CRM_Report_Form {
   }
 
   // Override "This Year" $op options
-  function getOperationPair($type = "string", $fieldName = NULL) {
+  static function getOperationPair($type = "string", $fieldName = NULL) {
     if ($fieldName == 'yid') {
       return array('calendar' => ts('Is Calendar Year'), 'fiscal' => ts('Fiscal Year Starting'));
     }

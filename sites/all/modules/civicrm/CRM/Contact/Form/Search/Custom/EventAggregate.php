@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,13 +28,15 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
 
-  protected $_formValues; function __construct(&$formValues) {
+  protected $_formValues;
+
+  function __construct(&$formValues) {
     $this->_formValues = $formValues;
 
     /**
@@ -94,7 +96,7 @@ class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Sea
    * Construct the search query
    */
   function all($offset = 0, $rowcount = 0, $sort = NULL,
-    $includeContactIDs = FALSE
+    $includeContactIDs = FALSE, $justIDs = FALSE
   ) {
     // SELECT clause must include contact_id as an alias for civicrm_contact.id if you are going to use "tasks" like export etc.
     $select = "civicrm_participant.event_id as event_id,
@@ -113,7 +115,7 @@ class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Sea
       $this->_formValues
     );
     if ($onLine) {
-      $from .= "         
+      $from .= "
         inner join civicrm_entity_financial_trxn
         on (civicrm_entity_financial_trxn.entity_id = civicrm_participant_payment.contribution_id and civicrm_entity_financial_trxn.entity_table='civicrm_contribution')";
     }
@@ -170,13 +172,13 @@ class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Sea
         civicrm_participant_payment
         left join civicrm_participant
         on civicrm_participant_payment.participant_id=civicrm_participant.id
-        
+
         left join civicrm_event on
         civicrm_participant.event_id = civicrm_event.id
-        
-        left join civicrm_contribution 
+
+        left join civicrm_contribution
         on civicrm_contribution.id = civicrm_participant_payment.contribution_id
-        
+
         left join civicrm_option_value on
         ( civicrm_option_value.value = civicrm_event.event_type_id AND civicrm_option_value.option_group_id = 14)";
   }
@@ -248,7 +250,7 @@ class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Sea
       $this->_formValues
     );
     if ($onLine) {
-      $from .= "         
+      $from .= "
         inner join civicrm_entity_financial_trxn
         on (civicrm_entity_financial_trxn.entity_id = civicrm_participant_payment.contribution_id and civicrm_entity_financial_trxn.entity_table='civicrm_contribution')";
     }
@@ -276,7 +278,7 @@ class CRM_Contact_Form_Search_Custom_EventAggregate extends CRM_Contact_Form_Sea
     return $totals;
   }
 
-  /* 
+  /*
      * Functions below generally don't need to be modified
      */
   function count() {

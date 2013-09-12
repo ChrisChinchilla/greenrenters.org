@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id: Selector.php 11510 2007-09-18 09:21:34Z lobo $
  *
  */
@@ -39,7 +39,7 @@
  * results of advanced search options.
  *
  */
-class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_Core_Selector_API {
+class CRM_Contact_Selector_Custom extends CRM_Contact_Selector {
 
   /**
    * This defines two actions- View and Edit.
@@ -115,20 +115,23 @@ class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_
    *
    * @return CRM_Contact_Selector
    * @access public
-   */ function __construct($customSearchClass,
+   */
+  function __construct(
+    $customSearchClass,
     $formValues        = NULL,
     $params            = NULL,
     $returnProperties  = NULL,
     $action            = CRM_Core_Action::NONE,
     $includeContactIds = FALSE,
     $searchChildGroups = TRUE,
-    $searchContext     = 'search'
+    $searchContext     = 'search',
+    $contextMenu       = NULL
   ) {
     $this->_customSearchClass = $customSearchClass;
     $this->_formValues = $formValues;
     $this->_includeContactIds = $includeContactIds;
 
-    $ext = new CRM_Core_Extensions();
+    $ext = CRM_Extension_System::singleton()->getMapper();
 
     if (!$ext->isExtensionKey($customSearchClass)) {
       if ($ext->isExtensionClass($customSearchClass)) {
@@ -159,9 +162,7 @@ class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_
    * @access public
    *
    */
-  static
-  function &links() {
-
+  static function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::VIEW => array(
@@ -334,6 +335,9 @@ class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_
         $rows[] = $row;
       }
     }
+
+    $this->buildPrevNextCache($sort);
+
     return $rows;
   }
 
@@ -370,7 +374,7 @@ class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_
     return NULL;
   }
 
-  function &contactIDQuery() {
+  function &contactIDQuery($params, $action, $sortID, $displayRelationshipType = NULL, $queryOperator = 'AND') {
     $params = array();
     $sql = $this->_search->contactIDs($params);
 
@@ -400,5 +404,4 @@ class CRM_Contact_Selector_Custom extends CRM_Core_Selector_Base implements CRM_
     }
   }
 }
-//end of class
 

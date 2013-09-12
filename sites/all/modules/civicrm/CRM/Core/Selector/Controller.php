@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -35,7 +35,7 @@
  * implement the Selector/Api.interface.php class
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -478,7 +478,7 @@ class CRM_Core_Selector_Controller {
       $config = CRM_Core_Config::singleton();
       $content = self::$_template->fetch('CRM/common/' . strtolower($config->userFramework) . '.tpl');
     }
-    echo CRM_Utils_System::theme('page', $content, TRUE, $this->_print);
+    echo CRM_Utils_System::theme($content, $this->_print);
   }
 
   /**

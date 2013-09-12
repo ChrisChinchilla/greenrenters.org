@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -130,9 +130,9 @@ function buildRemvd( ) {
 
 function getMatches(id) {
     if ( selObj.options.length == 1 ) {
-        document.getElementById("match"+id).innerHTML = "{/literal}{ts}1 match{/ts}{literal}";
+        document.getElementById("match"+id).innerHTML = "{/literal}{ts escape='js'}1 match{/ts}{literal}";
     } else {
-        document.getElementById("match"+id).innerHTML = selObj.options.length +"&nbsp;{/literal}{ts}matches{/ts}{literal}";
+        document.getElementById("match"+id).innerHTML = selObj.options.length +"&nbsp;{/literal}{ts escape='js'}matches{/ts}{literal}";
     }
 }
 {/literal}

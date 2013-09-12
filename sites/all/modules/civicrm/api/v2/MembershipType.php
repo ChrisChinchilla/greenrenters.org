@@ -1,12 +1,12 @@
 <?php
-// $Id: MembershipType.php 40968 2012-06-12 14:28:16Z kurund $
+// $Id: MembershipType.php 45502 2013-02-08 13:32:55Z kurund $
 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,8 +34,8 @@
  * @package CiviCRM_APIv2
  * @subpackage API_Membership
  *
- * @copyright CiviCRM LLC (c) 2004-2012
- * @version $Id: MembershipType.php 40968 2012-06-12 14:28:16Z kurund $
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: MembershipType.php 45502 2013-02-08 13:32:55Z kurund $
  *
  */
 
@@ -77,7 +77,7 @@ function civicrm_membership_type_create(&$params) {
 
   $ids['membershipType'] = CRM_Utils_Array::value('id', $params);
   $ids['memberOfContact'] = CRM_Utils_Array::value('member_of_contact_id', $params);
-  $ids['contributionType'] = CRM_Utils_Array::value('contribution_type_id', $params);
+  $ids['contributionType'] = CRM_Utils_Array::value('financial_type_id', $params);
 
   require_once 'CRM/Member/BAO/MembershipType.php';
   $membershipTypeBAO = CRM_Member_BAO_MembershipType::add($params, $ids);

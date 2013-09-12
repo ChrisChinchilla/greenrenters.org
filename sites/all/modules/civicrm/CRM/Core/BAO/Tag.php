@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -129,7 +129,7 @@ class CRM_Core_BAO_Tag extends CRM_Core_DAO_Tag {
     }
   }
 
-  function getTagsUsedFor($usedFor = array('civicrm_contact'),
+  static function getTagsUsedFor($usedFor = array('civicrm_contact'),
     $buildSelect = TRUE,
     $all         = FALSE,
     $parentId    = NULL
@@ -194,7 +194,7 @@ class CRM_Core_BAO_Tag extends CRM_Core_DAO_Tag {
     // query and build the heirarchy with the algorithm below.
     $args = array(1 => array('%' . $usedFor . '%', 'String'));
     $query = "SELECT id, name, parent_id, is_tagset
-                  FROM civicrm_tag 
+                  FROM civicrm_tag
               WHERE used_for LIKE %1";
     if ($parentId) {
       $query .= " AND parent_id = %2";
@@ -266,14 +266,14 @@ class CRM_Core_BAO_Tag extends CRM_Core_DAO_Tag {
    *
    */
   static function del($id) {
+    // since this is a destructive operation, lets make sure
+    // id is a postive number
+    CRM_Utils_Type::validate($id, 'Positive');
+
     // delete all crm_entity_tag records with the selected tag id
     $entityTag = new CRM_Core_DAO_EntityTag();
     $entityTag->tag_id = $id;
-    if ($entityTag->find()) {
-      while ($entityTag->fetch()) {
-        $entityTag->delete();
-      }
-    }
+    $entityTag->delete();
 
     // delete from tag table
     $tag = new CRM_Core_DAO_Tag();
@@ -283,7 +283,7 @@ class CRM_Core_BAO_Tag extends CRM_Core_DAO_Tag {
 
     if ($tag->delete()) {
       CRM_Utils_Hook::post('delete', 'Tag', $id, $tag);
-      CRM_Core_Session::setStatus(ts('Selected Tag has been Deleted Successfuly.'));
+      CRM_Core_Session::setStatus(ts('Selected tag has been deleted successfuly.'), ts('Tag Deleted'), 'success');
       return TRUE;
     }
     return FALSE;

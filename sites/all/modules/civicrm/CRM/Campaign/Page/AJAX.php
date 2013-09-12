@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  *
  */
 
@@ -37,8 +37,7 @@
  */
 class CRM_Campaign_Page_AJAX {
 
-  static
-  function registerInterview() {
+  static function registerInterview() {
     $fields = array(
       'result',
       'voter_id',
@@ -109,8 +108,7 @@ class CRM_Campaign_Page_AJAX {
     CRM_Utils_System::civiExit();
   }
 
-  static
-  function loadOptionGroupDetails() {
+  static function loadOptionGroupDetails() {
 
     $id       = CRM_Utils_Array::value('option_group_id', $_POST);
     $status   = 'fail';
@@ -130,7 +128,7 @@ class CRM_Campaign_Page_AJAX {
         if ($survey->recontact_interval) {
           $recontactInterval = unserialize($survey->recontact_interval);
           foreach ($opValues as $opValId => $opVal) {
-            if (CRM_Utils_Array::value($opVal['label'], $recontactInterval)) {
+            if (is_numeric($recontactInterval[$opVal['label']])) {
               $opValues[$opValId]['interval'] = $recontactInterval[$opVal['label']];
             }
           }

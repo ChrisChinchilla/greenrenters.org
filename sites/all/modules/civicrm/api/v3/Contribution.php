@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,17 +33,10 @@
  * @package CiviCRM_APIv3
  * @subpackage API_Contribute
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: Contribution.php 30486 2010-11-02 16:12:09Z shot $
  *
  */
-
-/**
- * Include utility functions
- */
-require_once 'CRM/Contribute/BAO/Contribution.php';
-require_once 'CRM/Utils/Rule.php';
-require_once 'CRM/Contribute/PseudoConstant.php';
 
 /**
  * Add or update a contribution
@@ -56,16 +49,11 @@ require_once 'CRM/Contribute/PseudoConstant.php';
  * @example ContributionCreate.php
  * {@getfields Contribution_create}
  */
-function civicrm_api3_contribution_create($params) {
-  civicrm_api3_verify_one_mandatory($params, NULL, array('contribution_type_id', 'contribution_type'));
-
-
+function civicrm_api3_contribution_create(&$params) {
   $values = array();
 
-  $error = _civicrm_api3_contribute_format_params($params, $values);
-  if (civicrm_error($error)) {
-    return $error;
-  }
+  _civicrm_api3_contribute_format_params($params, $values);
+
   _civicrm_api3_custom_format_params($params, $values, 'Contribution');
   $values["contact_id"] = CRM_Utils_Array::value('contact_id', $params);
   $values["source"] = CRM_Utils_Array::value('source', $params);
@@ -73,16 +61,28 @@ function civicrm_api3_contribution_create($params) {
   $ids = array();
   if (CRM_Utils_Array::value('id', $params)) {
     $ids['contribution'] = $params['id'];
+    // CRM-12498
+    if (CRM_Utils_Array::value('contribution_status_id', $params)) {
+      $error = array(); 
+      //throw error for invalid status change
+      CRM_Contribute_BAO_Contribution::checkStatusValidation(NULL, $params, $error);
+      if (array_key_exists('contribution_status_id', $error)) {
+        return civicrm_api3_create_error($error['contribution_status_id']);
+      }
+    }
   }
+
   $contribution = CRM_Contribute_BAO_Contribution::create($values, $ids);
-  if(!empty($params['use_default_price_set']) && empty($params['id'] )){
-    _civicrm_api3_contribution_createdefaultlineitem($params, $contribution);
+
+  if (is_a($contribution, 'CRM_Core_Error')) {
+    return civicrm_api3_create_error($contribution->_errors[0]['message']);
   }
   _civicrm_api3_object_to_array($contribution, $contributeArray[$contribution->id]);
 
   return civicrm_api3_create_success($contributeArray, $params, 'contribution', 'create', $contribution);
 }
-/*
+
+/**
  * Adjust Metadata for Create action
  *
  * The metadata is used for setting defaults, documentation & validation
@@ -91,13 +91,19 @@ function civicrm_api3_contribution_create($params) {
 function _civicrm_api3_contribution_create_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
   $params['total_amount']['api.required'] = 1;
-  $params['use_default_price_set'] = array(
-    'api.default' => 1,
-    'title' => 'Use Default Price Set',
-     'description' => 'Set this to 0 if you are setting up the lineitems',
-   );
+  $params['payment_processor'] = array(
+    'name' => 'payment_processor',
+    'title' => 'Payment Processor ID',
+    'description' => 'ID of payment processor used for this contribution',
+    // field is called payment processor - not payment processor id but can only be one id so
+    // it seems likely someone will fix it up one day to be more consistent - lets alias it from the start
+    'api.aliases' => array('payment_processor_id'),
+  );
+  $params['financial_type_id']['api.aliases'] = array('contribution_type_id', 'contribution_type');
+  $params['financial_type_id']['api.required'] = 1;
   $params['note'] = array(
     'name' => 'note',
+    'uniqueName' => 'contribution_note',
     'title' => 'note',
     'type' => 2,
     'description' => 'Associated Note in the notes table',
@@ -109,43 +115,22 @@ function _civicrm_api3_contribution_create_spec(&$params) {
     'description' => 'ID of Contact to be Soft credited to',
     'FKClassName' => 'CRM_Contact_DAO_Contact',
   );
-    $params['skipRecentView'] = array(
+  // note this is a recommended option but not adding as a default to avoid
+  // creating unecessary changes for the dev
+  $params['skipRecentView'] = array(
     'name' => 'skipRecentView',
     'title' => 'Skip adding to recent view',
     'type' => 1,
     'description' => 'Do not add to recent view (setting this improves performance)',
   );
+  $params['skipLineItem'] = array(
+    'name' => 'skipLineItem',
+    'title' => 'Skip adding line items',
+    'type' => 1,
+    'api.default' => 0,
+    'description' => 'Do not add line items by default (if you wish to add your own)',
+  );
 }
-/*
- * Create a default contribution line item
- */
- function _civicrm_api3_contribution_createdefaultlineitem(&$params, $contribution){
-   $priceSetDetails = CRM_Price_BAO_Set::getDefaultPriceSet();
-   foreach ($priceSetDetails as $field => $values){
-     $priceFieldValueBAO = new CRM_Price_BAO_FieldValue();
-     $priceFieldValueBAO->price_field_id = $values['priceFieldID'];
-     $priceFieldValueBAO->selectAdd();
-     $priceFieldValueBAO->selectAdd('id');
-     $priceFieldValueBAO->selectAdd('label');
-     $priceFieldValueBAO->find(true);
-     continue;
-   }
-   $lineItemparams = array(
-     'version' => 3,
-     'price_field_id' => $priceFieldValueBAO->price_field_id,
-     'price_field_value_id' => $priceFieldValueBAO->id,
-     'entity_table' => 'civicrm_contribution',
-     'entity_id' => $contribution->id,
-     'label' => $priceFieldValueBAO->label,
-     'qty' => 1,
-     'unit_price' => $contribution->total_amount,
-     'line_total' => $contribution->total_amount,
-     'version' => 3,
-   );
-   civicrm_api('line_item','create',$lineItemparams);
- }
-
-
 
 /**
  * Delete a contribution
@@ -168,7 +153,8 @@ function civicrm_api3_contribution_delete($params) {
     return civicrm_api3_create_error('Could not delete contribution');
   }
 }
-/*
+
+/**
  * modify metadata. Legacy support for contribution_id
  */
 function _civicrm_api3_contribution_delete_spec(&$params) {
@@ -228,7 +214,8 @@ function civicrm_api3_contribution_get($params) {
   }
   return civicrm_api3_create_success($contribution, $params, 'contribution', 'get', $dao);
 }
-/*
+
+/**
  * Adjust Metadata for Get action
  *
  * The metadata is used for setting defaults, documentation & validation
@@ -236,6 +223,7 @@ function civicrm_api3_contribution_get($params) {
  */
 function _civicrm_api3_contribution_get_spec(&$params) {
   $params['contribution_test']['api.default'] = 0;
+  $params['financial_type_id']['api.aliases'] = array('contribution_type_id');
   $params['contact_id'] = $params['contribution_contact_id'];
   $params['contact_id']['api.aliases'] = array('contribution_contact_id');
   unset($params['contribution_contact_id']);
@@ -254,46 +242,31 @@ function _civicrm_api3_contribution_get_spec(&$params) {
  * @access public
  */
 function _civicrm_api3_contribute_format_params($params, &$values, $create = FALSE) {
-  // copy all the contribution fields as is
-
-
-  require_once 'CRM/Contribute/DAO/Contribution.php';
-  $fields = &CRM_Contribute_DAO_Contribution::fields();
-
-  _civicrm_api3_store_values($fields, $params, $values);
+//legacy way of formatting from v2 api - v3 way is to define metadata & do it in the api layer
+    require_once 'api/v3/utils.php';
+  _civicrm_api3_filter_fields_for_bao('Contribution', $params, $values);
 
   foreach ($params as $key => $value) {
     // ignore empty values or empty arrays etc
     if (CRM_Utils_System::isNull($value)) {
       continue;
     }
-
+    // note that this is legacy handling - these should be handled at the api layer
     switch ($key) {
-      case 'contribution_type_id':
-        if (!CRM_Utils_Array::value($value, CRM_Contribute_PseudoConstant::contributionType())) {
-          return civicrm_api3_create_error("Invalid Contribution Type Id");
-        }
-        break;
-
-      case 'contribution_type':
-        $contributionTypeId = CRM_Utils_Array::key($value, CRM_Contribute_PseudoConstant::contributionType());
+      case 'financial_type' :// should be dealt with either api pseudoconstant in validate_integer fn
+        $contributionTypeId = CRM_Utils_Array::key ( ucfirst ( $value ), CRM_Contribute_PseudoConstant::financialType() );
         if ($contributionTypeId) {
-          if (CRM_Utils_Array::value('contribution_type_id', $values) && $contributionTypeId != $values['contribution_type_id']) {
-            return civicrm_api3_create_error("Mismatched Contribution Type and Contribution Type Id");
+          if (CRM_Utils_Array::value('financial_type_id', $values) && $contributionTypeId != $values['financial_type_id']) {
+            throw new Exception("Mismatched Financial Type and Financial Type Id");
           }
-          $values['contribution_type_id'] = $contributionTypeId;
+          $values ['financial_type_id'] = $contributionTypeId;
         }
         else {
-          return civicrm_api3_create_error("Invalid Contribution Type");
+          throw new Exception("Invalid Financial Type");
         }
         break;
 
-      case 'payment_instrument':
-        require_once 'CRM/Core/OptionGroup.php';
-        $values['payment_instrument_id'] = CRM_Core_OptionGroup::getValue('payment_instrument', $value);
-        break;
-
-      case 'soft_credit_to':
+      case 'soft_credit_to':// should be dealt with by validate integer
         if (!CRM_Utils_Rule::integer($value)) {
           return civicrm_api3_create_error("$key not a valid Id: $value");
         }
@@ -304,13 +277,6 @@ function _civicrm_api3_contribute_format_params($params, &$values, $create = FAL
         break;
     }
   }
-
-  if (array_key_exists('note', $params)) {
-    $values['note'] = $params['note'];
-  }
-
-
-
 
   return array();
 }
@@ -354,8 +320,8 @@ function civicrm_api3_contribution_transact($params) {
     $params['invoiceID'] = $params['invoice_id'];
   }
 
-  require_once 'CRM/Core/BAO/PaymentProcessor.php';
-  $paymentProcessor = CRM_Core_BAO_PaymentProcessor::getPayment($params['payment_processor_id'], $params['payment_processor_mode']);
+  require_once 'CRM/Financial/BAO/PaymentProcessor.php';
+  $paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($params['payment_processor_id'], $params['payment_processor_mode']);
   if (civicrm_error($paymentProcessor)) {
     return $paymentProcessor;
   }
@@ -400,13 +366,13 @@ function civicrm_api3_contribution_sendconfirmation($params) {
   $contribution->id = $params['id'];
   if (! $contribution->find(true)) {
     throw new Exception('Contribution does not exist');
-  }
-  $input = $ids = $cvalues = array();
+}
+  $input = $ids = $cvalues = array('receipt_from_email' => $params['receipt_from_email']);
   $contribution->loadRelatedObjects($input, $ids, FALSE, true);
   $contribution->composeMessageArray($input, $ids, $cvalues, false, false);
 }
 
-/*
+/**
  * Adjust Metadata for Create action
  *
  * The metadata is used for setting defaults, documentation & validation
@@ -417,5 +383,59 @@ function _civicrm_api3_contribution_sendconfirmation_spec(&$params) {
     'api.required' => 1,
     'title' => 'Contribution ID'
   );
+  $params['receipt_from_email'] = array(
+    'api.required' =>1,
+    'title' => 'From Email (required until someone provides a patch :-)',
+
+  );
+}
+
+/**
+ * Complete an existing (pending) transaction, updating related entities (participant, membership, pledge etc)
+ * and taking any complete actions from the contribution page (e.g. send receipt)
+ *
+ * @todo - most of this should live in the BAO layer but as we want it to be an addition
+ * to 4.3 which is already stable we should add it to the api layer & re-factor into the BAO layer later
+ *
+ * @param array $params input parameters
+ * {@getfields Contribution_completetransaction}
+ * @return array  Api result array
+ * @static void
+ * @access public
+ *
+ */
+function civicrm_api3_contribution_completetransaction(&$params) {
+
+  $input = $ids = array();
+  $contribution = new CRM_Contribute_BAO_Contribution();
+  $contribution->id = $params['id'];
+  $contribution->find(TRUE);
+  if(!$contribution->id == $params['id']){
+    throw new API_Exception('A valid contribution ID is required', 'invalid_data');
+  }
+  try {
+    if(!$contribution->loadRelatedObjects($input, $ids, FALSE, TRUE)){
+      throw new API_Exception('failed to load related objects');
+    }
+    $objects = $contribution->_relatedObjects;
+    $objects['contribution'] = &$contribution;
+    $input['component'] = $contribution->_component;
+    $input['is_test'] = $contribution->is_test;
+    $input['trxn_id']= $contribution->trxn_id;
+    $input['amount'] = $contribution->total_amount;
+    if(isset($params['is_email_receipt'])){
+      $input['is_email_receipt'] = $params['is_email_receipt'];
+    }
+    // @todo required for base ipn but problematic as api layer handles this
+    $transaction = new CRM_Core_Transaction();
+    $ipn = new CRM_Core_Payment_BaseIPN();
+    $ipn->completeTransaction($input, $ids, $objects, $transaction);
+  }
+  catch(Exception$e) {
+    throw new API_Exception('failed to load related objects' . $e->getMessage() . "\n" . $e->getTraceAsString());
+  }
+}
+
+function _civicrm_api3_contribution_completetransaction(&$params) {
 
 }

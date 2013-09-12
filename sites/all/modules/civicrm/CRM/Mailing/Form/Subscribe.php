@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,12 +29,14 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Mailing_Form_Subscribe extends CRM_Core_Form {
-  protected $_groupID = NULL; function preProcess() {
+  protected $_groupID = NULL;
+
+  function preProcess() {
     parent::preProcess();
     $this->_groupID = CRM_Utils_Request::retrieve('gid', 'Integer', $this,
       FALSE, NULL, 'REQUEST'
@@ -81,7 +83,6 @@ SELECT   title, description
    * @return None
    * @access public
    */
-
   public function buildQuickForm() {
     // add the email address
     $this->add('text',
@@ -167,8 +168,7 @@ ORDER BY title";
     );
   }
 
-  static
-  function formRule($fields) {
+  static function formRule($fields) {
     foreach ($fields as $name => $dontCare) {
       if (substr($name, 0, CRM_Core_Form::CB_PREFIX_LEN) == CRM_Core_Form::CB_PREFIX) {
         return TRUE;

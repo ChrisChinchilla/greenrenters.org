@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -68,12 +68,12 @@ class CRM_Report_Page_Instance extends CRM_Core_Page {
         CRM_Core_BAO_Navigation::resetNavigation();
       }
 
-      CRM_Core_Session::setStatus(ts('Selected Instance has been deleted.'));
+      CRM_Core_Session::setStatus(ts('Selected report has been deleted.'), ts('Deleted'), 'success');
     }
     else {
       $templateInfo = CRM_Core_OptionGroup::getRowValues('report_template', "{$optionVal}", 'value');
       if (empty($templateInfo)) {
-        CRM_Core_Session::setStatus(ts('Could not find template for the instance.'));
+        CRM_Core_Session::setStatus(ts('Could not find template for this report instance.'), ts('Template Not Found'), 'error');
         return;
       }
 
@@ -82,7 +82,7 @@ class CRM_Report_Page_Instance extends CRM_Core_Page {
       $reportClass = NULL;
 
       if ($extKey !== FALSE) {
-        $ext = new CRM_Core_Extensions();
+        $ext = CRM_Extension_System::singleton()->getMapper();
         $reportClass = $ext->keyToClass($templateInfo['name'], 'report');
         $templateInfo['name'] = $reportClass;
       }
@@ -104,7 +104,7 @@ class CRM_Report_Page_Instance extends CRM_Core_Page {
         return $wrapper->run($templateInfo['name'], NULL, NULL);
       }
 
-      CRM_Core_Session::setStatus(ts('Could not find template for the instance.'));
+      CRM_Core_Session::setStatus(ts('Could not find template for the instance.'), ts('Template Not Found'), 'error');
     }
     return CRM_Utils_System::redirect($reportUrl);
   }

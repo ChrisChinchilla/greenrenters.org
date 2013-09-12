@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -95,8 +95,8 @@ class CRM_SMS_Form_Group extends CRM_Contact_Form_Task {
       $defaults['includeGroups'] = $mailingGroups['civicrm_group']['Include'];
       $defaults['excludeGroups'] = CRM_Utils_Array::value('Exclude', $mailingGroups['civicrm_group']);
 
-      $defaults['includeMailings'] = CRM_Utils_Array::value('Include', $mailingGroups['civicrm_mailing']);
-      $defaults['excludeMailings'] = $mailingGroups['civicrm_mailing']['Exclude'];
+      $defaults['includeMailings'] = CRM_Utils_Array::value('Include', CRM_Utils_Array::value('civicrm_mailing', $mailingGroups));
+      $defaults['excludeMailings'] = CRM_Utils_Array::value('Exclude', CRM_Utils_Array::value('civicrm_mailing', $mailingGroups));
     }
 
     return $defaults;
@@ -307,7 +307,7 @@ class CRM_SMS_Form_Group extends CRM_Contact_Form_Task {
 
     if ($qf_Group_submit) {
       $status = ts("Your Mass SMS has been saved.");
-      CRM_Core_Session::setStatus($status);
+      CRM_Core_Session::setStatus($status, ts('Saved'), 'success');
       $url = CRM_Utils_System::url('civicrm/mailing', 'reset=1&sms=1');
       return $this->controller->setDestination($url);
     }
@@ -333,8 +333,7 @@ class CRM_SMS_Form_Group extends CRM_Contact_Form_Task {
    * @static
    * @access public
    */
-  static
-  function formRule($fields) {
+  static function formRule($fields) {
     $errors = array();
     if (isset($fields['includeGroups']) &&
       is_array($fields['includeGroups']) &&

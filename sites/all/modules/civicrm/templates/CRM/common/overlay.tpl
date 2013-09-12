@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -35,7 +35,7 @@ display message message.
  * function to add overlay during ajax action
  */
 function addCiviOverlay( element ) {
-  var message = {/literal}"{ts}Please wait...{/ts}"{literal}; 
+  var message = {/literal}"{ts escape='js'}Please wait...{/ts}"{literal}; 
   cj( element ).block({
     message: message,
     theme: true,

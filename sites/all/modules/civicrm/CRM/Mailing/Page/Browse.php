@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -87,7 +87,8 @@ class CRM_Mailing_Page_Browse extends CRM_Core_Page {
    * @return void
    * @access public
    *
-   */ function preProcess() {
+   */
+  function preProcess() {
     $this->_unscheduled = $this->_archived = $archiveLinks = FALSE;
     $this->_mailingId   = CRM_Utils_Request::retrieve('mid', 'Positive', $this);
     $this->_sms         = CRM_Utils_Request::retrieve('sms', 'Positive', $this);
@@ -123,29 +124,27 @@ class CRM_Mailing_Page_Browse extends CRM_Core_Page {
    *
    * @return void
    */
-  function run($newArgs) {
+  function run() {
     $this->preProcess();
 
+    $newArgs = func_get_args();
+    // since we want only first function argument
+    $newArgs = $newArgs[0];
     if (isset($_GET['runJobs']) || CRM_Utils_Array::value('2', $newArgs) == 'queue') {
       $config = CRM_Core_Config::singleton();
-
-
       CRM_Mailing_BAO_Job::runJobs_pre($config->mailerJobSize);
       CRM_Mailing_BAO_Job::runJobs();
       CRM_Mailing_BAO_Job::runJobs_post();
     }
 
-    $this->_sortByCharacter = CRM_Utils_Request::retrieve('sortByCharacter',
-      'String',
-      $this
-    );
+    $this->_sortByCharacter =
+      CRM_Utils_Request::retrieve('sortByCharacter', 'String', $this);
 
 
-    if (strtolower($this->_sortByCharacter) == 'all' ||
-      !empty($_POST)
-    ) {
-      $this->_sortByCharacter = '';
-      $this->set('sortByCharacter', '');
+    // CRM-11920 all should set sortByCharacter to null, not empty string
+    if (strtolower($this->_sortByCharacter) == 'all' || !empty($_POST)) {
+      $this->_sortByCharacter = null;
+      $this->set('sortByCharacter', null);
     }
 
     if (CRM_Utils_Array::value(3, $newArgs) == 'unscheduled') {

@@ -1,6 +1,6 @@
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -40,16 +40,15 @@
 */
 
 
-(function($){
+(function($) {
 
     $.fn.crmEditable = function (options) {
-
       // for a jquery object (the crm-editable), find the entity name and id to apply the changes to
       // call result function(entity,id). The caller is responsible to use these params and do the needed
       var getEntityID = function (field,result) {
         var domid= $(field).closest('.crm-entity');
         if (!domid) {
-          $().crmNotification ("Couldn't get the entity id. You need to set class='crm-entity' on a parent element of the field",'notification',domid);
+          console && console.log && console.log("Couldn't get the entity id. You need to set class='crm-entity' on a parent element of the field");
           return false;
         }
         // trying to extract using the html5 data
@@ -59,12 +58,12 @@
         }
         domid=domid.attr('id');
         if (!domid) {
-          $().crmNotification ("FATAL crm-editable: Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'",'notification',domid);
+          console && console.log && console.log("FATAL crm-editable: Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'");
           return false;
         }
         var e=domid.match(/(\S*)-(\S*)/);
         if (!e) {
-           $().crmNotification ("Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'",'notification',this);
+           console && console.log && console.log("Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'");
            return false;
         }
         result(e[1],e[2]);
@@ -77,13 +76,12 @@
         }  
         var fieldName=field.className.match(/crmf-(\S*)/)[1];
         if (!fieldName) {
-          $().crmNotification ("Couldn't get the crm-editable field name to modify. You need to set crmf-{field_name} or data-{field_name}",'notification',field);
+          console && console.log && console.log("Couldn't get the crm-editable field name to modify. You need to set crmf-{field_name} or data-{field_name}");
           return false;
         }
         return fieldName;
       }
 
-      
       var checkable = function () {
         $(this).change (function() {
           var params={sequential:1};
@@ -100,13 +98,13 @@
             return false;
           params['value']=checked?'1':'0';//seems that the ajax backend gets lost with boolean
 
-          //$().crmAPI.call(this,entity,'create',params,{ create is still too buggy & perf
-          $().crmAPI.call(this,entity,'setvalue',params,{
+          CRM.api(entity,'setvalue',params,{
+            context: this,
             error: function (data) {
-              editableSettings.error.call(this,entity,fieldName,checked,data);
+              editableSettings.error.call(this,entity,params.field,checked,data);
             },
             success: function (data) {
-              editableSettings.success.call(this,entity,fieldName,checked,data);
+              editableSettings.success.call(this,entity,params.field,checked,data);
             }
           });
         });
@@ -122,19 +120,19 @@
           }
         },
         error: function(entity,field,value,data) {
-          $().crmNotification (data.error_message,'error',data);
-          $(this).removeClass ('crm-editable-saving').addClass('crm-editable-error');
+          $(this).crmError(data.error_message, ts('Error'));
+          $(this).removeClass('crm-editable-saving');
         },
         success: function(entity,field,value,data) {
-          var $i=$(this);
-          $().crmNotification (false);
-          $i.removeClass ('crm-editable-saving').removeClass ('crm-editable-error');
+          var $i = $(this);
+          CRM.alert('', ts('Saved'), 'success');
+          $i.removeClass ('crm-editable-saving crm-error');
           $i.html(value);
         }
       }
 
       var editableSettings = $.extend({}, defaults, options);
-  	  return this.each(function() {
+      return this.each(function() {
         var $i = $(this);
         var fieldName = "";
       
@@ -143,7 +141,7 @@
           return;
         }
 
-        if (this.nodeName = 'A') {
+        if (this.nodeName == 'A') {
           if (this.className.indexOf('crmf-') == -1) { // it isn't a jeditable field
             var formSettings= $.extend({}, editableSettings.form ,
               {source: $i.attr('href')
@@ -159,7 +157,7 @@
             if (id) {
               var e=id.match(/(\S*)-(\S*)/);
                if (!e) 
-                 $().crmNotification ("Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'",'notification',this);
+                 console && console.log && console.log("Couldn't get the entity id. You need to set class='crm-entity' id='{entityName}-{id}'");
               formSettings.entity=e[1];
               formSettings.id=e[2];
             } 
@@ -205,13 +203,25 @@
         } else {
           settings.tooltip   = 'Click to edit...';
         }
+        if ($i.data('type')) {
+          settings.type = $i.data('type');
+          settings.onblur = 'submit';
+        }
+        if ($i.data('options')){
+          settings.data = $i.data('options');
+        }
+        if(settings.type == 'textarea'){
+          $i.addClass ('crm-editable-textarea-enabled');
+        }
+        else{
+          $i.addClass ('crm-editable-enabled');
+        }
 
-        $i.addClass ('crm-editable-enabled');
         $i.editable(function(value,settings) {
         //$i.editable(function(value,editableSettings) {
           parent=$i.closest('.crm-entity');
           if (!parent) {
-            $().crmNotification ("crm-editable: you need to define one parent element that has a class .crm-entity",'notification',this);
+            console && console.log && console.log("crm-editable: you need to define one parent element that has a class .crm-entity");
             return;
           }
 
@@ -232,29 +242,30 @@
           }
 
           if ($i.data('action')) {
-            params[params['field']]=value;//format for create at least
+            var fieldName = params['field'];
+            delete params['field'];
+            delete params['value'];
+
+            params[fieldName]=value;//format for create at least
             action=$i.data('action');
           } else {
             action="setvalue";
           }
-          $().crmAPI.call(this,entity,action,params,{
-          //cj().crmAPI.call(this,entity,'setvalue/create',params,{
+          CRM.api(entity, action, params, {
+              context: this,
               error: function (data) {
                 editableSettings.error.call(this,entity,fieldName,value,data);
               },
               success: function (data) {
+                if ($i.data('options')){
+                  value = $i.data('options')[value];
+                }
                 editableSettings.success.call(this,entity,fieldName,value,data);
               }
             });
            },settings);
     });
- }
-   
-})(jQuery);
-//})(cj);
-
-
-(function($){
+  }
 
   $.fn.crmForm = function (options ) {
     var settings = $.extend( {
@@ -266,7 +277,7 @@
       'dialog': false,
       'load' : function (target){},
       'success' : function (result) {
-        $(this).html ("Saved");
+        $(this).html(ts('Saved'));
        }
     }, options);
 
@@ -274,7 +285,7 @@
     return this.each(function() {
       var formLoaded = function (target) {
         var $this =$(target);
-        var destination="<input type='hidden' name='civicrmDestination' value='"+$.crmURL('civicrm/ajax/rest',{
+        var destination="<input type='hidden' name='civicrmDestination' value='"+CRM.url('civicrm/ajax/rest',{
           'sequential':settings.sequential,
           'json':'html',
           'entity':settings.entity,
@@ -320,5 +331,3 @@
   };
 
 })(jQuery);
-//})(cj);
-

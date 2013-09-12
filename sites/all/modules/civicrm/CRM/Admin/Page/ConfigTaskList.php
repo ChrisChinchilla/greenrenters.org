@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -55,7 +55,13 @@ class CRM_Admin_Page_ConfigTaskList extends CRM_Core_Page {
       list($id) = array_keys($optionValue);
       $this->assign('fromEmailId', $id);
     }
-
+    
+    $payPalProId = CRM_Core_DAO::getFieldValue( 'CRM_Financial_DAO_PaymentProcessorType',
+      'PayPal', 'id', 'name'
+    );
+    if ($payPalProId) {
+      $this->assign('payPalProId', $payPalProId);
+    }
     return parent::run();
   }
 }

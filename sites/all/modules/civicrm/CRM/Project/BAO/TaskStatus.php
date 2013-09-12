@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,8 +38,7 @@
  */
 class CRM_Project_BAO_TaskStatus {
 
-  static
-  function &getTaskStatusInitial(&$controller,
+  static function &getTaskStatusInitial(&$controller,
     $ret, $reid,
     $tet, $teid,
     $taskID,
@@ -83,8 +82,7 @@ class CRM_Project_BAO_TaskStatus {
     return array($taskStatusID, $taskStatus);
   }
 
-  static
-  function updateTaskStatus(&$form,
+  static function updateTaskStatus(&$form,
     $prefix = 'taskStatus',
     $statusDetail = TRUE
   ) {
@@ -119,8 +117,7 @@ class CRM_Project_BAO_TaskStatus {
     $dao->save();
   }
 
-  static
-  function updateTaskStatusWithValue(&$form,
+  static function updateTaskStatusWithValue(&$form,
     $value = 'In Progress',
     $prefix = 'taskStatus'
   ) {
@@ -151,8 +148,7 @@ class CRM_Project_BAO_TaskStatus {
    *
    * @return returns task status object
    */
-  static
-  function create(&$params) {
+  static function create(&$params) {
     if (!$params['target_entity_id'] || !$params['responsible_entity_id']
       || !$params['task_id'] || !$params['status_id']
     ) {

@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,22 +30,19 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
-class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
+class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form_Event {
 
   protected $_summary = NULL;
 
   protected $_customGroupExtends = array(
-    'Participant'); function __construct() {
+    'Participant'); 
+  public $_drilldownReport = array('event/income' => 'Link to Detail Report');
 
-    static $_events;
-    if (!isset($_events['all'])) {
-      CRM_Core_PseudoConstant::populate($_events['all'], 'CRM_Event_DAO_Event', FALSE, 'title', 'is_active', "is_template IS NULL OR is_template = 0", 'end_date DESC');
-    }
-
+  function __construct() {
     $this->_columns = array(
       'civicrm_contact' =>
       array(
@@ -57,6 +54,10 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
             'required' => TRUE,
             'no_repeat' => TRUE,
             'dbAlias' => 'contact_civireport.sort_name',
+          ),
+		  'first_name' => array('title' => ts('First Name'),
+          ),
+		  'last_name' => array('title' => ts('Last Name'),
           ),
           'id' =>
           array(
@@ -137,6 +138,10 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
           'role_id' => array('title' => ts('Role'),
             'default' => TRUE,
           ),
+          'fee_currency' => array(
+             'required' => TRUE,
+             'no_display' => TRUE,
+          ),
           'participant_fee_level' => NULL,
           'participant_fee_amount' => NULL,
           'participant_register_date' => array('title' => ts('Registration Date')),
@@ -147,7 +152,7 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
           'event_id' => array('name' => 'event_id',
             'title' => ts('Event'),
             'operatorType' => CRM_Report_Form::OP_MULTISELECT,
-            'options' => $_events['all'],
+            'options' => $this->getEventFilterOptions(),
           ),
           'sid' => array(
             'name' => 'status_id',
@@ -165,12 +170,33 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
             'title' => ' Registration Date',
             'operatorType' => CRM_Report_Form::OP_DATE,
           ),
+          'fee_currency' =>
+          array('title' => 'Currency',
+            'operatorType' => CRM_Report_Form::OP_MULTISELECT,
+            'options' => CRM_Core_OptionGroup::values('currencies_enabled'),
+            'default' => NULL,
+            'type' => CRM_Utils_Type::T_STRING,
+          ),
+
         ),
         'order_bys' =>
         array(
           'event_id' =>
           array('title' => ts('Event'), 'default_weight' => '1', 'default_order' => 'ASC'),
         ),
+      ),
+      'civicrm_phone' =>
+      array(
+        'dao' => 'CRM_Core_DAO_Phone',
+        'fields' =>
+        array(
+          'phone' =>
+          array('title' => ts('Phone'),
+            'default' => TRUE,
+            'no_repeat' => TRUE,
+          ),
+        ),
+        'grouping' => 'contact-fields',
       ),
       'civicrm_event' =>
       array(
@@ -209,6 +235,7 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
         ),
       ),
     );
+    $this->_currencyColumn = 'civicrm_participant_fee_currency';
     parent::__construct();
   }
 
@@ -254,8 +281,7 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
     $this->_select = "SELECT " . implode(', ', $select) . " ";
   }
 
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = $grouping = array();
     return $errors;
   }
@@ -275,7 +301,11 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
                        {$this->_aliases['civicrm_address']}.is_primary = 1 
              LEFT JOIN  civicrm_email {$this->_aliases['civicrm_email']} 
                     ON ({$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id AND
-                       {$this->_aliases['civicrm_email']}.is_primary = 1) ";
+                       {$this->_aliases['civicrm_email']}.is_primary = 1) 
+             LEFT  JOIN civicrm_phone  {$this->_aliases['civicrm_phone']} 
+                     ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_phone']}.contact_id AND
+                         {$this->_aliases['civicrm_phone']}.is_primary = 1 		   
+			";
   }
 
   function where() {
@@ -370,7 +400,7 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
           $rows[$rowNum]['civicrm_participant_event_id'] = CRM_Event_PseudoConstant::event($value, FALSE);
           $url = CRM_Report_Utils_Report::getNextUrl('event/income',
             'reset=1&force=1&id_op=in&id_value=' . $value,
-            $this->_absoluteUrl, $this->_id
+            $this->_absoluteUrl, $this->_id, $this->_drilldownReport
           );
           $rows[$rowNum]['civicrm_participant_event_id_link'] = $url;
           $rows[$rowNum]['civicrm_participant_event_id_hover'] = ts("View Event Income Details for this Event");
@@ -423,7 +453,7 @@ class CRM_Report_Form_Event_ParticipantListing extends CRM_Report_Form {
       ) {
         $url = CRM_Report_Utils_Report::getNextUrl('contact/detail',
           "reset=1&force=1&id_op=eq&id_value=$cid",
-          $this->_absoluteUrl, $this->_id
+          $this->_absoluteUrl, $this->_id, $this->_drilldownReport
         );
 
         $viewUrl = CRM_Utils_System::url("civicrm/contact/view/participant",

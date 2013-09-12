@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,13 +28,13 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 /**
- * This class generates form components for relationship
+ * This class generates form components for search-result tasks
  *
  */
 class CRM_Contact_Form_Task extends CRM_Core_Form {
@@ -159,7 +159,7 @@ class CRM_Contact_Form_Task extends CRM_Core_Form {
         $allCids[$cacheKey] = $form->getContactIds( );
       }
       else {
-       $allCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey, "getall");
+      $allCids         = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey, "getall");
       }
 
       $form->_contactIds = array();
@@ -216,16 +216,16 @@ class CRM_Contact_Form_Task extends CRM_Core_Form {
         }
       }
       else {
-        // fetching selected contact ids of passed cache key
-        $selectedCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey);
-        foreach ($selectedCids[$cacheKey] as $selectedCid => $ignore) {
-          if ($useTable) {
-            $insertString[] = " ( {$selectedCid} ) ";
-          }
-          else {
-            $form->_contactIds[] = $selectedCid;
-          }
+      // fetching selected contact ids of passed cache key
+      $selectedCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey);
+      foreach ($selectedCids[$cacheKey] as $selectedCid => $ignore) {
+        if ($useTable) {
+          $insertString[] = " ( {$selectedCid} ) ";
         }
+        else {
+          $form->_contactIds[] = $selectedCid;
+        }
+      }
       }
       
       if (!empty($insertString)) {
@@ -258,8 +258,7 @@ class CRM_Contact_Form_Task extends CRM_Core_Form {
       $params = array();
       $sel = CRM_Utils_Array::value('radio_ts', self::$_searchFormValues);
       $form->assign('searchtype',$sel);
-      $value = CRM_Core_BAO_PrevNextCache::buildSelectedContactPager($form,$params);
-      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts($value['offset'],$value['rowCount1']);
+      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
       $form->assign("value", $result);
     }
     

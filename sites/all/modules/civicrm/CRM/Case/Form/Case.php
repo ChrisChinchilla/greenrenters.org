@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -86,7 +86,8 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
    *
    * @return None
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
     $this->_cdType = CRM_Utils_Array::value('type', $_GET);
     $this->assign('cdType', FALSE);
     if ($this->_cdType) {
@@ -310,8 +311,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($values, $files, $form) {
+  static function formRule($values, $files, $form) {
     return TRUE;
   }
 
@@ -323,7 +323,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
    * @return None
    */
   public function postProcess() {
-    $tx = new CRM_Core_Transaction();
+    $transaction = new CRM_Core_Transaction();
 
     // check if dedupe button, if so return.
     $buttonName = $this->controller->getButtonName();
@@ -337,7 +337,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
       if ($caseDelete) {
         $statusMsg = ts('The selected case has been moved to the Trash. You can view and / or restore deleted cases by checking the "Deleted Cases" option under Find Cases.<br />');
       }
-      CRM_Core_Session::setStatus($statusMsg);
+      CRM_Core_Session::setStatus($statusMsg, ts('Case Deleted'), 'success');
       return;
     }
 
@@ -347,7 +347,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
       if ($caseRestore) {
         $statusMsg = ts('The selected case has been restored.<br />');
       }
-      CRM_Core_Session::setStatus($statusMsg);
+      CRM_Core_Session::setStatus($statusMsg, ts('Restored'), 'success');
       return;
     }
     // store the submitted values in an array
@@ -428,7 +428,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
     // 5. auto populate activites
 
     // 6. set status
-    CRM_Core_Session::setStatus("{$params['statusMsg']}");
+    CRM_Core_Session::setStatus($params['statusMsg'], ts('Saved'), 'success');
   }
 }
 

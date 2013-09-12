@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -46,7 +46,9 @@ class CRM_Contribute_Form_ContributionCharts extends CRM_Core_Form {
    *
    * @var string
    */
-  protected $_chartType = NULL; function preProcess() {
+  protected $_chartType = NULL;
+
+  function preProcess() {
     $this->_year = CRM_Utils_Request::retrieve('year', 'Int', $this);
     $this->_chartType = CRM_Utils_Request::retrieve('type', 'String', $this);
 
@@ -86,7 +88,7 @@ class CRM_Contribute_Form_ContributionCharts extends CRM_Core_Form {
         krsort($this->_years);
       }
       foreach ($this->_years as $k => $v) {
-        $years[$k] = $k;
+        $years[substr($k,0,4)] = substr($k,0,4);
       }
     }
 
@@ -106,6 +108,7 @@ class CRM_Contribute_Form_ContributionCharts extends CRM_Core_Form {
    * @return None
    */
   public function postProcess() {
+    $config = CRM_Core_Config::singleton();
     $chartType = 'bvg';
     if ($this->_chartType) {
       $chartType = $this->_chartType;
@@ -172,6 +175,11 @@ class CRM_Contribute_Form_ContributionCharts extends CRM_Core_Form {
       }
       if ($chartKey == 'by_year') {
         $yearlyChart = TRUE;
+        if (!empty($config->fiscalYearStart) && ($config->fiscalYearStart['M'] !== 1 || $config->fiscalYearStart['d'] !== 1)) {
+          $values['xLabelAngle'] = 45 ;
+        } else {
+          $values['xLabelAngle'] = 0 ;
+        }
       }
       if ($chartKey == 'by_month') {
         $monthlyChart = TRUE;
@@ -194,8 +202,14 @@ class CRM_Contribute_Form_ContributionCharts extends CRM_Core_Form {
           $urlParams     = "reset=1&force=1&status=1&start={$startDate}&end={$endDate}&test=0";
         }
         elseif ($chartKey == 'by_year') {
-          $startDate = CRM_Utils_Date::format(array('Y' => $index));
-          $endDate   = date('Ymd', mktime(0, 0, 0, 13, 0, $index));
+          if (!empty($config->fiscalYearStart) && ($config->fiscalYearStart['M'] != 1 || $config->fiscalYearStart['d'] != 1)) {
+            $startDate = date('Ymd', mktime(0, 0, 0, $config->fiscalYearStart['M'], $config->fiscalYearStart['d'], substr($index,0,4)));
+            $endDate   = date('Ymd', mktime(0, 0, 0, $config->fiscalYearStart['M'], $config->fiscalYearStart['d'], substr($index,0,4)+1));
+          }
+          else {
+            $startDate = CRM_Utils_Date::format(array('Y' => substr($index,0,4)));
+            $endDate   = date('Ymd', mktime(0, 0, 0, 13, 0, substr($index,0,4)));
+          }
           $urlParams = "reset=1&force=1&status=1&start={$startDate}&end={$endDate}&test=0";
         }
         if ($urlParams) {

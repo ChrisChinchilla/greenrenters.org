@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -32,7 +32,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -146,7 +146,7 @@ class CRM_Event_Badge {
    **/
   public function generateLabel($participant) {
     $txt = "{$this->event['title']}
-{$participant['first_name']} {$participant['last_name']}
+{$participant['display_name']}
 {$participant['current_employer']}";
 
     $this->pdf->MultiCell($this->pdf->width, $this->pdf->lineHeight, $txt);

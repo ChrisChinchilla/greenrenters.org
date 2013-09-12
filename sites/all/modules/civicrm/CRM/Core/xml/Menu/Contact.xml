@@ -113,7 +113,7 @@
      <title>Edit Related Contact</title>
      <page_callback>CRM_Contact_Form_RelatedContact</page_callback>
      <access_arguments>access Contact Dashboard</access_arguments>
-	 <is_public>true</is_public>
+   <is_public>true</is_public>
   </item>
   <item>
      <path>civicrm/contact/merge</path>
@@ -185,6 +185,12 @@
      <page_callback>CRM_Contact_Page_View_GroupContact</page_callback>
   </item>
   <item>
+    <path>civicrm/contact/view/smartgroup</path>
+    <path_arguments>cid=%%cid%%</path_arguments>
+    <title>Smart Groups</title>
+    <page_callback>CRM_Contact_Page_View_ContactSmartGroup</page_callback>
+  </item>
+  <item>
      <path>civicrm/contact/view/sunlight</path>
      <title>Sunlight</title>
      <page_callback>CRM_Contact_Page_View_Sunlight</page_callback>
@@ -234,6 +240,11 @@
      <path>civicrm/dashlet/activity</path>
      <title>Activity Dashlet</title>
      <page_callback>CRM_Dashlet_Page_Activity</page_callback>
+  </item>
+  <item>
+     <path>civicrm/dashlet/blog</path>
+     <title>CiviCRM Blog</title>
+     <page_callback>CRM_Dashlet_Page_Blog</page_callback>
   </item>
   <item>
     <path>civicrm/ajax/state</path>

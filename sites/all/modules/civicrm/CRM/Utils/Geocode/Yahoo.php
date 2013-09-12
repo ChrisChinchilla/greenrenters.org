@@ -1,9 +1,9 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.2                                                |
+  | CiviCRM version 4.3                                                |
   +--------------------------------------------------------------------+
-  | Copyright CiviCRM LLC (c) 2004-2012                                |
+  | Copyright CiviCRM LLC (c) 2004-2013                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -124,7 +124,8 @@ class CRM_Utils_Geocode_Yahoo {
     $request = new HTTP_Request($query);
     $request->sendRequest();
     $string = $request->getResponseBody();
-    $xml = simplexml_load_string($string);
+    // see CRM-11359 for why we suppress errors with @
+    $xml = @simplexml_load_string($string);
 
     if ($xml === FALSE) {
       // account blocked maybe?
@@ -163,13 +164,15 @@ class CRM_Utils_Geocode_Yahoo {
 
           // if a postal code was already entered, don't change it, except to make it more precise
           if (strpos($new_pc_complete, $current_pc_complete) !== 0) {
-            $msg = ts('The Yahoo Geocoding system returned a different postal code (%1) than the one you entered (%2). If you want the Yahoo value, please delete the current postal code and save again.',
-              array(
+            // Don't bother anonymous users with the message - they can't change a form they just submitted anyway
+            if(CRM_Utils_System::isUserLoggedIn()) {
+              $msg = ts('The Yahoo Geocoding system returned a different postal code (%1) than the one you entered (%2). If you want the Yahoo value, please delete the current postal code and save again.', array(
                 1 => $ret['postal'],
                 2 => $current_pc_suffix ? "$current_pc-$current_pc_suffix" : $current_pc
-              )
-            );
-            CRM_Core_Session::setStatus($msg);
+              ));
+            
+              CRM_Core_Session::setStatus($msg, ts('Postal Code Mismatch'), 'error');
+            }
             $skip_postal = TRUE;
           }
         }

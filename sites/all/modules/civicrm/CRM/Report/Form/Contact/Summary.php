@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,7 +43,11 @@ class CRM_Report_Form_Contact_Summary extends CRM_Report_Form {
   protected $_phoneField = FALSE;
 
   protected $_customGroupExtends = array(
-    'Contact', 'Individual', 'Household', 'Organization'); function __construct() {
+    'Contact', 'Individual', 'Household', 'Organization'); 
+
+  public $_drilldownReport = array('contact/detail' => 'Link to Detail Report');
+
+  function __construct() {
     $this->_autoIncludeIndexedFieldsAsOrderBys = 1;
     $this->_columns = array(
       'civicrm_contact' =>
@@ -55,6 +59,10 @@ class CRM_Report_Form_Contact_Summary extends CRM_Report_Form {
           array('title' => ts('Contact Name'),
             'required' => TRUE,
             'no_repeat' => TRUE,
+          ),
+		  'first_name' => array('title' => ts('First Name'),
+          ),
+		  'last_name' => array('title' => ts('Last Name'),
           ),
           'id' =>
           array(
@@ -216,8 +224,7 @@ class CRM_Report_Form_Contact_Summary extends CRM_Report_Form {
     $this->_select = "SELECT " . implode(', ', $select) . " ";
   }
 
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = $grouping = array();
     return $errors;
   }
@@ -279,7 +286,7 @@ class CRM_Report_Form_Contact_Summary extends CRM_Report_Form {
       ) {
         $url = CRM_Report_Utils_Report::getNextUrl('contact/detail',
           'reset=1&force=1&id_op=eq&id_value=' . $row['civicrm_contact_id'],
-          $this->_absoluteUrl, $this->_id
+          $this->_absoluteUrl, $this->_id, $this->_drilldownReport
         );
         $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;
         $rows[$rowNum]['civicrm_contact_sort_name_hover'] = ts("View Constituent Detail Report for this contact.");

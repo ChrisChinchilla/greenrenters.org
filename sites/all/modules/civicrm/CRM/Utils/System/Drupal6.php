@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -46,35 +46,34 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
    * if we are using a theming system, invoke theme, else just print the
    * content
    *
-   * @param string  $type    name of theme object/file
    * @param string  $content the content that will be themed
-   * @param array   $args    the args for the themeing function if any
    * @param boolean $print   are we displaying to the screen or bypassing theming?
-   * @param boolean $ret     should we echo or return output
    * @param boolean $maintenance  for maintenance mode
    *
    * @return void           prints content on stdout
    * @access public
    */
-  function theme($type, &$content, $args = NULL, $print = FALSE, $ret = FALSE, $maintenance = FALSE) {
+  function theme(&$content, $print = FALSE, $maintenance = FALSE) {
     // TODO: Simplify; this was copied verbatim from CiviCRM 3.4's multi-UF theming function, but that's more complex than necessary
     if (function_exists('theme') && !$print) {
       if ($maintenance) {
         drupal_set_breadcrumb('');
         drupal_maintenance_theme();
       }
-      $out = theme($type, $content, $args);
+
+      // Arg 3 for D6 theme() is "show_blocks". Previously, we passed
+      // through a badly named variable ("$args") which was almost always
+      // TRUE (except on fatal error screen).  However, this feature is
+      // non-functional on D6 default themes, was purposefully removed from
+      // D7, has no analog in other our other CMS's, and clutters the code.
+      // Hard-wiring to TRUE should be OK.
+      $out = theme('page', $content, TRUE);
     }
     else {
       $out = $content;
     }
 
-    if ($ret) {
-      return $out;
-    }
-    else {
-      print $out;
-    }
+    print $out;
   }
 
   /**
@@ -94,7 +93,9 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
       'mail' => $params[$mail],
       'op' => 'Create new account',
     );
-    if (!variable_get('user_email_verification', TRUE)) {
+
+    $admin = user_access('administer users');
+    if (!variable_get('user_email_verification', TRUE) || $admin) {
       $form_state['values']['pass']['pass1'] = $params['cms_pass'];
       $form_state['values']['pass']['pass2'] = $params['cms_pass'];
     }
@@ -115,28 +116,20 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
 
     $config->inCiviCRM = FALSE;
 
-    if (form_get_errors()) {
+    if (form_get_errors() || !isset($form_state['user'])) {
       return FALSE;
     }
 
-    // looks like we created a drupal user, lets make another db call to get the user id!
-    $db_cms = DB::connect($config->userFrameworkDSN);
-    if (DB::isError($db_cms)) {
-      die("Cannot connect to UF db via $dsn, " . $db_cms->getMessage());
-    }
+    return $form_state['user']->uid;
 
-    //Fetch id of newly added user
-    $id_sql   = "SELECT uid FROM {$config->userFrameworkUsersTableName} where name = '{$params['cms_name']}'";
-    $id_query = $db_cms->query($id_sql);
-    $id_row   = $id_query->fetchRow(DB_FETCHMODE_ASSOC);
-    return $id_row['uid'];
   }
+
   /*
-     *  Change user name in host CMS
-     *  
-     *  @param integer $ufID User ID in CMS
-     *  @param string $ufName User name
-     */
+   *  Change user name in host CMS
+   *
+   *  @param integer $ufID User ID in CMS
+   *  @param string $ufName User name
+   */
   function updateCMSName($ufID, $ufName) {
     // CRM-5555
     if (function_exists('user_load')) {
@@ -204,20 +197,22 @@ SELECT name, mail
         );
       }
       if (strtolower($dbEmail) == strtolower($email)) {
-        $errors[$emailName] = ts('This email %1 is already registered. Please select another email.',
-          array(1 => $email)
+        $resetUrl = $config->userFrameworkBaseURL . 'user/password';
+        $errors[$emailName] = ts('The email address %1 is already registered. <a href="%2">Have you forgotten your password?</a>',
+          array(1 => $email, 2 => $resetUrl)
         );
       }
     }
   }
+
   /*
-     * Function to get the drupal destination string. When this is passed in the
-     * URL the user will be directed to it after filling in the drupal form
-     *
-     * @param object $form Form object representing the 'current' form - to which the user will be returned
-     * @return string $destination destination value for URL
-     *
-     */
+   * Function to get the drupal destination string. When this is passed in the
+   * URL the user will be directed to it after filling in the drupal form
+   *
+   * @param object $form Form object representing the 'current' form - to which the user will be returned
+   * @return string $destination destination value for URL
+   *
+   */
   function getLoginDestination(&$form) {
     $args = NULL;
 
@@ -319,6 +314,96 @@ SELECT name, mail
    */
   function addHTMLHead($head) {
     drupal_set_html_head($head);
+  }
+
+  /**
+   * Add a script file
+   *
+   * @param $url: string, absolute path to file
+   * @param $region string, location within the document: 'html-header', 'page-header', 'page-footer'
+   *
+   * Note: This function is not to be called directly
+   * @see CRM_Core_Region::render()
+   *
+   * @return bool TRUE if we support this operation in this CMS, FALSE otherwise
+   * @access public
+   */
+  public function addScriptUrl($url, $region) {
+    switch ($region) {
+      case 'html-header':
+      case 'page-footer':
+        $scope = substr($region, 5);
+        break;
+      default:
+        return FALSE;
+    }
+    // If the path is within the drupal directory we can add in the normal way
+    if (CRM_Utils_System_Drupal::formatResourceUrl($url)) {
+      drupal_add_js($url, 'module', $scope);
+      return TRUE;
+    }
+    return FALSE;
+  }
+
+  /**
+   * Add an inline script
+   *
+   * @param $code: string, javascript code
+   * @param $region string, location within the document: 'html-header', 'page-header', 'page-footer'
+   *
+   * Note: This function is not to be called directly
+   * @see CRM_Core_Region::render()
+   *
+   * @return bool TRUE if we support this operation in this CMS, FALSE otherwise
+   * @access public
+   */
+  public function addScript($code, $region) {
+    switch ($region) {
+      case 'html-header':
+      case 'page-footer':
+        $scope = substr($region, 5);
+        break;
+      default:
+        return FALSE;
+    }
+    drupal_add_js($code, 'inline', $scope);
+    return TRUE;
+  }
+
+  /**
+   * Add a css file
+   *
+   * @param $url: string, absolute path to file
+   * @param $region string, location within the document: 'html-header', 'page-header', 'page-footer'
+   *
+   * Note: This function is not to be called directly
+   * @see CRM_Core_Region::render()
+   *
+   * @return bool TRUE if we support this operation in this CMS, FALSE otherwise
+   * @access public
+   */
+  public function addStyleUrl($url, $region) {
+    if ($region != 'html-header' || !CRM_Utils_System_Drupal::formatResourceUrl($url)) {
+      return FALSE;
+    }
+    drupal_add_css($url);
+    return TRUE;
+  }
+
+  /**
+   * Add an inline style
+   *
+   * @param $code: string, css code
+   * @param $region string, location within the document: 'html-header', 'page-header', 'page-footer'
+   *
+   * Note: This function is not to be called directly
+   * @see CRM_Core_Region::render()
+   *
+   * @return bool TRUE if we support this operation in this CMS, FALSE otherwise
+   * @access public
+   */
+  public function addStyle($code, $region) {
+    return FALSE;
   }
 
   /**
@@ -434,7 +519,7 @@ SELECT name, mail
    *
    * @return mixed false if no auth
    *               array(
-      contactID, ufID, unique string ) if success
+   *  contactID, ufID, unique string ) if success
    * @access public
    */
   function authenticate($name, $password, $loadCMSBootstrap = FALSE, $realPath = NULL) {
@@ -477,9 +562,10 @@ SELECT name, mail
     }
     return FALSE;
   }
+
   /*
-    * Load user into session
-    */
+   * Load user into session
+   */
   function loadUser($username) {
     global $user;
     $user = user_load(array('name' => $username));
@@ -487,6 +573,7 @@ SELECT name, mail
       return FALSE;
     }
 
+    $uid = $user->uid;
     $contact_id = CRM_Core_BAO_UFMatch::getContactId($uid);
 
     // lets store contact id and user id in session
@@ -495,6 +582,16 @@ SELECT name, mail
     $session->set('userID', $contact_id);
     return TRUE;
   }
+
+  /**
+   * Perform an post login activities required by the UF -
+   * e.g. for drupal : records a watchdog message about the new session, saves the login timestamp, calls hook_user op 'login' and generates a new session.
+   * @param array $edit: The array of form values submitted by the user.
+   *
+  function userLoginFinalize($edit = array()){
+    user_authenticate_finalize(&$edit);
+  }
+  */
 
   /**
    * Set a message in the UF to display to a user
@@ -779,11 +876,11 @@ SELECT name, mail
       $perms = $perms + drupal_map_assoc($newPerms);
       $permList = implode(', ', $perms);
       db_query('UPDATE {permission} SET perm = "%s" WHERE rid = %d', $permList, $rid);
-      /*        
+      /*
         if ( ! empty( $roles ) ) {
             $rids = implode(',', array_keys($roles));
             db_query( 'UPDATE {permission} SET perm = CONCAT( perm, \', edit all events\') WHERE rid IN (' . implode(',', array_keys($roles)) . ')' );
-            db_query( "UPDATE {permission} SET perm = REPLACE( perm, '%s', '%s' ) WHERE rid IN ($rids)", 
+            db_query( "UPDATE {permission} SET perm = REPLACE( perm, '%s', '%s' ) WHERE rid IN ($rids)",
                 $oldPerm, implode(', ', $newPerms) );*/
     }
   }
@@ -800,6 +897,53 @@ SELECT name, mail
       $result[] = new CRM_Core_Module('drupal.' . $row->name, ($row->status == 1) ? TRUE : FALSE);
     }
     return $result;
+  }
+
+  /**
+   * Get user login URL for hosting CMS (method declared in each CMS system class)
+   *
+   * @param string $destination - if present, add destination to querystring (works for Drupal only)
+   *
+   * @return string - loginURL for the current CMS
+   * @static
+   */
+  public function getLoginURL($destination = '') {
+    $config = CRM_Core_Config::singleton();
+    $loginURL = $config->userFrameworkBaseURL;
+    $loginURL .= 'user';
+    if (!empty($destination)) {
+      // append destination so user is returned to form they came from after login
+      $loginURL .= '?destination=' . urlencode($destination);
+    }
+    return $loginURL;
+  }
+
+  /**
+   * Wrapper for og_membership creation
+   *
+   * @param integer $ogID Organic Group ID
+   * @param integer $drupalID drupal User ID
+   */
+  function og_membership_create($ogID, $drupalID){
+    og_save_subscription( $ogID, $drupalID, array( 'is_active' => 1 ) );
+  }
+
+  /**
+   * Wrapper for og_membership deletion
+   *
+   * @param integer $ogID Organic Group ID
+   * @param integer $drupalID drupal User ID
+   */
+  function og_membership_delete($ogID, $drupalID) {
+      og_delete_subscription( $ogID, $drupalID );
+  }
+
+  /**
+   * Reset any system caches that may be required for proper CiviCRM
+   * integration.
+   */
+  function flush() {
+    drupal_flush_all_caches();
   }
 }
 

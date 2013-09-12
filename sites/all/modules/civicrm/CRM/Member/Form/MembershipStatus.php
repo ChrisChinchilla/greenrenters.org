@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -118,7 +118,7 @@ class CRM_Member_Form_MembershipStatus extends CRM_Member_Form {
     if ($this->_action & CRM_Core_Action::DELETE) {
       $wt = CRM_Utils_Weight::delWeight('CRM_Member_DAO_MembershipStatus', $this->_id);
       CRM_Member_BAO_MembershipStatus::del($this->_id);
-      CRM_Core_Session::setStatus(ts('Selected membership status has been deleted.'));
+      CRM_Core_Session::setStatus(ts('Selected membership status has been deleted.'), ts('Record Deleted'), 'success');
     }
     else {
       $params = $ids = array();
@@ -142,8 +142,7 @@ class CRM_Member_Form_MembershipStatus extends CRM_Member_Form {
       $membershipStatus = CRM_Member_BAO_MembershipStatus::add($params, $ids);
       CRM_Core_Session::setStatus(ts('The membership status \'%1\' has been saved.',
           array(1 => $membershipStatus->label)
-        ));
+        ), ts('Saved'), 'success');
     }
   }
 }
-

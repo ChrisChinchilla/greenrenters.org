@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +33,7 @@
  * @package CiviCRM_APIv3
  * @subpackage API_Phone
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: Phone.php 2011-03-16 ErikHommel $
  */
 
@@ -56,7 +56,7 @@ function civicrm_api3_phone_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
-/*
+/**
  * Adjust Metadata for Create action
  * 
  * The metadata is used for setting defaults, documentation & validation
@@ -80,21 +80,7 @@ function _civicrm_api3_phone_create_spec(&$params) {
  * @access public
  */
 function civicrm_api3_phone_delete($params) {
-
-  $phoneID = CRM_Utils_Array::value('id', $params);
-
-  require_once 'CRM/Core/DAO/Phone.php';
-  $phoneDAO = new CRM_Core_DAO_Phone();
-  $phoneDAO->id = $phoneID;
-  if ($phoneDAO->find()) {
-    while ($phoneDAO->fetch()) {
-      $phoneDAO->delete();
-      return civicrm_api3_create_success($phoneDAO->id, $params, $phoneDAO);
-    }
-  }
-  else {
-    return civicrm_api3_create_error('Could not delete phone with id ' . $phoneID);
-  }
+  return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -37,6 +37,7 @@ class CRM_Logging_Schema {
   private $tables = array();
 
   private $db;
+  private $useDBPrefix = TRUE;
 
   private $reports = array(
     'logging/contact/detail',
@@ -47,7 +48,8 @@ class CRM_Logging_Schema {
 
   /**
    * Populate $this->tables and $this->logs with current db state.
-   */ function __construct() {
+   */
+  function __construct() {
     $dao = new CRM_Contact_DAO_Contact();
     $civiDBName = $dao->_database;
 
@@ -70,7 +72,17 @@ AND    TABLE_NAME LIKE 'civicrm_%'
     $this->tables = preg_grep('/^civicrm_export_temp_/', $this->tables, PREG_GREP_INVERT);
     $this->tables = preg_grep('/^civicrm_queue_/', $this->tables, PREG_GREP_INVERT);
 
-    $dsn = defined('CIVICRM_LOGGING_DSN') ? DB::parseDSN(CIVICRM_LOGGING_DSN) : DB::parseDSN(CIVICRM_DSN);
+    // do not log civicrm_mailing_event* tables, CRM-12300
+    $this->tables = preg_grep('/^civicrm_mailing_event_/', $this->tables, PREG_GREP_INVERT);
+
+    if (defined('CIVICRM_LOGGING_DSN')) {
+      $dsn = DB::parseDSN(CIVICRM_LOGGING_DSN);
+      $this->useDBPrefix = (CIVICRM_LOGGING_DSN != CIVICRM_DSN);
+    }
+    else {
+      $dsn = DB::parseDSN(CIVICRM_DSN);
+      $this->useDBPrefix = FALSE;
+    }
     $this->db = $dsn['database'];
 
     $dao = CRM_Core_DAO::executeQuery("
@@ -97,6 +109,9 @@ AND    TABLE_NAME LIKE 'log_civicrm_%'
    * Disable logging by dropping the triggers (but keep the log tables intact).
    */
   function disableLogging() {
+    $config = CRM_Core_Config::singleton();
+    $config->logging = FALSE;
+
     $this->dropTriggers();
 
     // invoke the meta trigger creation call
@@ -132,41 +147,46 @@ AND    TABLE_NAME LIKE 'log_civicrm_%'
   }
 
   /**
-   * Enable logging by creating the log tables (where needed) and creating the triggers.
+   * Enable sitewide logging.
+   *
+   * @return void
    */
   function enableLogging() {
-    foreach ($this->schemaDifferences() as $table => $cols) {
-      $this->fixSchemaDifferencesFor($table, $cols);
-    }
-
-    // invoke the meta trigger creation call
-    CRM_Core_DAO::triggerRebuild();
-
+    $this->fixSchemaDifferences(TRUE);
     $this->addReports();
   }
 
   /**
-   * Add missing log table columns.
+   * Sync log tables and rebuild triggers.
+   *
+   * @param bool $enableLogging: Ensure logging is enabled
+   *
+   * @return void
    */
-  function fixSchemaDifferences() {
-    // this path
+  function fixSchemaDifferences($enableLogging = FALSE) {
     $config = CRM_Core_Config::singleton();
-    if (!$config->logging) {
-      return;
+    if ($enableLogging) {
+      $config->logging = TRUE;
     }
-
-    foreach ($this->schemaDifferences() as $table => $cols) {
-      $this->fixSchemaDifferencesFor($table, $cols);
+    if ($config->logging) {
+      foreach ($this->schemaDifferences() as $table => $cols) {
+        $this->fixSchemaDifferencesFor($table, $cols, FALSE);
+      }
     }
+    // invoke the meta trigger creation call
+    CRM_Core_DAO::triggerRebuild();
   }
 
   /**
    * Add missing (potentially specified) log table columns for the given table.
    *
-   * param $table string  name of the relevant table
-   * param $cols mixed    array of columns to add or null (to check for the missing columns)
+   * @param $table string  name of the relevant table
+   * @param $cols mixed    array of columns to add or null (to check for the missing columns)
+   * @param $rebuildTrigger boolean should we rebuild the triggers
+   *
+   * @return void
    */
-  function fixSchemaDifferencesFor($table, $cols = NULL) {
+  function fixSchemaDifferencesFor($table, $cols = NULL, $rebuildTrigger = TRUE) {
     if (empty($this->logs[$table])) {
       $this->createLogTableFor($table);
       return;
@@ -184,12 +204,26 @@ AND    TABLE_NAME LIKE 'log_civicrm_%'
     $dao->fetch();
     $create = explode("\n", $dao->Create_Table);
     foreach ($cols as $col) {
-      $line = substr(array_pop(preg_grep("/^  `$col` /", $create)), 0, -1);
+      $line = preg_grep("/^  `$col` /", $create);
+      $line = substr(array_pop($line), 0, -1);
+      // CRM-11179
+      $line = self::fixTimeStampAndNotNullSQL($line);
+
       CRM_Core_DAO::executeQuery("ALTER TABLE `{$this->db}`.log_$table ADD $line");
     }
 
-    // invoke the meta trigger creation call
-    CRM_Core_DAO::triggerRebuild($table);
+    if ($rebuildTrigger) {
+      // invoke the meta trigger creation call
+      CRM_Core_DAO::triggerRebuild($table);
+    }
+  }
+
+  function fixTimeStampAndNotNullSQL($query) {
+    $query = str_ireplace("TIMESTAMP NOT NULL", "TIMESTAMP NULL", $query);
+    $query = str_ireplace("DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", '', $query);
+    $query = str_ireplace("DEFAULT CURRENT_TIMESTAMP", '', $query);
+    $query = str_ireplace("NOT NULL", '', $query);
+    return $query;
   }
 
   /**
@@ -265,21 +299,27 @@ AND    TABLE_NAME LIKE 'log_civicrm_%'
     $query = $dao->Create_Table;
 
     // rewrite the queries into CREATE TABLE queries for log tables:
-    // - prepend the name with log_
-    // - drop AUTO_INCREMENT columns
-    // - drop non-column rows of the query (keys, constraints, etc.)
-    // - set the ENGINE to ARCHIVE
-    // - add log-specific columns (at the end of the table)
     $cols = <<<COLS
             log_date    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             log_conn_id INTEGER,
             log_user_id INTEGER,
             log_action  ENUM('Initialization', 'Insert', 'Update', 'Delete')
 COLS;
+
+    // - prepend the name with log_
+    // - drop AUTO_INCREMENT columns
+    // - drop non-column rows of the query (keys, constraints, etc.)
+    // - set the ENGINE to ARCHIVE
+    // - add log-specific columns (at the end of the table)
     $query = preg_replace("/^CREATE TABLE `$table`/i", "CREATE TABLE `{$this->db}`.log_$table", $query);
     $query = preg_replace("/ AUTO_INCREMENT/i", '', $query);
     $query = preg_replace("/^  [^`].*$/m", '', $query);
     $query = preg_replace("/^\) ENGINE=[^ ]+ /im", ') ENGINE=ARCHIVE ', $query);
+
+    // log_civicrm_contact.modified_date for example would always be copied from civicrm_contact.modified_date,
+    // so there's no need for a default timestamp and therefore we remove such default timestamps
+    // also eliminate the NOT NULL constraint, since we always copy and schema can change down the road)
+    $query = self::fixTimeStampAndNotNullSQL($query);
     $query = preg_replace("/^\) /m", "$cols\n) ", $query);
 
     CRM_Core_DAO::executeQuery($query);
@@ -339,7 +379,7 @@ COLS;
 
   function triggerInfo(&$info, $tableName = NULL) {
     // check if we have logging enabled
-    $config = &CRM_Core_Config::singleton();
+    $config =& CRM_Core_Config::singleton();
     if (!$config->logging) {
       return;
     }
@@ -362,12 +402,20 @@ COLS;
       // only do the change if any data has changed
       $cond = array( );
       foreach ($columns as $column) {
-        $cond[] = "IFNULL(OLD.$column,'') <> IFNULL(NEW.$column,'')";
+        // ignore modified_date changes
+        if ($column != 'modified_date') {
+          $cond[] = "IFNULL(OLD.$column,'') <> IFNULL(NEW.$column,'')";
+        }
       }
       $suppressLoggingCond = "@civicrm_disable_logging IS NULL OR @civicrm_disable_logging = 0";
       $updateSQL = "IF ( (" . implode( ' OR ', $cond ) . ") AND ( $suppressLoggingCond ) ) THEN ";
 
-      $sqlStmt = "INSERT INTO `{$this->db}`.log_{tableName} (";
+      if ($this->useDBPrefix) {
+        $sqlStmt = "INSERT INTO `{$this->db}`.log_{tableName} (";
+      }
+      else {
+        $sqlStmt = "INSERT INTO log_{tableName} (";
+      }
       foreach ($columns as $column) {
         $sqlStmt .= "$column, ";
       }

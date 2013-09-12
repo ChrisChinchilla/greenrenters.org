@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,15 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
- * $Id$
- *
- */
-
-/**
- *
- * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -50,19 +42,20 @@ class CRM_Contact_Form_Edit_IM {
    * build the form elements for an IM object
    *
    * @param CRM_Core_Form $form       reference to the form object
-   * @param array         $location   the location object to store all the form elements in
-   * @param int           $locationId the locationId we are dealing with
-   * @param int           $count      the number of blocks to create
+   * @param int           $blockCount block number to build
+   * @param boolean       $blockEdit  is it block edit
    *
    * @return void
    * @access public
    * @static
    */
-  static
-  function buildQuickForm(&$form) {
-
-    $blockId = ($form->get('IM_Block_Count')) ? $form->get('IM_Block_Count') : 1;
-
+  static function buildQuickForm(&$form, $blockCount = NULL, $blockEdit = FALSE) {
+    if (!$blockCount) {
+      $blockId = ($form->get('IM_Block_Count')) ? $form->get('IM_Block_Count') : 1;
+    }
+    else {
+      $blockId = $blockCount;
+    }
     $form->applyFilter('__ALL__', 'trim');
 
     //IM provider select
@@ -77,7 +70,11 @@ class CRM_Contact_Form_Edit_IM {
     );
 
     //is_Primary radio
-    $js = array('id' => 'IM_' . $blockId . '_IsPrimary', 'onClick' => 'singleSelect( this.id );');
+    $js = array('id' => 'IM_' . $blockId . '_IsPrimary');
+    if (!$blockEdit) {
+      $js['onClick'] = 'singleSelect( this.id );';
+    }
+
     $form->addElement('radio', "im[$blockId][is_primary]", '', '', '1', $js);
   }
 }

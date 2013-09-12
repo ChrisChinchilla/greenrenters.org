@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -309,11 +309,8 @@ class CRM_Member_Form_Search extends CRM_Core_Form {
 
     $this->fixFormValues();
 
-    // we don't show test memberships in Contact Summary / User Dashboard
-    // in Search mode by default we hide test memberships
-    if (!CRM_Utils_Array::value('member_test',
-        $this->_formValues
-      )) {
+    // We don't show test records in summaries or dashboards
+    if (empty($this->_formValues['member_test']) && $this->_force) {
       $this->_formValues["member_test"] = 0;
     }
 

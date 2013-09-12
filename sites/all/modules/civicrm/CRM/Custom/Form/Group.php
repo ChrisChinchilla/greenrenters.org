@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -149,15 +149,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     }
 
     if (CRM_Utils_Array::value('is_multiple', $fields)) {
-      // if ( isset( $fields['min_multiple'] ) && isset( $fields['max_multiple'] )
-      //      && ( $fields['min_multiple'] > $fields['max_multiple'] ) ) {
-      //     $errors['max_multiple'] = ts("Maximum limit should be higher than minimum limit");
-      // }
-
-      if ($fields['style'] == 'Inline') {
-        $errors['style'] = ts("'Multiple records' feature is not supported for the 'Inline' display style. Please select 'Tab' as the display style if you want to use this feature.");
         $self->assign('showMultiple', TRUE);
-      }
     }
 
     //checks the given custom set doesnot start with digit
@@ -248,7 +240,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     $sel2['ParticipantRole'] = $participantRole;
     $sel2['ParticipantEventName'] = CRM_Event_PseudoConstant::event(NULL, FALSE, "( is_template IS NULL OR is_template != 1 )");
     $sel2['ParticipantEventType'] = $eventType;
-    $sel2['Contribution'] = CRM_Contribute_PseudoConstant::contributionType();
+        $sel2['Contribution']         = CRM_Contribute_PseudoConstant::financialType( );
     $sel2['Relationship'] = $allRelationshipType;
 
     $sel2['Individual'] = CRM_Contact_BAO_ContactType::subTypePairs('Individual', FALSE, NULL);
@@ -286,7 +278,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
         $formName = 'document.forms.' . $this->_name;
 
         $js = "<script type='text/javascript'>\n";
-        $js .= "{$formName}['extends[1]'].style.display = 'none';\n";
+        $js .= "{$formName}['extends_1'].style.display = 'none';\n";
         $js .= "</script>";
         $this->assign('initHideBlocks', $js);
       }
@@ -296,9 +288,8 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       'extends',
       ts('Used For'),
       array(
-        'onClick' => 'showHideStyle();',
         'name' => 'extends[0]',
-        'style' => 'vertical-align: top;',
+        'style' => 'vertical-align: top;'
       ),
       TRUE
     );
@@ -361,12 +352,8 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     $this->addElement('checkbox', 'is_active', ts('Is this Custom Data Set active?'));
 
     // does this set have multiple record?
-    $multiple = $this->addElement('checkbox',
-      'is_multiple',
-      ts('Does this Custom Field Set allow multiple records?'),
-      NULL,
-      array('onclick' => "showRange();")
-    );
+    $multiple = $this->addElement('checkbox', 'is_multiple',
+      ts('Does this Custom Field Set allow multiple records?'), NULL);
 
     // $min_multiple = $this->add('text', 'min_multiple', ts('Minimum number of multiple records'), $attributes['min_multiple'] );
     // $this->addRule('min_multiple', ts('is a numeric field') , 'numeric');
@@ -496,13 +483,13 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     CRM_Core_BAO_Cache::deleteGroup('contact fields');
 
     if ($this->_action & CRM_Core_Action::UPDATE) {
-      CRM_Core_Session::setStatus(ts('Your custom field set \'%1 \' has been saved.', array(1 => $group->title)));
+      CRM_Core_Session::setStatus(ts('Your custom field set \'%1 \' has been saved.', array(1 => $group->title)), ts('Saved'), 'success');
     }
     else {
       $url = CRM_Utils_System::url('civicrm/admin/custom/group/field/add', 'reset=1&action=add&gid=' . $group->id);
-      CRM_Core_Session::setStatus(ts('Your custom field set \'%1\' has been added. You can add custom fields now.',
+      CRM_Core_Session::setStatus(ts("Your custom field set '%1' has been added. You can add custom fields now.",
           array(1 => $group->title)
-        ));
+        ), ts('Saved'), 'success');
       $session = CRM_Core_Session::singleton();
       $session->replaceUserContext($url);
     }
@@ -523,9 +510,9 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       $missingTableNames = array_diff_key($tables, $db_prefix);
 
       if (!empty($missingTableNames)) {
-        CRM_Core_Session::setStatus('<br />' . ts('Note:To ensure that all of your custom data groups are available to Views, you may need to add the following key(s) to the $db_prefix array in your settings.php file: \'%1\'.',
+        CRM_Core_Session::setStatus(ts("To ensure that all of your custom data groups are available to Views, you may need to add the following key(s) to the db_prefix array in your settings.php file: '%1'.",
             array(1 => implode(', ', $missingTableNames))
-          ));
+          ), ts('Note'), 'info');
       }
     }
   }

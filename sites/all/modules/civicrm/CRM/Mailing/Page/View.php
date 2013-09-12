@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -46,7 +46,8 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
    * First check for valid mailing, if false return fatal
    * Second check for visibility
    * Call a hook to see if hook wants to override visibility setting
-   */ function checkPermission() {
+   */
+  function checkPermission() {
     if (!$this->_mailing) {
       return FALSE;
     }
@@ -108,7 +109,7 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
     CRM_Mailing_BAO_Mailing::tokenReplace($this->_mailing);
 
     // get and format attachments
-    $attachments = &CRM_Core_BAO_File::getEntityFile('civicrm_mailing',
+    $attachments = CRM_Core_BAO_File::getEntityFile('civicrm_mailing',
       $this->_mailing->id
     );
 

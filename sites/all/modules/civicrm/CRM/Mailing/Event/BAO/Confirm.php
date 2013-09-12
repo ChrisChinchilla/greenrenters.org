@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -55,12 +55,23 @@ class CRM_Mailing_Event_BAO_Confirm extends CRM_Mailing_Event_DAO_Confirm {
    * @static
    */
   public static function confirm($contact_id, $subscribe_id, $hash) {
-    $se = &CRM_Mailing_Event_BAO_Subscribe::verify($contact_id,
-      $subscribe_id, $hash
+    $se = &CRM_Mailing_Event_BAO_Subscribe::verify(
+      $contact_id,
+      $subscribe_id,
+      $hash
     );
 
     if (!$se) {
       return FALSE;
+    }
+
+    // before we proceed lets just check if this contact is already 'Added'
+    // if so, we should ignore this request and hence avoid sending multiple
+    // emails - CRM-11157
+    $details = CRM_Contact_BAO_GroupContact::getMembershipDetail($contact_id, $se->group_id);
+    if ($details && $details->status == 'Added') {
+      // This contact is already subscribed
+      return $details->title;
     }
 
     $transaction = new CRM_Core_Transaction();
@@ -70,8 +81,11 @@ class CRM_Mailing_Event_BAO_Confirm extends CRM_Mailing_Event_DAO_Confirm {
     $ce->time_stamp = date('YmdHis');
     $ce->save();
 
-    CRM_Contact_BAO_GroupContact::updateGroupMembershipStatus($contact_id, $se->group_id,
-      'Email', $ce->id
+    CRM_Contact_BAO_GroupContact::updateGroupMembershipStatus(
+      $contact_id,
+      $se->group_id,
+      'Email',
+      $ce->id
     );
 
     $transaction->commit();

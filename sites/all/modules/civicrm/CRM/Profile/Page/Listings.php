@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -73,7 +73,7 @@ class CRM_Profile_Page_Listings extends CRM_Core_Page {
   protected $_gid;
 
   /**
-   * state wether to display serch form or not
+   * state whether to display search form or not
    *
    * @var int
    */
@@ -99,13 +99,12 @@ class CRM_Profile_Page_Listings extends CRM_Core_Page {
    * @return void
    * @access public
    *
-   */ function preProcess() {
+   */
+  function preProcess() {
 
     $this->_search = TRUE;
 
-    $search = CRM_Utils_Request::retrieve('search', 'Boolean',
-      $this, FALSE, 0, 'GET'
-    );
+    $search = CRM_Utils_Request::retrieve('search', 'Boolean', $this, FALSE, 0, 'GET');
     if (isset($search) && $search == 0) {
       $this->_search = FALSE;
     }
@@ -149,7 +148,7 @@ class CRM_Profile_Page_Listings extends CRM_Core_Page {
       CRM_Core_Permission::SEARCH
     );
 
-    $this->_customFields = CRM_Core_BAO_CustomField::getFieldsForImport(NULL);
+    $this->_customFields = CRM_Core_BAO_CustomField::getFieldsForImport(NULL, FALSE, FALSE, FALSE, TRUE, TRUE);
     $this->_params = array();
 
     $resetArray = array(
@@ -300,9 +299,7 @@ class CRM_Profile_Page_Listings extends CRM_Core_Page {
       }
     }
 
-
     $this->assign('isReset', TRUE);
-
 
     $formController = new CRM_Core_Controller_Simple('CRM_Profile_Form_Search',
       ts('Search Profile'),
@@ -430,10 +427,11 @@ class CRM_Profile_Page_Listings extends CRM_Core_Page {
       }
     }
 
-    $fields = CRM_Core_BAO_UFGroup::getListingFields(CRM_Core_Action::VIEW,
-      CRM_Core_BAO_UFGroup::PUBLIC_VISIBILITY |
-      CRM_Core_BAO_UFGroup::LISTINGS_VISIBILITY,
-      FALSE, $gid
+    $fields = CRM_Core_BAO_UFGroup::getListingFields(
+      CRM_Core_Action::VIEW,
+      CRM_Core_BAO_UFGroup::PUBLIC_VISIBILITY | CRM_Core_BAO_UFGroup::LISTINGS_VISIBILITY,
+      FALSE,
+      $gid
     );
 
     $returnProperties = CRM_Contact_BAO_Contact::makeHierReturnProperties($fields);

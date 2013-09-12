@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -47,6 +47,8 @@ class CRM_Report_Form_Contact_LoggingDetail extends CRM_Logging_ReportDetail {
     $this->tables[] = 'civicrm_address';
     $this->tables[] = 'civicrm_note';
     $this->tables[] = 'civicrm_relationship';
+    $this->tables[] = 'civicrm_activity';
+    $this->tables[] = 'civicrm_case';
 
     $this->detail = 'logging/contact/detail';
     $this->summary = 'logging/contact/summary';
@@ -55,6 +57,9 @@ class CRM_Report_Form_Contact_LoggingDetail extends CRM_Logging_ReportDetail {
   }
 
   function buildQuickForm() {
+    $layout = CRM_Utils_Request::retrieve('layout', 'String', $this);
+    $this->assign('layout', $layout);
+
     parent::buildQuickForm();
 
     if ($this->cid) {

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -216,17 +216,17 @@ class CRM_Core_I18n_Schema {
 
     if ( !empty($triggers)) {
       if (CRM_Core_Config::isUpgradeMode()) {
-        foreach ($triggers as $triggerInfo) {
-          $when = $triggerInfo['when'];
-          $event = $triggerInfo['event'];
-          $triggerName = "{$table}_{$when}_{$event}";
-          CRM_Core_DAO::executeQuery("DROP TRIGGER IF EXISTS {$triggerName}");
-        }
+      foreach ($triggers as $triggerInfo) {
+        $when = $triggerInfo['when'];
+        $event = $triggerInfo['event'];
+        $triggerName = "{$table}_{$when}_{$event}";
+        CRM_Core_DAO::executeQuery("DROP TRIGGER IF EXISTS {$triggerName}");
       }
-
-      // invoke the meta trigger creation call
-      CRM_Core_DAO::triggerRebuild($table);
     }
+
+    // invoke the meta trigger creation call
+    CRM_Core_DAO::triggerRebuild($table);
+  }
   }
 
   /**
@@ -478,7 +478,7 @@ class CRM_Core_I18n_Schema {
     return "CREATE OR REPLACE VIEW {$table}_{$locale} AS SELECT " . implode(', ', $cols) . " FROM {$table}";
   }
 
-  function triggerInfo(&$info, $tableName = NULL) {
+  static function triggerInfo(&$info, $tableName = NULL) {
     // get the current supported locales
     $domain = new CRM_Core_DAO_Domain();
     $domain->find(TRUE);

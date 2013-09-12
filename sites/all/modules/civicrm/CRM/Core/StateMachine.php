@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -89,7 +89,8 @@ class CRM_Core_StateMachine {
    *
    * @return object
    * @access public
-   */ function __construct(&$controller, $action = CRM_Core_Action::NONE) {
+   */
+  function __construct(&$controller, $action = CRM_Core_Action::NONE) {
     $this->_controller = &$controller;
     $this->_action = $action;
 
@@ -219,8 +220,8 @@ class CRM_Core_StateMachine {
    */
   function &getState($name) {
     if (isset($this->_states[$name])) {
-      return $this->_states[$name];
-    }
+    return $this->_states[$name];
+  }
 
     /*
      * This is a gross hack for ajax driven requests where
@@ -369,5 +370,19 @@ class CRM_Core_StateMachine {
   function cancelAction() {
     return $this->_controller->cancelAction();
   }
+
+  /**
+   * Should the controller reset the session
+   * In some cases, specifically search we want to remember
+   * state across various actions and want to go back to the
+   * beginning from the final state, but retain the same session
+   * values
+   *
+   * @return boolean
+   */
+  function shouldReset() {
+    return TRUE;
+}
+
 }
 

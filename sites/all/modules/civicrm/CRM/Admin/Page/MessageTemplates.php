@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -50,7 +50,9 @@ class CRM_Admin_Page_MessageTemplates extends CRM_Core_Page_Basic {
   protected $_revertible = array();
 
   // set to the id that we’re reverting at the given moment (if we are)
-  protected $_revertedId; function __construct($title = NULL, $mode = NULL) {
+  protected $_revertedId;
+
+  function __construct($title = NULL, $mode = NULL) {
     parent::__construct($title, $mode);
 
     // fetch the ids of templates which diverted from defaults and can be reverted –

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -60,8 +60,7 @@ class CRM_Core_Permission {
    */
   public static function getPermission() {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::getPermission( );');
+    return $config->userPermissionClass->getPermission( );
   }
 
   /**
@@ -75,8 +74,22 @@ class CRM_Core_Permission {
    */
   static function check($str) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::check( $str ); ');
+    return $config->userPermissionClass->check( $str );
+  }
+
+  /**
+   * Determine if any one of the permissions strings applies to current user
+   *
+   * @param array $perms
+   * @return bool
+   */
+  public static function checkAnyPerm($perms) {
+    foreach ($perms as $perm) {
+      if (CRM_Core_Permission::check($perm)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
   }
 
   /**
@@ -90,8 +103,7 @@ class CRM_Core_Permission {
    */
   static function checkGroupRole($array) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::checkGroupRole( $array ); ');
+    return $config->userPermissionClass->checkGroupRole( $array );
   }
 
   /**
@@ -104,10 +116,9 @@ class CRM_Core_Permission {
    * @return string the group where clause for this user
    * @access public
    */
-  public static function whereClause($type, &$tables, &$whereTables) {
+  public static function getPermissionedStaticGroupClause($type, &$tables, &$whereTables) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::whereClause( $type, $tables, $whereTables );');
+    return $config->userPermissionClass->getPermissionedStaticGroupClause( $type, $tables, $whereTables );
   }
 
   /**
@@ -125,8 +136,7 @@ class CRM_Core_Permission {
    */
   public static function group($groupType, $excludeHidden = TRUE) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::group( $groupType, $excludeHidden );');
+    return $config->userPermissionClass->group( $groupType, $excludeHidden );
   }
 
   public static function customGroupAdmin() {
@@ -199,9 +209,7 @@ class CRM_Core_Permission {
 
     switch ($type) {
       case CRM_Core_Permission::VIEW:
-        if (self::check('profile view') ||
-          self::check('profile edit')
-        ) {
+        if (self::check('profile view')) {
           return $allGroups;
         }
         break;
@@ -420,6 +428,11 @@ class CRM_Core_Permission {
           }
         }
       }
+
+      // Add any permissions defined in hook_civicrm_permission implementations.
+      $config = CRM_Core_Config::singleton();
+      $module_permissions = $config->userPermissionClass->getAllModulePermissions();
+      $permissions = array_merge($permissions, $module_permissions);
     }
 
     return $permissions;
@@ -453,9 +466,19 @@ class CRM_Core_Permission {
       'administer reserved tags' => $prefix . ts('administer reserved tags'),
       'administer dedupe rules' => $prefix . ts('administer dedupe rules'),
       'merge duplicate contacts' => $prefix . ts('merge duplicate contacts'),
+      'view debug output' => $prefix . ts('view debug output'),
       'view all notes' => $prefix . ts('view all notes'),
       'access AJAX API' => $prefix . ts('access AJAX API'),
       'access contact reference fields' => $prefix . ts('access contact reference fields'),
+      'create manual batch' => $prefix . ts('create manual batch'),
+      'edit own manual batches' => $prefix . ts('edit own manual batches'),
+      'edit all manual batches' => $prefix . ts('edit all manual batches'),
+      'view own manual batches' => $prefix . ts('view own manual batches'),
+      'view all manual batches' => $prefix . ts('view all manual batches'),
+      'delete own manual batches' => $prefix . ts('delete own manual batches'),
+      'delete all manual batches' => $prefix . ts('delete all manual batches'),
+      'export own manual batches' => $prefix . ts('export own manual batches'),
+      'export all manual batches' => $prefix . ts('export all manual batches'),
     );
 
     return $permissions;
@@ -476,15 +499,6 @@ class CRM_Core_Permission {
 
     $session = CRM_Core_Session::singleton();
     $contactID = $session->get('userID');
-
-    if (self::isMultisiteEnabled()) {
-      // For multisite just check if there are contacts in acl_contact_cache table for now.
-      // FixMe: so even if a user in multisite has very limited permission could still
-      // see search / contact navigation options for example.
-      return CRM_Contact_BAO_Contact_Permission::hasContactsInCache(CRM_Core_Permission::VIEW,
-        $contactID
-      );
-    }
 
     //check for acl.
     $aclPermission = self::getPermission();
@@ -522,11 +536,12 @@ class CRM_Core_Permission {
       return $componentName;
     }
 
-    static $allCompPermissions;
-    if (!is_array($allCompPermissions)) {
+    static $allCompPermissions = array();
+    if (empty($allCompPermissions)) {
       $components = CRM_Core_Component::getComponents();
       foreach ($components as $name => $comp) {
-        $allCompPermissions[$name] = $comp->getPermissions();
+        //get all permissions of each components unconditionally
+        $allCompPermissions[$name] = $comp->getPermissions(TRUE);
       }
     }
 
@@ -551,8 +566,7 @@ class CRM_Core_Permission {
    */
   public static function permissionEmails($permissionName) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userPermissionClass) . '.php');
-    return eval('return ' . $config->userPermissionClass . '::permissionEmails( $permissionName );');
+    return $config->userPermissionClass->permissionEmails( $permissionName );
   }
 
   /**
@@ -564,8 +578,7 @@ class CRM_Core_Permission {
    */
   public static function roleEmails($roleName) {
     $config = CRM_Core_Config::singleton();
-    require_once (str_replace('_', DIRECTORY_SEPARATOR, $config->userRoleClass) . '.php');
-    return eval('return ' . $config->userRoleClass . '::roleEmails( $roleName );');
+    return $config->userRoleClass->roleEmails( $roleName );
   }
 
   static function isMultisiteEnabled() {

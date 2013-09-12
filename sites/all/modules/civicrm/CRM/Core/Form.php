@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,7 +31,7 @@
  * machine. Each form can also operate in various modes
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -257,9 +257,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    *
    */
   function postProcessHook() {
-    CRM_Utils_Hook::postProcess(get_class($this),
-      $this
-    );
+    CRM_Utils_Hook::postProcess(get_class($this), $this);
   }
 
   /**
@@ -339,8 +337,9 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
 
     $this->assign('translatePermission', CRM_Core_Permission::check('translate CiviCRM'));
 
-    if ($this->controller->_key &&
-      $this->controller->_print != CRM_Core_Smarty::PRINT_NOFORM
+    if (
+      $this->controller->_key &&
+      $this->controller->_generateQFKey
     ) {
       $this->addElement('hidden', 'qfKey', $this->controller->_key);
       $this->assign('qfKey', $this->controller->_key);
@@ -359,9 +358,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     // call the form hook
     // also call the hook function so any modules can set thier own custom defaults
     // the user can do both the form and set default values with this hook
-    CRM_Utils_Hook::buildForm(get_class($this),
-      $this
-    );
+    CRM_Utils_Hook::buildForm(get_class($this), $this);
 
     $this->addRules();
   }
@@ -573,7 +570,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    * @access public
    */
   function getTemplateFileName() {
-    $ext = new CRM_Core_Extensions();
+    $ext = CRM_Extension_System::singleton()->getMapper();
     if ($ext->isExtensionClass(CRM_Utils_System::getClassName($this))) {
       $filename = $ext->getTemplateName(CRM_Utils_System::getClassName($this));
       $tplname = $ext->getTemplatePath(CRM_Utils_System::getClassName($this)) . DIRECTORY_SEPARATOR . $filename;
@@ -697,6 +694,12 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
 
   function &addRadio($name, $title, &$values, $attributes = NULL, $separator = NULL, $required = FALSE) {
     $options = array();
+    if (empty($attributes)) {
+      $attributes = array('id_suffix' => $name);
+    }
+    else {
+      $attributes = array_merge($attributes, array('id_suffix' => $name));
+    }
     foreach ($values as $key => $var) {
       $options[] = $this->createElement('radio', NULL, NULL, $var, $key, $attributes);
     }
@@ -708,13 +711,19 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   }
 
   function addYesNo($id, $title, $dontKnow = NULL, $required = NULL, $attribute = NULL) {
+    if (empty($attribute)) {
+      $attribute = array('id_suffix' => $id);
+    }
+    else {
+      $attribute = array_merge($attribute, array('id_suffix' => $id));
+    }
     $choice   = array();
     $choice[] = $this->createElement('radio', NULL, '11', ts('Yes'), '1', $attribute);
     $choice[] = $this->createElement('radio', NULL, '11', ts('No'), '0', $attribute);
     if ($dontKnow) {
       $choice[] = $this->createElement('radio', NULL, '22', ts("Don't Know"), '2', $attribute);
     }
-    $group = $this->addGroup($choice, $id, $title);
+    $this->addGroup($choice, $id, $title);
 
     if ($required) {
       $this->addRule($id, ts('%1 is a required field.', array(1 => $title)), 'required');
@@ -801,9 +810,14 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     $this->addButtons($buttons);
   }
 
-  function addDateRange($name, $from = '_from', $to = '_to', $label = 'From:', $dateFormat = 'searchDate', $required = FALSE) {
-    $this->addDate($name . $from, $label, $required, array('formatType' => $dateFormat));
-    $this->addDate($name . $to, ts('To:'), $required, array('formatType' => $dateFormat));
+  function addDateRange($name, $from = '_from', $to = '_to', $label = 'From:', $dateFormat = 'searchDate', $required = FALSE, $displayTime = FALSE) {
+    if ($displayTime) {
+      $this->addDateTime($name . $from, $label, $required, array('formatType' => $dateFormat));
+      $this->addDateTime($name . $to, ts('To:'), $required, array('formatType' => $dateFormat));
+    } else {
+      $this->addDate($name . $from, $label, $required, array('formatType' => $dateFormat));
+      $this->addDate($name . $to, ts('To:'), $required, array('formatType' => $dateFormat));
+    }
   }
 
   function addSelect($name, $label, $prefix = NULL, $required = NULL, $extra = NULL, $select = '- select -') {
@@ -825,6 +839,28 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
         $this->addRule($name . '_id', ts('Please select %1', array(1 => $label)), 'required');
       }
     }
+  }
+
+  /**
+   * Add a widget for selecting/editing/creating/copying a profile form
+   *
+   * @param string $name HTML form-element name
+   * @param string $label Printable label
+   * @param string $allowCoreTypes only present a UFGroup if its group_type includes a subset of $allowCoreTypes; e.g. 'Individual', 'Activity'
+   * @param string $allowSubTypes only present a UFGroup if its group_type is compatible with $allowSubypes
+   * @param array $entities
+   */
+  function addProfileSelector($name, $label, $allowCoreTypes, $allowSubTypes, $entities) {
+    // Output widget
+    // FIXME: Instead of adhoc serialization, use a single json_encode()
+    CRM_UF_Page_ProfileEditor::registerProfileScripts();
+    CRM_UF_Page_ProfileEditor::registerSchemas(CRM_Utils_Array::collect('entity_type', $entities));
+    $this->add('text', $name, $label, array(
+      'class' => 'crm-profile-selector',
+      // Note: client treats ';;' as equivalent to \0, and ';;' works better in HTML
+      'data-group-type' => CRM_Core_BAO_UFGroup::encodeGroupType($allowCoreTypes, $allowSubTypes, ';;'),
+      'data-entities' => json_encode($entities),
+    ));
   }
 
   function addWysiwyg($name, $label, $attributes, $forceTextarea = FALSE) {
@@ -983,8 +1019,7 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     return $this->getRootTitle() . $this->getTitle();
   }
 
-  static
-  function &getTemplate() {
+  static function &getTemplate() {
     return self::$_template;
   }
 
@@ -1204,5 +1239,17 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
    * @access public
    */
   function cancelAction() {}
+
+  /**
+   * Helper function to verify that required fields have been filled
+   * Typically called within the scope of a FormRule function
+   */
+  static function validateMandatoryFields($fields, $values, &$errors) {
+    foreach ($fields as $name => $fld) {
+      if (!empty($fld['is_required']) && CRM_Utils_System::isNull(CRM_Utils_Array::value($name, $values))) {
+        $errors[$name] = ts('%1 is a required field.', array(1 => $fld['title']));
+      }
+    }
+  }
 }
 

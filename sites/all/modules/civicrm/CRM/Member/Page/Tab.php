@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -51,7 +51,7 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
    *
    * return null
    * @access public
-   */ 
+   */
   function browse() {
     $links = self::links('all', $this->_isPaymentProcessor, $this->_accessContribution);
 
@@ -104,7 +104,7 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
         }
 
         $isUpdateBilling = false;
-        $paymentObject   = CRM_Core_BAO_PaymentProcessor::getProcessorForEntity($membership[$dao->id]['membership_id'], 'membership', 'obj');
+        $paymentObject   = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($membership[$dao->id]['membership_id'], 'membership', 'obj');
         if (!empty($paymentObject)) {
           $isUpdateBilling = $paymentObject->isSupported('updateSubscriptionBillingInfo');
         }
@@ -143,6 +143,26 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
       else {
         $membership[$dao->id]['auto_renew'] = 0;
       }
+
+      // if relevant, count related memberships
+      if (CRM_Utils_Array::value('is_current_member', $statusANDType[$dao->id])       // membership is active
+          && CRM_Utils_Array::value('relationship_type_id', $statusANDType[$dao->id]) // membership type allows inheritance
+          && empty($dao->owner_membership_id)) {                                      // not an related membership
+        $query = "
+ SELECT COUNT(m.id)
+   FROM civicrm_membership m
+     LEFT JOIN civicrm_membership_status ms ON ms.id = m.status_id
+     LEFT JOIN civicrm_contact ct ON ct.id = m.contact_id
+  WHERE m.owner_membership_id = {$dao->id} AND m.is_test = 0 AND ms.is_current_member = 1 AND ct.is_deleted = 0";
+        $num_related = CRM_Core_DAO::singleValueQuery($query);
+        $max_related = CRM_Utils_Array::value('max_related', $membership[$dao->id]);
+        $membership[$dao->id]['related_count'] = ($max_related == '' ?
+          ts('%1 created', array(1 => $num_related)) :
+          ts('%1 out of %2', array(1 => $num_related, 2 => $max_related))
+        );
+      } else {
+        $membership[$dao->id]['related_count'] = ts('N/A');
+      }
     }
 
     //Below code gives list of all Membership Types associated
@@ -177,7 +197,9 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
    * @access public
    */
   function view() {
-    $controller = new CRM_Core_Controller_Simple('CRM_Member_Form_MembershipView', 'View Membership',
+    $controller = new CRM_Core_Controller_Simple(
+      'CRM_Member_Form_MembershipView',
+      ts('View Membership'),
       $this->_action
     );
     $controller->setEmbedded(TRUE);
@@ -213,7 +235,9 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
       $path = 'CRM_Member_Form_Membership';
       $title = ts('Create Membership');
     }
-    $controller = new CRM_Core_Controller_Simple($path, $title, $this->_action);
+    $controller = new CRM_Core_Controller_Simple(
+      $path, $title, $this->_action
+    );
     $controller->setEmbedded(TRUE);
     $controller->set('BAOName', $this->getBAOName());
     $controller->set('id', $this->_id);
@@ -259,15 +283,11 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
     $this->preProcess();
 
     // check if we can process credit card membership
-    $processors = CRM_Core_PseudoConstant::paymentProcessor(FALSE, FALSE,
-      "billing_mode IN ( 1, 3 )"
-    );
-    if (count($processors) > 0) {
-      $this->assign('newCredit', TRUE);
+    $newCredit = CRM_Core_Payment::allowBackofficeCreditCard($this);
+    if ($newCredit) {
       $this->_isPaymentProcessor = TRUE;
     }
     else {
-      $this->assign('newCredit', FALSE);
       $this->_isPaymentProcessor = FALSE;
     }
 
@@ -515,7 +535,12 @@ class CRM_Member_Page_Tab extends CRM_Core_Page {
     // retrieive membership contributions if the $membershipId is set
     if (CRM_Core_Permission::access('CiviContribute') && $membershipId) {
       $this->assign('accessContribution', TRUE);
-      $controller = new CRM_Core_Controller_Simple('CRM_Contribute_Form_Search', ts('Contributions'), NULL);
+      $controller = new CRM_Core_Controller_Simple(
+        'CRM_Contribute_Form_Search',
+        ts('Contributions'),
+        NULL,
+        FALSE, FALSE, TRUE
+      );
       $controller->setEmbedded(TRUE);
       $controller->reset();
       $controller->set('force', 1);

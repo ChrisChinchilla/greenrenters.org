@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,11 +28,11 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
-class CRM_Contact_Form_Edit_TagsandGroups {
+class CRM_Contact_Form_Edit_TagsAndGroups {
 
   /**
    * constant to determine which forms we are generating
@@ -56,22 +56,26 @@ class CRM_Contact_Form_Edit_TagsandGroups {
    * @static
    * @access public
    */
-  static
-  function buildQuickForm(&$form,
-    $contactId  = 0,
-    $type       = CRM_Contact_Form_Edit_TagsandGroups::ALL,
+  static function buildQuickForm(&$form,
+    $contactId = 0,
+    $type = self::ALL,
     $visibility = FALSE,
     $isRequired = NULL,
-    $groupName  = 'Group(s)',
-    $tagName    = 'Tag(s)',
-    $fieldName  = NULL
+    $groupName = 'Group(s)',
+    $tagName = 'Tag(s)',
+    $fieldName = NULL
   ) {
     if (!isset($form->_tagGroup)) {
       $form->_tagGroup = array();
     }
 
-    $type = (int ) $type;
-    if ($type & CRM_Contact_Form_Edit_TagsandGroups::GROUP) {
+    // NYSS 5670
+    if (!$contactId && !empty($form->_contactId)) {
+      $contactId = $form->_contactId;
+    }
+
+    $type = (int) $type;
+    if ($type & self::GROUP) {
 
       $fName = 'group';
       if ($fieldName) {
@@ -81,7 +85,7 @@ class CRM_Contact_Form_Edit_TagsandGroups {
       $elements = array();
       $groupID = isset($form->_grid) ? $form->_grid : NULL;
       if ($groupID && $visibility) {
-        $ids = "= {$groupID}";
+        $ids = array($groupID => $groupID);
       }
       else {
         if ($visibility) {
@@ -90,28 +94,22 @@ class CRM_Contact_Form_Edit_TagsandGroups {
         else {
           $group = CRM_Core_PseudoConstant::group();
         }
-        $ids = implode(',', array_keys($group));
-        $ids = 'IN (' . $ids . ')';
+        $ids = $group;
       }
 
       if ($groupID || !empty($group)) {
-        $sql = "
-    SELECT   id, title, description, visibility
-    FROM     civicrm_group
-    WHERE    id $ids
-    ORDER BY title
-    ";
-        $dao = CRM_Core_DAO::executeQuery($sql);
+        $groups = CRM_Contact_BAO_Group::getGroupsHierarchy($ids);
+
         $attributes['skiplabel'] = TRUE;
-        while ($dao->fetch()) {
+        foreach ($groups as $id => $group) {
           // make sure that this group has public visibility
           if ($visibility &&
-            $dao->visibility == 'User and User Admin Only'
+            $group['visibility'] == 'User and User Admin Only'
           ) {
             continue;
           }
-          $form->_tagGroup[$fName][$dao->id]['description'] = $dao->description;
-          $elements[] = &$form->addElement('advcheckbox', $dao->id, NULL, $dao->title, $attributes);
+          $form->_tagGroup[$fName][$id]['description'] = $group['description'];
+          $elements[] = &$form->addElement('advcheckbox', $id, NULL, $group['title'], $attributes);
         }
 
         if (!empty($elements)) {
@@ -124,7 +122,7 @@ class CRM_Contact_Form_Edit_TagsandGroups {
       }
     }
 
-    if ($type & CRM_Contact_Form_Edit_TagsandGroups::TAG) {
+    if ($type & self::TAG) {
       $fName = 'tag';
       if ($fieldName) {
         $fName = $fieldName;
@@ -165,8 +163,7 @@ class CRM_Contact_Form_Edit_TagsandGroups {
    * @access public
    * @static
    */
-  static
-  function setDefaults($id, &$defaults, $type = CRM_Contact_Form_Edit_TagsandGroups::ALL, $fieldName = NULL) {
+  static function setDefaults($id, &$defaults, $type = self::ALL, $fieldName = NULL) {
     $type = (int ) $type;
     if ($type & self::GROUP) {
       $fName = 'group';
@@ -205,7 +202,7 @@ class CRM_Contact_Form_Edit_TagsandGroups {
    *
    * @return None
    */
-  function setDefaultValues(&$form, &$defaults) {
+  public static function setDefaultValues(&$form, &$defaults) {
     $contactEditOptions = $form->get('contactEditOptions');
     if ($form->_action & CRM_Core_Action::ADD) {
       if (array_key_exists('TagsAndGroups', $contactEditOptions)) {

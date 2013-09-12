@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -56,7 +56,6 @@ class CRM_Contribute_Import_Form_UploadFile extends CRM_Core_Form {
    * @access public
    */
   public function buildQuickForm() {
-
     //Setting Upload File Size
     $config = CRM_Core_Config::singleton();
     if ($config->maxImportFileSize >= 8388608) {
@@ -79,7 +78,6 @@ class CRM_Contribute_Import_Form_UploadFile extends CRM_Core_Form {
     $this->addElement('checkbox', 'skipColumnHeader', ts('First row contains column headers'));
 
     $duplicateOptions = array();
-
     $duplicateOptions[] = $this->createElement('radio',
       NULL, NULL, ts('Insert new contributions'), CRM_Contribute_Import_Parser::DUPLICATE_SKIP
     );

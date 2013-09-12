@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
  * Redefine the process action.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -57,7 +57,9 @@ class CRM_Core_QuickForm_Action_Process extends CRM_Core_QuickForm_Action {
    * @access public
    */
   function perform(&$page, $actionName) {
-    $this->_stateMachine->reset();
+    if ($this->_stateMachine->shouldReset()) {
+      $this->_stateMachine->reset();
+    }
     $this->popUserContext();
   }
 }

@@ -1,12 +1,12 @@
 <?php
-// $Id: Tag.php 40968 2012-06-12 14:28:16Z kurund $
+// $Id: Tag.php 45502 2013-02-08 13:32:55Z kurund $
 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,8 +34,8 @@
  * @package CiviCRM_APIv2
  * @subpackage API_Tag
  *
- * @copyright CiviCRM LLC (c) 2004-2012
- * @version $Id: Tag.php 40968 2012-06-12 14:28:16Z kurund $
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Tag.php 45502 2013-02-08 13:32:55Z kurund $
  * @todo Erik Hommel 15/12/2010 version to be implemented
  */
 
@@ -56,7 +56,8 @@ require_once 'api/v2/utils.php';
  * @todo Erik Hommel 15/12/2010 : check if function is ok for update
  */
 function civicrm_tag_create(&$params) {
-  _civicrm_initialize(TRUE);
+  _civicrm_initialize();
+  $errorScope = CRM_Core_TemporaryErrorScope::useException();
   try {
 
     civicrm_verify_mandatory($params, 'CRM_Core_DAO_Tag', array('name'));
@@ -103,7 +104,8 @@ function civicrm_tag_create(&$params) {
  * @access public
  */
 function civicrm_tag_delete(&$params) {
-  _civicrm_initialize(TRUE);
+  _civicrm_initialize();
+  $errorScope = CRM_Core_TemporaryErrorScope::useException();
   try {
     civicrm_verify_mandatory($params, NULL, array('tag_id'));
     $tagID = CRM_Utils_Array::value('tag_id', $params);

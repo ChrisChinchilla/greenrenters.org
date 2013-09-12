@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,7 +45,7 @@ class CRM_Core_Payment_BaseIPN {
     $contact = new CRM_Contact_DAO_Contact();
     $contact->id = $ids['contact'];
     if (!$contact->find(TRUE)) {
-      CRM_Core_Error::debug_log_message("Could not find contact record: {$ids['contact']}");
+      CRM_Core_Error::debug_log_message("Could not find contact record: {$ids['contact']} in IPN request: ".print_r($input, TRUE));
       echo "Failure: Could not find contact record: {$ids['contact']}<p>";
       return FALSE;
     }
@@ -54,7 +54,7 @@ class CRM_Core_Payment_BaseIPN {
     $contribution = new CRM_Contribute_DAO_Contribution();
     $contribution->id = $ids['contribution'];
     if (!$contribution->find(TRUE)) {
-      CRM_Core_Error::debug_log_message("Could not find contribution record: ". $contribution->id);
+      CRM_Core_Error::debug_log_message("Could not find contribution record: {$contribution->id} in IPN request: ".print_r($input, TRUE));
       echo "Failure: Could not find contribution record for {$contribution->id}<p>";
       return FALSE;
     }
@@ -91,11 +91,12 @@ class CRM_Core_Payment_BaseIPN {
 
     return TRUE;
   }
+
   /*
- * Load objects related to contribution
- *
- * @input array information from Payment processor
- */
+   * Load objects related to contribution
+   *
+   * @input array information from Payment processor
+   */
   function loadObjects(&$input, &$ids, &$objects, $required, $paymentProcessorID, $error_handling = NULL) {
     if (empty($error_handling)) {
       // default options are that we log an error & echo it out
@@ -113,7 +114,7 @@ class CRM_Core_Payment_BaseIPN {
     else {
       //legacy support - functions are 'used' to be able to pass in a DAO
       $contribution = new CRM_Contribute_BAO_Contribution();
-      $contribution->id = $ids['contribution'];
+      $contribution->id = CRM_Utils_Array::value('contribution', $ids);
       $contribution->find(TRUE);
       $objects['contribution'] = &$contribution;
     }
@@ -138,10 +139,10 @@ class CRM_Core_Payment_BaseIPN {
     return $success;
   }
 
-  function failed(&$objects, &$transaction) {
+  function failed(&$objects, &$transaction, $input = array()) {
     $contribution = &$objects['contribution'];
     $memberships = array();
-    if(CRM_Utils_Array::value('membership', $objects)){
+    if (CRM_Utils_Array::value('membership', $objects)) {
       $memberships = &$objects['membership'];
       if (is_numeric($memberships)) {
         $memberships = array($objects['membership']);
@@ -155,7 +156,6 @@ class CRM_Core_Payment_BaseIPN {
     $participant = &$objects['participant'];
 
     $contributionStatus = CRM_Contribute_PseudoConstant::contributionStatus(NULL, 'name');
-
     $contribution->contribution_status_id = array_search('Failed', $contributionStatus);
     $contribution->save();
 
@@ -164,22 +164,24 @@ class CRM_Core_Payment_BaseIPN {
       $this->addrecurLineItems($objects['contributionRecur']->id, $contribution->id);
     }
 
-    if (!empty($memberships)) {
-      foreach ($memberships as $membership) {
-        if ($membership) {
-          $membership->status_id = 4;
-          $membership->save();
+    if (!CRM_Utils_Array::value('skipComponentSync', $input)) {
+      if (!empty($memberships)) {
+        foreach ($memberships as $membership) {
+          if ($membership) {
+            $membership->status_id = 4;
+            $membership->save();
 
-          //update related Memberships.
-          $params = array('status_id' => 4);
-          CRM_Member_BAO_Membership::updateRelatedMemberships($membership->id, $params);
+            //update related Memberships.
+            $params = array('status_id' => 4);
+            CRM_Member_BAO_Membership::updateRelatedMemberships($membership->id, $params);
+          }
         }
       }
-    }
 
-    if ($participant) {
-      $participant->status_id = 4;
-      $participant->save();
+      if ($participant) {
+        $participant->status_id = 4;
+        $participant->save();
+      }
     }
 
     $transaction->commit();
@@ -195,7 +197,7 @@ class CRM_Core_Payment_BaseIPN {
     return TRUE;
   }
 
-  function cancelled(&$objects, &$transaction) {
+  function cancelled(&$objects, &$transaction, $input = array()) {
     $contribution = &$objects['contribution'];
     $memberships = &$objects['membership'];
     if (is_numeric($memberships)) {
@@ -210,6 +212,9 @@ class CRM_Core_Payment_BaseIPN {
     $contribution->contribution_status_id = 3;
     $contribution->cancel_date = self::$_now;
     $contribution->cancel_reason = CRM_Utils_Array::value('reasonCode', $input);
+    $contribution->receive_date = CRM_Utils_Date::isoToMysql($contribution->receive_date);
+    $contribution->receipt_date = CRM_Utils_Date::isoToMysql($contribution->receipt_date);
+    $contribution->thankyou_date = CRM_Utils_Date::isoToMysql($contribution->thankyou_date);
     $contribution->save();
 
     //add lineitems for recurring payments
@@ -217,24 +222,25 @@ class CRM_Core_Payment_BaseIPN {
       $this->addrecurLineItems($objects['contributionRecur']->id, $contribution->id);
     }
 
-    if (!empty($memberships)) {
-      foreach ($memberships as $membership) {
-        if ($membership) {
-          $membership->status_id = 6;
-          $membership->save();
+    if (!CRM_Utils_Array::value('skipComponentSync', $input)) {
+      if (!empty($memberships)) {
+        foreach ($memberships as $membership) {
+          if ($membership) {
+            $membership->status_id = 6;
+            $membership->save();
 
-          //update related Memberships.
-          $params = array('status_id' => 6);
-          CRM_Member_BAO_Membership::updateRelatedMemberships($membership->id, $params);
+            //update related Memberships.
+            $params = array('status_id' => 6);
+            CRM_Member_BAO_Membership::updateRelatedMemberships($membership->id, $params);
+          }
         }
       }
-    }
 
-    if ($participant) {
-      $participant->status_id = 4;
-      $participant->save();
+      if ($participant) {
+        $participant->status_id = 4;
+        $participant->save();
+      }
     }
-
     $transaction->commit();
     CRM_Core_Error::debug_log_message("Setting contribution status to cancelled");
     //echo "Success: Setting contribution status to cancelled<p>";
@@ -261,15 +267,16 @@ class CRM_Core_Payment_BaseIPN {
     $recurContrib = &$objects['contributionRecur'];
 
     $values = array();
+    $source = NULL;
     if ($input['component'] == 'contribute') {
       if ($contribution->contribution_page_id) {
         CRM_Contribute_BAO_ContributionPage::setValues($contribution->contribution_page_id, $values);
         $source = ts('Online Contribution') . ': ' . $values['title'];
       }
-      elseif ($recurContrib->id) {
+      elseif ($recurContrib && $recurContrib->id) {
         $contribution->contribution_page_id = NULL;
         $values['amount'] = $recurContrib->amount;
-        $values['contribution_type_id'] = $objects['contributionType']->id;
+        $values['financial_type_id'] = $objects['contributionType']->id;
         $values['title'] = $source = ts('Offline Recurring Contribution');
         $values['is_email_receipt'] = $recurContrib->is_email_receipt;
         $domainValues = CRM_Core_BAO_Domain::getNameAndEmail();
@@ -283,7 +290,8 @@ class CRM_Core_Payment_BaseIPN {
       }
 
       if (!empty($memberships)) {
-        foreach ($memberships as $membership) {
+        $membershipsUpdate = array( );
+        foreach ($memberships as $membershipTypeIdKey => $membership) {
           if ($membership) {
             $format = '%Y%m%d';
 
@@ -314,12 +322,10 @@ LIMIT 1;";
 
             if ($currentMembership) {
               /*
-                             * Fixed FOR CRM-4433
-                             * In BAO/Membership.php(renewMembership function), we skip the extend membership date and status
-                             * when Contribution mode is notify and membership is for renewal )
-                             */
-
-
+               * Fixed FOR CRM-4433
+               * In BAO/Membership.php(renewMembership function), we skip the extend membership date and status
+               * when Contribution mode is notify and membership is for renewal )
+               */
               CRM_Member_BAO_Membership::fixMembershipStatusBeforeRenew($currentMembership, $changeToday);
 
               $dates = CRM_Member_BAO_MembershipType::getRenewalDatesForMembershipType($membership->id,
@@ -343,7 +349,6 @@ LIMIT 1;";
               'join_date' => CRM_Utils_Date::customFormat(CRM_Utils_Array::value('join_date', $dates), $format),
               'start_date' => CRM_Utils_Date::customFormat(CRM_Utils_Array::value('start_date', $dates), $format),
               'end_date' => CRM_Utils_Date::customFormat(CRM_Utils_Array::value('end_date', $dates), $format),
-              'reminder_date' => CRM_Utils_Date::customFormat(CRM_Utils_Array::value('reminder_date', $dates), $format),
             );
             //we might be renewing membership,
             //so make status override false.
@@ -371,17 +376,26 @@ LIMIT 1;";
 
             //update related Memberships.
             CRM_Member_BAO_Membership::updateRelatedMemberships($membership->id, $formatedParams);
+
+            //update the membership type key of membership relatedObjects array
+            //if it has changed after membership update
+            if ($membershipTypeIdKey != $membership->membership_type_id) {
+              $membershipsUpdate[$membership->membership_type_id] = $membership;
+              $contribution->_relatedObjects['membership'][$membership->membership_type_id] = $membership;
+              unset($contribution->_relatedObjects['membership'][$membershipTypeIdKey]);
+              unset($memberships[$membershipTypeIdKey]);
+            }
           }
+        }
+        //update the memberships object with updated membershipTypeId data
+        //if membershipTypeId has changed after membership update
+        if (!empty($membershipsUpdate)) {
+          $memberships = $memberships + $membershipsUpdate;
         }
       }
     }
     else {
       // event
-      $eventParams = array('id' => $objects['event']->id);
-      $values['event'] = array();
-
-      CRM_Event_BAO_Event::retrieve($eventParams, $values['event']);
-
       $eventParams = array('id' => $objects['event']->id);
       $values['event'] = array();
 
@@ -410,8 +424,9 @@ LIMIT 1;";
         $contribution->receipt_date = self::$_now;
         $values['is_email_receipt'] = 1;
       }
-
-      $participant->status_id = 1;
+      if (!CRM_Utils_Array::value('skipComponentSync', $input)) {
+        $participant->status_id = 1;
+      }
       $participant->save();
     }
 
@@ -442,6 +457,10 @@ LIMIT 1;";
       $contribution->payment_instrument_id = $input['payment_instrument_id'];
     }
 
+    if ($contribution->id) {
+      $contributionId['id'] = $contribution->id;
+      $input['prevContribution'] = CRM_Contribute_BAO_Contribution::getValues($contributionId, CRM_Core_DAO::$_nullArray, CRM_Core_DAO::$_nullArray);
+    }
     $contribution->save();
 
     //add lineitems for recurring payments
@@ -450,31 +469,36 @@ LIMIT 1;";
     }
 
     // next create the transaction record
-    $paymentProcessor = '';
+    $paymentProcessor = $paymentProcessorId = '';
     if (isset($objects['paymentProcessor'])) {
       if (is_array($objects['paymentProcessor'])) {
         $paymentProcessor = $objects['paymentProcessor']['payment_processor_type'];
+        $paymentProcessorId = $objects['paymentProcessor']['id'];
       }
       else {
         $paymentProcessor = $objects['paymentProcessor']->payment_processor_type;
+        $paymentProcessorId = $objects['paymentProcessor']->id;
       }
     }
 
-    if ($contribution->trxn_id) {
+    if ($contribution->id) {
+      $contributionStatuses = CRM_Contribute_PseudoConstant::contributionStatus(NULL, 'name');
+      if (!$input['prevContribution']->is_pay_later &&
+        $input['prevContribution']->contribution_status_id == array_search('Pending', $contributionStatuses)) {
+        $input['payment_processor'] = $paymentProcessorId;
+      }
+      $input['contribution_status_id'] = array_search('Completed', $contributionStatuses);
+      $input['total_amount'] = $input['amount'];
+      $input['contribution'] = $contribution;
+      $input['financial_type_id'] = $contribution->financial_type_id;
 
-      $trxnParams = array(
-        'contribution_id' => $contribution->id,
-        'trxn_date' => isset($input['trxn_date']) ? $input['trxn_date'] : self::$_now,
-        'trxn_type' => 'Debit',
-        'total_amount' => $input['amount'],
-        'fee_amount' => $contribution->fee_amount,
-        'net_amount' => $contribution->net_amount,
-        'currency' => $contribution->currency,
-        'payment_processor' => $paymentProcessor,
-        'trxn_id' => $contribution->trxn_id,
-      );
-
-      $trxn = CRM_Core_BAO_FinancialTrxn::create($trxnParams);
+      if (CRM_Utils_Array::value('participant', $contribution->_relatedObjects)) {
+        $input['contribution_mode'] = 'participant';
+        $input['participant_id'] = $contribution->_relatedObjects['participant']->id;
+        $input['skipLineItem'] = 1;
+      }
+      
+      CRM_Contribute_BAO_Contribution::recordFinancialAccounts($input, NULL);
     }
 
     self::updateRecurLinkedPledge($contribution);
@@ -503,9 +527,10 @@ LIMIT 1;";
       $values['is_email_receipt'] == 1
     ) {
       self::sendMail($input, $ids, $objects, $values, $recur, FALSE);
+      CRM_Core_Error::debug_log_message("Receipt sent");
     }
 
-    CRM_Core_Error::debug_log_message("Success: Database updated and mail sent");
+    CRM_Core_Error::debug_log_message("Success: Database updated");
   }
 
   function getBillingID(&$ids) {
@@ -523,16 +548,16 @@ LIMIT 1;";
   }
 
   /*
-     * Send receipt from contribution. Note that the compose message part has been moved to contribution
-     * In general LoadObjects is called first to get the objects but the composeMessageArray function now calls it
-     *
-     * @params array $input Incoming data from Payment processor
-     * @params array $ids Related object IDs
-     * @params array $values values related to objects that have already been loaded
-     * @params bool $recur is it part of a recurring contribution
-     * @params bool $returnMessageText Should text be returned instead of sent. This
-     * is because the function is also used to generate pdfs
-     */
+   * Send receipt from contribution. Note that the compose message part has been moved to contribution
+   * In general LoadObjects is called first to get the objects but the composeMessageArray function now calls it
+   *
+   * @params array $input Incoming data from Payment processor
+   * @params array $ids Related object IDs
+   * @params array $values values related to objects that have already been loaded
+   * @params bool $recur is it part of a recurring contribution
+   * @params bool $returnMessageText Should text be returned instead of sent. This
+   * is because the function is also used to generate pdfs
+   */
   function sendMail(&$input, &$ids, &$objects, &$values, $recur = FALSE, $returnMessageText = FALSE) {
     $contribution = &$objects['contribution'];
     $input['is_recur'] = $recur;
@@ -592,7 +617,6 @@ LIMIT 1;";
     $ids['contributionRecur'] = NULL;
     $input['component'] = $name;
 
-
     $baseIPN = new CRM_Core_Payment_BaseIPN();
     $transaction = new CRM_Core_Transaction();
 
@@ -607,14 +631,14 @@ LIMIT 1;";
     $contribution = &$objects['contribution'];
 
     $contributionStatuses = CRM_Contribute_PseudoConstant::contributionStatus(NULL, 'name');
-
+    $input['skipComponentSync'] = CRM_Utils_Array::value('skipComponentSync', $params);
     if ($statusId == array_search('Cancelled', $contributionStatuses)) {
-      $baseIPN->cancelled($objects, $transaction);
+      $baseIPN->cancelled($objects, $transaction, $input);
       $transaction->commit();
       return $statusId;
     }
     elseif ($statusId == array_search('Failed', $contributionStatuses)) {
-      $baseIPN->failed($objects, $transaction);
+      $baseIPN->failed($objects, $transaction, $input);
       $transaction->commit();
       return $statusId;
     }
@@ -654,22 +678,21 @@ LIMIT 1;";
   }
 
   /*
-     * Update pledge associated with a recurring contribution
-     *
-     * If the contribution has a pledge_payment record pledge, then update the pledge_payment record & pledge based on that linkage.
-     *
-     * If a previous contribution in the recurring contribution sequence is linked with a pledge then we assume this contribution
-     * should be  linked with the same pledge also. Currently only back-office users can apply a recurring payment to a pledge &
-     * it should be assumed they
-     * do so with the intention that all payments will be linked
-     *
-     * The pledge payment record should already exist & will need to be updated with the new contribution ID.
-     * If not the contribution will also need to be linked to the pledge
-     */
+   * Update pledge associated with a recurring contribution
+   *
+   * If the contribution has a pledge_payment record pledge, then update the pledge_payment record & pledge based on that linkage.
+   *
+   * If a previous contribution in the recurring contribution sequence is linked with a pledge then we assume this contribution
+   * should be  linked with the same pledge also. Currently only back-office users can apply a recurring payment to a pledge &
+   * it should be assumed they
+   * do so with the intention that all payments will be linked
+   *
+   * The pledge payment record should already exist & will need to be updated with the new contribution ID.
+   * If not the contribution will also need to be linked to the pledge
+   */
   function updateRecurLinkedPledge(&$contribution) {
     $returnProperties = array('id', 'pledge_id');
-    $paymentDetails   = array();
-    $paymentIDs       = array();
+    $paymentDetails   = $paymentIDs = array();
 
     if (CRM_Core_DAO::commonRetrieveAll('CRM_Pledge_DAO_PledgePayment', 'contribution_id', $contribution->id,
         $paymentDetails, $returnProperties
@@ -707,6 +730,11 @@ LIMIT 1;";
 
       // we have a pledge now we need to get the oldest unpaid payment
       $paymentDetails = CRM_Pledge_BAO_PledgePayment::getOldestPledgePayment($pledgeId);
+      if(empty($paymentDetails['id'])){
+        // we can assume this pledge is now completed
+        // return now so we don't create a core error & roll back
+        return;
+      }
       $paymentDetails['contribution_id'] = $contribution->id;
       $paymentDetails['status_id'] = $contribution->contribution_status_id;
       $paymentDetails['actual_amount'] = $contribution->total_amount;
@@ -738,7 +766,7 @@ LIMIT 1;";
         }
       }
 
-      CRM_Contribute_Form_AdditionalInfo::processPriceSet($contributionId, $lineSets);
+      CRM_Price_BAO_LineItem::processPriceSet($contributionId, $lineSets);
     }
   }
 }

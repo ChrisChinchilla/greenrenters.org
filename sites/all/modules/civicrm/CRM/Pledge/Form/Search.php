@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -131,7 +131,8 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
    *
    * @return void
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
 
     /**
      * set the button names
@@ -144,10 +145,9 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
     $this->defaults = array();
 
     /* 
-         * we allow the controller to set force/reset externally, useful when we are being 
-         * driven by the wizard framework 
-         */
-
+     * we allow the controller to set force/reset externally, useful when we are being 
+     * driven by the wizard framework 
+     */
     $this->_reset   = CRM_Utils_Request::retrieve('reset', 'Boolean', CRM_Core_DAO::$_nullObject);
     $this->_force   = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE);
     $this->_limit   = CRM_Utils_Request::retrieve('limit', 'Positive', $this);
@@ -226,10 +226,9 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
     CRM_Pledge_BAO_Query::buildSearchForm($this);
 
     /* 
-         * add form checkboxes for each row. This is needed out here to conform to QF protocol 
-         * of all elements being declared in builQuickForm 
-         */
-
+     * add form checkboxes for each row. This is needed out here to conform to QF protocol 
+     * of all elements being declared in builQuickForm 
+     */
     $rows = $this->get('rows');
     if (is_array($rows)) {
 
@@ -309,12 +308,15 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
 
     $this->fixFormValues();
 
-    // we don't show test contributions in Contact Summary / User Dashboard
-    // in Search mode by default we hide test contributions
-    if (!CRM_Utils_Array::value('pledge_test',
-        $this->_formValues
-      )) {
+    // We don't show test records in summaries or dashboards
+    if (empty($this->_formValues['pledge_test']) && $this->_force) {
       $this->_formValues["pledge_test"] = 0;
+    }
+
+    foreach (array('pledge_amount_low', 'pledge_amount_high') as $f) {
+      if (isset($this->_formValues[$f])) {
+        $this->_formValues[$f] = CRM_Utils_Rule::cleanMoney($this->_formValues[$f]);
+      }
     }
 
     if (isset($this->_ssID) && empty($_POST)) {
@@ -405,8 +407,7 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields) {
+  static function formRule($fields) {
     $errors = array();
 
     if (!empty($errors)) {
@@ -423,7 +424,7 @@ class CRM_Pledge_Form_Search extends CRM_Core_Form {
    *
    * @return array the default array reference
    */
-  function &setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     $defaults = $this->_formValues;
     return $defaults;

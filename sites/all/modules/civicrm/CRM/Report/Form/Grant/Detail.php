@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,7 +39,9 @@ class CRM_Report_Form_Grant_Detail extends CRM_Report_Form {
   protected $_addressField = FALSE;
 
   protected $_customGroupExtends = array(
-    'Grant'); function __construct() {
+    'Grant');
+
+  function __construct() {
     $this->_columns = array(
       'civicrm_contact' =>
       array(
@@ -268,13 +270,13 @@ class CRM_Report_Form_Grant_Detail extends CRM_Report_Form {
   function from() {
     $this->_from = "
         FROM civicrm_grant {$this->_aliases['civicrm_grant']}
-                        LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']} 
+                        LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']}
                     ON ({$this->_aliases['civicrm_grant']}.contact_id  = {$this->_aliases['civicrm_contact']}.id  ) ";
     if ($this->_addressField) {
       $this->_from .= "
-                  LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']} 
-                         ON {$this->_aliases['civicrm_contact']}.id = 
-                            {$this->_aliases['civicrm_address']}.contact_id AND 
+                  LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']}
+                         ON {$this->_aliases['civicrm_contact']}.id =
+                            {$this->_aliases['civicrm_address']}.contact_id AND
                             {$this->_aliases['civicrm_address']}.is_primary = 1\n";
     }
   }
@@ -349,7 +351,7 @@ class CRM_Report_Form_Grant_Detail extends CRM_Report_Form {
         array_key_exists('civicrm_contact_id', $row)
       ) {
         $url = CRM_Utils_System::url('civicrm/contact/view',
-          'reset=1&cid=' . $row['civicrm_contact_id'], 
+          'reset=1&cid=' . $row['civicrm_contact_id'],
           $this->_absoluteUrl
         );
         $rows[$rowNum]['civicrm_contact_sort_name_link'] = $url;

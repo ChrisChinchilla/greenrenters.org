@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -64,7 +64,8 @@ class CRM_Export_Form_Select extends CRM_Core_Form {
    *
    * @return void
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
     //special case for custom search, directly give option to download csv file
     $customSearchID = $this->get('customSearchID');
     if ($customSearchID) {
@@ -140,11 +141,15 @@ class CRM_Export_Form_Select extends CRM_Core_Form {
         $componentName = array('', 'Activity');
         break;
       case 5:
-        require_once 'CRM/Member/Form/Task.php';
         CRM_Member_Form_Task::preProcessCommon($this, TRUE);
         $this->_exportMode = self::MEMBER_EXPORT;
         $componentName = array('', 'Member');
         break;
+      case 6:
+        CRM_Case_Form_Task::preProcessCommon($this, TRUE);
+        $this->_exportMode = self::CASE_EXPORT;
+        $componentName = array('', 'Case');
+        break;  
     }
 
     $this->_task = $values['task'];
@@ -446,8 +451,7 @@ FROM   {$this->_componentTable}
     }
   }
 
-  static
-  function getGreetingOptions() {
+  static function getGreetingOptions() {
     $options = array();
     $greetings = array(
       'postal_greeting' => 'postal_greeting_other',

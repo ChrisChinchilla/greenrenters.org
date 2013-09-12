@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -196,8 +196,7 @@ class CRM_Import_Form_Preview extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = array();
     $invalidTagName = $invalidGroupName = FALSE;
 
@@ -302,7 +301,6 @@ class CRM_Import_Form_Preview extends CRM_Core_Form {
     // check if there is any error occured
     $errorStack = CRM_Core_Error::singleton();
     $errors = $errorStack->getErrors();
-
     $errorMessage = array();
 
     if (is_array($errors)) {
@@ -569,9 +567,7 @@ class CRM_Import_Form_Preview extends CRM_Core_Form {
 
     $errorStack = CRM_Core_Error::singleton();
     $errors = $errorStack->getErrors();
-
     $errorMessage = array();
-
 
     if (is_array($errors)) {
       foreach ($errors as $key => $value) {

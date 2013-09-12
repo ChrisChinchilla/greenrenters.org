@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,10 +28,11 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
+require_once 'CRM/Campaign/DAO/Survey.php';
 class CRM_Campaign_BAO_Survey extends CRM_Campaign_DAO_Survey {
 
   /**
@@ -78,7 +79,7 @@ class CRM_Campaign_BAO_Survey extends CRM_Campaign_DAO_Survey {
       return false;
     }
 
-    if ($params['is_default']) {
+    if (CRM_Utils_Array::value('is_default', $params)) {
       $query = "UPDATE civicrm_survey SET is_default = 0";
       CRM_Core_DAO::executeQuery($query, CRM_Core_DAO::$_nullArray);
     }
@@ -238,15 +239,13 @@ SELECT  survey.id                         as id,
    * @param boolean $onlyActive  retrieve only active surveys.
    * @param boolean $onlyDefault retrieve only default survey.
    * @param boolean $forceAll    retrieve all surveys.
+   * @param boolean $includePetition include or exclude petitions
    *
    * @static
    */
-  static function getSurveys($onlyActive = TRUE,
-    $onlyDefault = FALSE,
-    $forceAll = FALSE
-  ) {
+  static function getSurveys($onlyActive = TRUE, $onlyDefault = FALSE, $forceAll = FALSE, $includePetition = FALSE ) {
     $cacheKey = 0;
-    $cacheKeyParams = array('onlyActive', 'onlyDefault', 'forceAll');
+    $cacheKeyParams = array('onlyActive', 'onlyDefault', 'forceAll', 'includePetition');
     foreach ($cacheKeyParams as $param) {
       $cacheParam = $$param;
       if (!$cacheParam) {
@@ -258,14 +257,15 @@ SELECT  survey.id                         as id,
     static $surveys;
 
     if (!isset($surveys[$cacheKey])) {
+      if (!$includePetition) {
+        //we only have activity type as a
+        //difference between survey and petition.
+        $petitionTypeID = CRM_Core_OptionGroup::getValue('activity_type', 'petition', 'name');
 
-      //we only have activity type as a
-      //difference between survey and petition.
-      $petitionTypeID = CRM_Core_OptionGroup::getValue('activity_type', 'petition', 'name');
-
-      $where = array();
-      if ($petitionTypeID) {
-        $where[] = "( survey.activity_type_id != {$petitionTypeID} )";
+        $where = array();
+        if ($petitionTypeID) {
+          $where[] = "( survey.activity_type_id != {$petitionTypeID} )";
+        }
       }
       if (!$forceAll && $onlyActive) {
         $where[] = '( survey.is_active  = 1 )';
@@ -387,7 +387,10 @@ SELECT  survey.id    as id,
     if (!$id) {
       return NULL;
     }
-
+    $reportId = CRM_Campaign_BAO_Survey::getReportID($id);
+    if($reportId){
+      CRM_Report_BAO_Instance::delete($reportId);
+    }
     $dao = new CRM_Campaign_DAO_Survey();
     $dao->id = $id;
     return $dao->delete();
@@ -672,24 +675,26 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
   }
 
   /**
-   * This function retrieve all option groups which are created as a result set
+   * This function retrieve all option groups which are created as a result set 
    *
    * @return $resultSets an array of option groups.
    * @static
    */
-  static function getResultSets() {
+  static function getResultSets( $valueColumnName = 'title' ) {
     $resultSets = array();
-    $query      = "SELECT id, title FROM civicrm_option_group WHERE name LIKE 'civicrm_survey_%' AND is_active=1";
+    $valueColumnName = CRM_Utils_Type::escape($valueColumnName, 'String');
+
+    $query      = "SELECT id, {$valueColumnName} FROM civicrm_option_group WHERE name LIKE 'civicrm_survey_%' AND is_active=1";
     $dao        = CRM_Core_DAO::executeQuery($query);
     while ($dao->fetch()) {
-      $resultSets[$dao->id] = $dao->title;
+      $resultSets[$dao->id] = $dao->$valueColumnName;
     }
 
     return $resultSets;
   }
 
   /**
-   * This function is to check survey activity.
+   * This function is to check survey activity.  
    *
    * @param int $activityId activity id.
    * @param int $activityTypeId activity type id.
@@ -785,6 +790,19 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
       }
     }
 
+    if (CRM_Core_Permission::check('access CiviReport')) {
+      $reportID = self::getReportID($surveyId);
+      if ($reportID) {
+        $voterLinks['report'] = 
+          array(
+                'name' => 'report',
+                'url'  => "civicrm/report/instance/{$reportID}",
+                'qs'   => 'reset=1',
+                'title' => ts('View Survey Report'),
+                );
+      }
+    }
+
     $ids = array('id' => $surveyId);
     foreach ($voterLinks as $link) {
       if (CRM_Utils_Array::value('qs', $link) &&
@@ -828,10 +846,29 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
         'entity_table' => 'civicrm_survey',
         'module' => 'CiviCampaign',
       );
-      $ufIds[$surveyId] = CRM_Core_BAO_UFJoin::findUFGroupId($ufJoinParams);
+      
+      list($first, $second) = CRM_Core_BAO_UFJoin::getUFGroupIds($ufJoinParams);
+
+      if ($first) {
+        $ufIds[$surveyId] = array($first);        
+      }
+      if ($second) {
+        $ufIds[$surveyId][] = array_shift($second);        
+      }
     }
 
     return $ufIds[$surveyId];
+  }
+
+  public Static function getReportID($surveyId) {
+    static $reportIds = array();
+
+    if (!array_key_exists($surveyId, $reportIds)) {
+      $query = "SELECT MAX(id) as id FROM civicrm_report_instance WHERE name = %1";
+      $reportID = CRM_Core_DAO::singleValueQuery($query, array(1 => array("survey_{$surveyId}",'String')));
+      $reportIds[$surveyId] = $reportID;
+    }
+    return $reportIds[$surveyId];
   }
 
   /**
@@ -862,6 +899,7 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
 
     if (!isset($profileTypes)) {
       $profileTypes = array_merge(array('Activity', 'Contact'), CRM_Contact_BAO_ContactType::basicTypes());
+      $profileTypes = array_diff($profileTypes, array('Organization','Household'));
     }
 
     return $profileTypes;
@@ -893,10 +931,9 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
     $profileId = self::getSurveyProfileId($surveyId);
 
     if (!$profileId) {
-
       return $responseFields;
-
     }
+
     if (!$surveyTypeId) {
       $surveyTypeId = CRM_Core_DAO::getFieldValue('CRM_Campaign_DAO_Survey', $surveyId, 'activity_type_id');
     }
@@ -916,30 +953,23 @@ INNER JOIN  civicrm_contact contact_a ON ( activityTarget.target_contact_id = co
     foreach ($profileFields as $name => $field) {
       //get only contact and activity fields.
       //later stage we might going to consider contact type also.
-      if (!in_array($field['field_type'], $supportableFieldTypes)) {
-        continue;
-      }
-      if ($field['name'] == 'activity_engagement_level') {
-        $responseFields[$cacheKey][$name] = $field;        
-      }
-      // we should allow all supported custom data for survey
-      // In case of activity, allow normal activity and with subtype survey,
-      // suppress custom data of other activity types
-      if (CRM_Core_BAO_CustomField::getKeyID($name) &&
-        !in_array($field['html_type'], $removeFields)
-      ) {
-        if ($field['field_type'] != 'Activity') {
+      if (in_array($field['field_type'], $supportableFieldTypes)) {
+        // we should allow all supported custom data for survey
+        // In case of activity, allow normal activity and with subtype survey,
+        // suppress custom data of other activity types
+        if (CRM_Core_BAO_CustomField::getKeyID($name)) {
+          if (!in_array($field['html_type'], $removeFields)) {
+            if ($field['field_type'] != 'Activity') {
+              $responseFields[$cacheKey][$name] = $field;
+            }
+            elseif (array_key_exists(CRM_Core_BAO_CustomField::getKeyID($name), $customFields)) {
+              $responseFields[$cacheKey][$name] = $field;
+            }
+          }
+        }
+        else {
           $responseFields[$cacheKey][$name] = $field;
         }
-        elseif (array_key_exists(CRM_Core_BAO_CustomField::getKeyID($name), $customFields)) {
-          $responseFields[$cacheKey][$name] = $field;
-        }
-      }
-      elseif (in_array('Primary', explode('-', $name)) ||
-        CRM_Utils_Array::value('location_type_id', $field)
-      ) {
-        //get location related contact fields.
-        $responseFields[$cacheKey][$name] = $field;
       }
     }
 

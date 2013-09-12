@@ -1,9 +1,9 @@
 <?php
 /*
 +--------------------------------------------------------------------+
-| CiviCRM version 4.2                                                |
+| CiviCRM version 4.3                                                |
 +--------------------------------------------------------------------+
-| Copyright CiviCRM LLC (c) 2004-2012                                |
+| Copyright CiviCRM LLC (c) 2004-2013                                |
 +--------------------------------------------------------------------+
 | This file is a part of CiviCRM.                                    |
 |                                                                    |
@@ -27,7 +27,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -35,205 +35,205 @@ require_once 'CRM/Core/DAO.php';
 require_once 'CRM/Utils/Type.php';
 class CRM_Core_DAO_EntityFile extends CRM_Core_DAO
 {
-    /**
-     * static instance to hold the table name
-     *
-     * @var string
-     * @static
-     */
-    static $_tableName = 'civicrm_entity_file';
-    /**
-     * static instance to hold the field values
-     *
-     * @var array
-     * @static
-     */
-    static $_fields = null;
-    /**
-     * static instance to hold the FK relationships
-     *
-     * @var string
-     * @static
-     */
-    static $_links = null;
-    /**
-     * static instance to hold the values that can
-     * be imported
-     *
-     * @var array
-     * @static
-     */
-    static $_import = null;
-    /**
-     * static instance to hold the values that can
-     * be exported
-     *
-     * @var array
-     * @static
-     */
-    static $_export = null;
-    /**
-     * static value to see if we should log any modifications to
-     * this table in the civicrm_log table
-     *
-     * @var boolean
-     * @static
-     */
-    static $_log = true;
-    /**
-     * primary key
-     *
-     * @var int unsigned
-     */
-    public $id;
-    /**
-     * physical tablename for entity being joined to file, e.g. civicrm_contact
-     *
-     * @var string
-     */
-    public $entity_table;
-    /**
-     * FK to entity table specified in entity_table column.
-     *
-     * @var int unsigned
-     */
-    public $entity_id;
-    /**
-     * FK to civicrm_file
-     *
-     * @var int unsigned
-     */
-    public $file_id;
-    /**
-     * class constructor
-     *
-     * @access public
-     * @return civicrm_entity_file
-     */
-    function __construct()
-    {
-        $this->__table = 'civicrm_entity_file';
-        parent::__construct();
+  /**
+   * static instance to hold the table name
+   *
+   * @var string
+   * @static
+   */
+  static $_tableName = 'civicrm_entity_file';
+  /**
+   * static instance to hold the field values
+   *
+   * @var array
+   * @static
+   */
+  static $_fields = null;
+  /**
+   * static instance to hold the FK relationships
+   *
+   * @var string
+   * @static
+   */
+  static $_links = null;
+  /**
+   * static instance to hold the values that can
+   * be imported
+   *
+   * @var array
+   * @static
+   */
+  static $_import = null;
+  /**
+   * static instance to hold the values that can
+   * be exported
+   *
+   * @var array
+   * @static
+   */
+  static $_export = null;
+  /**
+   * static value to see if we should log any modifications to
+   * this table in the civicrm_log table
+   *
+   * @var boolean
+   * @static
+   */
+  static $_log = true;
+  /**
+   * primary key
+   *
+   * @var int unsigned
+   */
+  public $id;
+  /**
+   * physical tablename for entity being joined to file, e.g. civicrm_contact
+   *
+   * @var string
+   */
+  public $entity_table;
+  /**
+   * FK to entity table specified in entity_table column.
+   *
+   * @var int unsigned
+   */
+  public $entity_id;
+  /**
+   * FK to civicrm_file
+   *
+   * @var int unsigned
+   */
+  public $file_id;
+  /**
+   * class constructor
+   *
+   * @access public
+   * @return civicrm_entity_file
+   */
+  function __construct()
+  {
+    $this->__table = 'civicrm_entity_file';
+    parent::__construct();
+  }
+  /**
+   * return foreign links
+   *
+   * @access public
+   * @return array
+   */
+  function links()
+  {
+    if (!(self::$_links)) {
+      self::$_links = array(
+        'file_id' => 'civicrm_file:id',
+      );
     }
-    /**
-     * return foreign links
-     *
-     * @access public
-     * @return array
-     */
-    function links()
-    {
-        if (!(self::$_links)) {
-            self::$_links = array(
-                'file_id' => 'civicrm_file:id',
-            );
+    return self::$_links;
+  }
+  /**
+   * returns all the column names of this table
+   *
+   * @access public
+   * @return array
+   */
+  static function &fields()
+  {
+    if (!(self::$_fields)) {
+      self::$_fields = array(
+        'id' => array(
+          'name' => 'id',
+          'type' => CRM_Utils_Type::T_INT,
+          'required' => true,
+        ) ,
+        'entity_table' => array(
+          'name' => 'entity_table',
+          'type' => CRM_Utils_Type::T_STRING,
+          'title' => ts('Entity Table') ,
+          'maxlength' => 64,
+          'size' => CRM_Utils_Type::BIG,
+        ) ,
+        'entity_id' => array(
+          'name' => 'entity_id',
+          'type' => CRM_Utils_Type::T_INT,
+          'required' => true,
+        ) ,
+        'file_id' => array(
+          'name' => 'file_id',
+          'type' => CRM_Utils_Type::T_INT,
+          'required' => true,
+          'FKClassName' => 'CRM_Core_DAO_File',
+        ) ,
+      );
+    }
+    return self::$_fields;
+  }
+  /**
+   * returns the names of this table
+   *
+   * @access public
+   * @static
+   * @return string
+   */
+  static function getTableName()
+  {
+    return self::$_tableName;
+  }
+  /**
+   * returns if this table needs to be logged
+   *
+   * @access public
+   * @return boolean
+   */
+  function getLog()
+  {
+    return self::$_log;
+  }
+  /**
+   * returns the list of fields that can be imported
+   *
+   * @access public
+   * return array
+   * @static
+   */
+  static function &import($prefix = false)
+  {
+    if (!(self::$_import)) {
+      self::$_import = array();
+      $fields = self::fields();
+      foreach($fields as $name => $field) {
+        if (CRM_Utils_Array::value('import', $field)) {
+          if ($prefix) {
+            self::$_import['entity_file'] = & $fields[$name];
+          } else {
+            self::$_import[$name] = & $fields[$name];
+          }
         }
-        return self::$_links;
+      }
     }
-    /**
-     * returns all the column names of this table
-     *
-     * @access public
-     * @return array
-     */
-    static function &fields()
-    {
-        if (!(self::$_fields)) {
-            self::$_fields = array(
-                'id' => array(
-                    'name' => 'id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'required' => true,
-                ) ,
-                'entity_table' => array(
-                    'name' => 'entity_table',
-                    'type' => CRM_Utils_Type::T_STRING,
-                    'title' => ts('Entity Table') ,
-                    'maxlength' => 64,
-                    'size' => CRM_Utils_Type::BIG,
-                ) ,
-                'entity_id' => array(
-                    'name' => 'entity_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'required' => true,
-                ) ,
-                'file_id' => array(
-                    'name' => 'file_id',
-                    'type' => CRM_Utils_Type::T_INT,
-                    'required' => true,
-                    'FKClassName' => 'CRM_Core_DAO_File',
-                ) ,
-            );
+    return self::$_import;
+  }
+  /**
+   * returns the list of fields that can be exported
+   *
+   * @access public
+   * return array
+   * @static
+   */
+  static function &export($prefix = false)
+  {
+    if (!(self::$_export)) {
+      self::$_export = array();
+      $fields = self::fields();
+      foreach($fields as $name => $field) {
+        if (CRM_Utils_Array::value('export', $field)) {
+          if ($prefix) {
+            self::$_export['entity_file'] = & $fields[$name];
+          } else {
+            self::$_export[$name] = & $fields[$name];
+          }
         }
-        return self::$_fields;
+      }
     }
-    /**
-     * returns the names of this table
-     *
-     * @access public
-     * @static
-     * @return string
-     */
-    static function getTableName()
-    {
-        return self::$_tableName;
-    }
-    /**
-     * returns if this table needs to be logged
-     *
-     * @access public
-     * @return boolean
-     */
-    function getLog()
-    {
-        return self::$_log;
-    }
-    /**
-     * returns the list of fields that can be imported
-     *
-     * @access public
-     * return array
-     * @static
-     */
-    static function &import($prefix = false)
-    {
-        if (!(self::$_import)) {
-            self::$_import = array();
-            $fields = self::fields();
-            foreach($fields as $name => $field) {
-                if (CRM_Utils_Array::value('import', $field)) {
-                    if ($prefix) {
-                        self::$_import['entity_file'] = & $fields[$name];
-                    } else {
-                        self::$_import[$name] = & $fields[$name];
-                    }
-                }
-            }
-        }
-        return self::$_import;
-    }
-    /**
-     * returns the list of fields that can be exported
-     *
-     * @access public
-     * return array
-     * @static
-     */
-    static function &export($prefix = false)
-    {
-        if (!(self::$_export)) {
-            self::$_export = array();
-            $fields = self::fields();
-            foreach($fields as $name => $field) {
-                if (CRM_Utils_Array::value('export', $field)) {
-                    if ($prefix) {
-                        self::$_export['entity_file'] = & $fields[$name];
-                    } else {
-                        self::$_export[$name] = & $fields[$name];
-                    }
-                }
-            }
-        }
-        return self::$_export;
-    }
+    return self::$_export;
+  }
 }

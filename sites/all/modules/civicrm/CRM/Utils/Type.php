@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id: $
  *
  */
@@ -55,6 +55,7 @@ class CRM_Utils_Type {
   CONST
     TWO       = 2,
     FOUR      = 4,
+    SIX       = 6,
     EIGHT     = 8,
     TWELVE    = 12,
     SIXTEEN   = 16,
@@ -75,8 +76,7 @@ class CRM_Utils_Type {
    * @access public
    * @static
    */
-  static
-  function typeToString($type) {
+  static function typeToString($type) {
     switch ($type) {
       case 1:
         $string = 'Int';
@@ -110,6 +110,8 @@ class CRM_Utils_Type {
         $string = 'Blob';
         break;
 
+        // CRM-10404
+      case 12:
       case 256:
         $string = 'Timestamp';
         break;

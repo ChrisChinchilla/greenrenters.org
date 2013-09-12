@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -52,7 +52,7 @@ class CRM_Contact_Form_Search_Advanced extends CRM_Contact_Form_Search {
     $this->set('searchFormName', 'Advanced');
 
     parent::preProcess();
-    $openedPanes = CRM_Contact_BAO_Query::openedSearchPanes();
+    $openedPanes = CRM_Contact_BAO_Query::$_openedPanes;
     $openedPanes = array_merge($openedPanes, $this->_openedPanes);
     $this->assign('openedPanes', $openedPanes);
   }
@@ -194,7 +194,7 @@ class CRM_Contact_Form_Search_Advanced extends CRM_Contact_Form_Search {
    *
    * @return array the default array reference
    */
-  function &setDefaultValues() {
+  function setDefaultValues() {
     $defaults = $this->_formValues;
     $this->normalizeDefaultValues($defaults);
 
@@ -245,7 +245,7 @@ class CRM_Contact_Form_Search_Advanced extends CRM_Contact_Form_Search {
       }
 
       // set the group if group is submitted
-      if ($this->_formValues['uf_group_id']) {
+      if (!empty($this->_formValues['uf_group_id'])) {
         $this->set('id', $this->_formValues['uf_group_id']);
       }
       else {
@@ -332,13 +332,11 @@ class CRM_Contact_Form_Search_Advanced extends CRM_Contact_Form_Search {
     }
 
     $config = CRM_Core_Config::singleton();
-    if (!$config->groupTree) {
-      $group = CRM_Utils_Array::value('group', $this->_formValues);
-      if ($group && is_array($group)) {
-        unset($this->_formValues['group']);
-        foreach ($group as $key => $value) {
-          $this->_formValues['group'][$value] = 1;
-        }
+    $group = CRM_Utils_Array::value('group', $this->_formValues);
+    if ($group && is_array($group)) {
+      unset($this->_formValues['group']);
+      foreach ($group as $key => $value) {
+        $this->_formValues['group'][$value] = 1;
       }
     }
 

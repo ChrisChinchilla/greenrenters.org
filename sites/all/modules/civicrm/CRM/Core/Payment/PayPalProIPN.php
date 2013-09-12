@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -65,8 +65,7 @@ class CRM_Core_Payment_PayPalProIPN extends CRM_Core_Payment_BaseIPN {
     }
   }
 
-  static
-  function retrieve($name, $type, $location = 'POST', $abort = TRUE) {
+  static function retrieve($name, $type, $location = 'POST', $abort = TRUE) {
     static $store = NULL;
     $value = CRM_Utils_Request::retrieve($name, $type, $store,
       FALSE, NULL, $location
@@ -120,16 +119,16 @@ class CRM_Core_Payment_PayPalProIPN extends CRM_Core_Payment_BaseIPN {
     $subscriptionPaymentStatus = NULL;
     //List of Transaction Type
     /*
-         recurring_payment_profile_created    			RP Profile Created
-         recurring_payment 					RP Sucessful Payment
+         recurring_payment_profile_created          RP Profile Created
+         recurring_payment           RP Sucessful Payment
          recurring_payment_failed                               RP Failed Payment
-         recurring_payment_profile_cancel     			RP Profile Cancelled
-         recurring_payment_expired 				RP Profile Expired
-         recurring_payment_skipped				RP Profile Skipped
-         recurring_payment_outstanding_payment			RP Sucessful Outstanding Payment
-         recurring_payment_outstanding_payment_failed	        RP Failed Outstanding Payment
-         recurring_payment_suspended				RP Profile Suspended
-         recurring_payment_suspended_due_to_max_failed_payment	RP Profile Suspended due to Max Failed Payment
+         recurring_payment_profile_cancel           RP Profile Cancelled
+         recurring_payment_expired         RP Profile Expired
+         recurring_payment_skipped        RP Profile Skipped
+         recurring_payment_outstanding_payment      RP Sucessful Outstanding Payment
+         recurring_payment_outstanding_payment_failed          RP Failed Outstanding Payment
+         recurring_payment_suspended        RP Profile Suspended
+         recurring_payment_suspended_due_to_max_failed_payment  RP Profile Suspended due to Max Failed Payment
         */
 
 
@@ -194,10 +193,18 @@ class CRM_Core_Payment_PayPalProIPN extends CRM_Core_Payment_BaseIPN {
     }
 
     if (!$first) {
-      // create a contribution and then get it processed
+      //check if this contribution transaction is already processed
+      //if not create a contribution and then get it processed
       $contribution = new CRM_Contribute_BAO_Contribution();
+      $contribution->trxn_id = $input['trxn_id'];
+      if ($contribution->trxn_id && $contribution->find()) {
+        CRM_Core_Error::debug_log_message("returning since contribution has already been handled");
+        echo "Success: Contribution has already been handled<p>";
+        return TRUE;
+      }
+
       $contribution->contact_id = $ids['contact'];
-      $contribution->contribution_type_id = $objects['contributionType']->id;
+      $contribution->financial_type_id  = $objects['contributionType']->id;
       $contribution->contribution_page_id = $ids['contributionPage'];
       $contribution->contribution_recur_id = $ids['contributionRecur'];
       $contribution->receive_date = $now;
@@ -317,7 +324,7 @@ INNER JOIN civicrm_membership_payment mp ON m.id = mp.membership_id AND mp.contr
       }
     }
 
-    $paymentProcessorID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_PaymentProcessorType',
+    $paymentProcessorID = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_PaymentProcessorType',
       'PayPal', 'id', 'name'
     );
 

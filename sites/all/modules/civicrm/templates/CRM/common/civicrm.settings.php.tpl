@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -47,8 +47,8 @@
  *      define( 'CIVICRM_UF'        , 'WordPress' );
  *
  * You may have issues with images in CiviCRM. If this is the case, be sure
- * to update the CiviCRM Resource URL field (in Administer CRM: Global
- * Settings: Resource URLs) to your CiviCRM root directory.
+ * to update the CiviCRM Resource URL field to your CiviCRM root directory
+ * (Administer::System Settings::Resource URLs).
  */
 define( 'CIVICRM_UF'               , '%%cms%%'        );
 
@@ -184,18 +184,13 @@ define( 'CIVICRM_MAIL_SMARTY', 0 );
 
 /**
  * This setting logs all emails to a file. Useful for debugging any mail (or civimail) issues.
- * This will not send any email, so ensure this is commented out in production
+ * Enabling this setting will not send any email, ensure this is commented out in production
+ * The CIVICRM_MAIL_LOG is a debug option which disables MTA (mail transport agent) interaction.
+ * You must disable CIVICRM_MAIL_LOG before CiviCRM will talk to your MTA.
  */
 // define( 'CIVICRM_MAIL_LOG', '%%templateCompileDir%%/mail.log' );
 
 define( 'CIVICRM_DOMAIN_ID'      , 1 );
-
-/**
- * For Wordpress users if your public pages are using a different template than the home page
- * you should set the name of the template with the below constant
- * This will be moved to a DB setting in 4.3, check CRM-10682
- */
-// define( 'CIVICRM_UF_WP_BASEPAGE', 'YOUR TEMPLATE NAME HERE');
 
 /**
  * Settings to enable external caching using a Memcache server.  This is an
@@ -216,27 +211,28 @@ define( 'CIVICRM_DOMAIN_ID'      , 1 );
  *
  * To use the php extension memcache  use a value of 'Memcache'
  * To use the php extension memcached use a value of 'Memcached'
+ * To use the php extension apc       use a value of 'APCcache'
  * To not use any caching (not recommended), use a value of 'NoCache'
  *
  */
 define( 'CIVICRM_DB_CACHE_CLASS', 'ArrayCache' );
 
 /**
- * Change this to the IP address of your memcache server if it is not on the
+ * Change this to the IP address of your cache server if it is not on the
  * same machine (Unix).
  */
-define( 'CIVICRM_MEMCACHE_HOST', 'localhost' );
+define( 'CIVICRM_DB_CACHE_HOST', 'localhost' );
 
 /**
- * Change this if you are not using the standard port for memcache (11211)
+ * Change this if you are not using the standard port for memcache or apccache (11211)
  */
-define( 'CIVICRM_MEMCACHE_PORT', 11211 );
+define( 'CIVICRM_DB_CACHE_PORT', 11211 );
 
 /**
  * Items in cache will expire after the number of seconds specified here.
  * Default value is 3600 (i.e., after an hour)
  */
-define( 'CIVICRM_MEMCACHE_TIMEOUT', 3600 );
+define( 'CIVICRM_DB_CACHE_TIMEOUT', 3600 );
 
 /**
  * If you are sharing the same memcache instance with more than one CiviCRM
@@ -259,6 +255,14 @@ define( 'CIVICRM_MEMCACHE_PREFIX', '' );
 // define('CIVICRM_LANGUAGE_MAPPING_ES', 'es_MX');
 // define('CIVICRM_LANGUAGE_MAPPING_PT', 'pt_BR');
 // define('CIVICRM_LANGUAGE_MAPPING_ZH', 'zh_TW');
+
+/**
+ * Configure MySQL to throw more errors when encountering unusual SQL expressions.
+ *
+ * If undefined, the value is determined automatically. For CiviCRM tarballs, it defaults
+ * to FALSE; for SVN checkouts, it defaults to TRUE.
+ */
+// define( 'CIVICRM_MYSQL_STRICT', TRUE );
 
 /**
  *

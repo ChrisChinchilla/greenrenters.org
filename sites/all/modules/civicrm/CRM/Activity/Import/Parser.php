@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -192,7 +192,9 @@ abstract class CRM_Activity_Import_Parser {
    *
    * @var boolean
    */
-  protected $_haveColumnHeader; function __construct() {
+  protected $_haveColumnHeader;
+  
+  function __construct() {
     $this->_maxLinesToProcess = 0;
     $this->_maxErrorCount = self::MAX_ERRORS;
   }
@@ -424,14 +426,14 @@ abstract class CRM_Activity_Import_Parser {
     }
   }
 
-  /*function setActiveFieldLocationTypes( $elements ) 
+  /*function setActiveFieldLocationTypes( $elements )
     {
         for ($i = 0; $i < count( $elements ); $i++) {
             $this->_activeFields[$i]->_hasLocationType = $elements[$i];
         }
     }
-    
-    function setActiveFieldPhoneTypes( $elements ) 
+
+    function setActiveFieldPhoneTypes( $elements )
     {
         for ($i = 0; $i < count( $elements ); $i++) {
             $this->_activeFields[$i]->_phoneType = $elements[$i];
@@ -596,8 +598,7 @@ abstract class CRM_Activity_Import_Parser {
    * @return void
    * @access public
    */
-  static
-  function exportCSV($fileName, $header, $data) {
+  static function exportCSV($fileName, $header, $data) {
     $output = array();
     $fd = fopen($fileName, 'w');
 
@@ -627,14 +628,13 @@ abstract class CRM_Activity_Import_Parser {
    * @static
    * @access public
    */
-  static
-  function encloseScrub(&$values, $enclosure = "'") {
+  static function encloseScrub(&$values, $enclosure = "'") {
     if (empty($values)) {
       return;
     }
 
     foreach ($values as $k => $v) {
-      $values[$k] = preg_replace("/^$enclosure(.*) $enclosure$/", '$1', $v);
+      $values[$k] = preg_replace("/^$enclosure(.*)$enclosure$/", '$1', $v);
     }
   }
 

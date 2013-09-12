@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -68,11 +68,11 @@ class CRM_Event_Form_Task_Batch extends CRM_Event_Form_Task {
    *
    * @return void
    * @access public
-   */ function preProcess() {
-    /*
-         * initialize the task and row fields
-         */
-
+   */ 
+  function preProcess() {
+   /*
+    * initialize the task and row fields
+    */
     parent::preProcess();
 
     //get the contact read only fields to display.
@@ -201,7 +201,7 @@ class CRM_Event_Form_Task_Batch extends CRM_Event_Form_Task {
           }
         }
         else {
-          if ($field['name'] == 'participant_role_id') {
+          if ($field['name'] == 'participant_role') {
             $field['is_multiple'] = TRUE;
           }
           // handle non custom fields
@@ -216,7 +216,7 @@ class CRM_Event_Form_Task_Batch extends CRM_Event_Form_Task {
     $buttonName = $this->controller->getButtonName('submit');
 
     if ($suppressFields && $buttonName != '_qf_Batch_next') {
-      CRM_Core_Session::setStatus("FILE or Autocomplete Select type field(s) in the selected profile are not supported for Batch Update and have been excluded.");
+      CRM_Core_Session::setStatus(ts("FILE or Autocomplete Select type field(s) in the selected profile are not supported for Batch Update and have been excluded."), ts('Unsupported Field Type'), 'info');
     }
 
     $this->addDefaultButtons(ts('Update Participant(s)'));
@@ -325,16 +325,15 @@ class CRM_Event_Form_Task_Batch extends CRM_Event_Form_Task {
           self::updatePendingOnlineContribution($key, $value['status_id']);
         }
       }
-      CRM_Core_Session::setStatus(ts('The updates have been saved.'));
+      CRM_Core_Session::setStatus(ts('The updates have been saved.'), ts('Saved'), 'success');
     }
     else {
-      CRM_Core_Session::setStatus(ts('No updates have been saved.'));
+      CRM_Core_Session::setStatus(ts('No updates have been saved.'), ts('Not Saved'), 'alert');
     }
   }
   //end of function
 
-  static
-  function updatePendingOnlineContribution($participantId, $statusId) {
+  static function updatePendingOnlineContribution($participantId, $statusId) {
     if (!$participantId || !$statusId) {
       return;
     }
@@ -371,6 +370,7 @@ class CRM_Event_Form_Task_Batch extends CRM_Event_Form_Task {
       'componentName' => 'Event',
       'contribution_id' => $contributionId,
       'contribution_status_id' => $contributionStatusId,
+      'skipComponentSync' => 1
     );
 
     //change related contribution status.

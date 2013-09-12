@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -83,6 +83,31 @@ class CRM_Member_BAO_MembershipStatus extends CRM_Member_DAO_MembershipStatus {
     return CRM_Core_DAO::setFieldValue('CRM_Member_DAO_MembershipStatus', $id, 'is_active', $is_active);
   }
 
+  /**
+   * Takes an associative array and creates a membership Status object
+   * See http://wiki.civicrm.org/confluence/display/CRM/Database+layer
+   * @param array    $params      (reference ) an assoc array of name/value pairs
+   *
+   * @return object CRM_Member_BAO_MembershipStatus object
+   * @access public
+   * @static
+   */
+  static function create($params){
+    $ids = array();
+    if(!empty($params['id'])){
+      $ids['membershipStatus']  = $params['id'];
+    }
+    else{
+      //don't allow duplicate names - if id not set
+      $status = new CRM_Member_DAO_MembershipStatus();
+      $status->name = $params['name'];
+      if ($status->find(TRUE)) {
+        throw new Exception('A membership status with this name already exists.');
+      }
+    }
+    $membershipStatusBAO = CRM_Member_BAO_MembershipStatus::add($params, $ids);
+    return $membershipStatusBAO;
+  }
   /**
    * function to add the membership types
    *
@@ -140,7 +165,7 @@ class CRM_Member_BAO_MembershipStatus extends CRM_Member_DAO_MembershipStatus {
    * @param int $membershipStatusId
    * @static
    */
-  function getMembershipStatus($membershipStatusId) {
+  public static function getMembershipStatus($membershipStatusId) {
     $statusDetails = array();
     $membershipStatus = new CRM_Member_DAO_MembershipStatus();
     $membershipStatus->id = $membershipStatusId;
@@ -175,7 +200,7 @@ class CRM_Member_BAO_MembershipStatus extends CRM_Member_DAO_MembershipStatus {
     if ($check) {
       if (!$skipRedirect) {
         $session = CRM_Core_Session::singleton();
-        CRM_Core_Session::setStatus(ts('This membership status cannot be deleted'));
+        CRM_Core_Session::setStatus(ts('This membership status cannot be deleted'), ts('Deletion Error'), 'error');
         return CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/admin/member/membershipStatus', "reset=1"));
       }
 
@@ -251,9 +276,9 @@ class CRM_Member_BAO_MembershipStatus extends CRM_Member_DAO_MembershipStatus {
     }
 
     $query = "
- SELECT   * 
- FROM     civicrm_membership_status 
- WHERE    {$where} 
+ SELECT   *
+ FROM     civicrm_membership_status
+ WHERE    {$where}
  ORDER BY weight ASC";
 
     $membershipStatus = CRM_Core_DAO::executeQuery($query, CRM_Core_DAO::$_nullArray);
@@ -342,7 +367,7 @@ class CRM_Member_BAO_MembershipStatus extends CRM_Member_DAO_MembershipStatus {
    * @return
    * @static
    */
-  function getMembershipStatusCurrent() {
+  public static function getMembershipStatusCurrent() {
     $statusIds = array();
     $membershipStatus = new CRM_Member_DAO_MembershipStatus();
     $membershipStatus->is_current_member = 1;

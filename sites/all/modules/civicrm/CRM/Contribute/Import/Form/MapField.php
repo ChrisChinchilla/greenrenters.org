@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -88,7 +88,7 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
   protected $_fieldUsed;
 
   /**
-   * Attempt to resolve the header with our mapper fields
+   * Attempt to match header labels with our mapper fields
    *
    * @param header
    * @param mapperFields
@@ -98,14 +98,12 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
    */
   public function defaultFromHeader($header, &$patterns) {
     foreach ($patterns as $key => $re) {
-      /* Skip the first (empty) key/pattern */
-      if (empty($re)) {
+      // Skip empty key/patterns
+      if (!$key || !$re || strlen("$re") < 5) {
         continue;
       }
 
-      /* Scan through the headerPatterns defined in the schema for a
-       * match */
-
+      // Scan through the headerPatterns defined in the schema for a match
       if (preg_match($re, $header)) {
         $this->_fieldUsed[$key] = TRUE;
         return $key;
@@ -129,7 +127,8 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
     $n        = count($this->_dataValues);
 
     foreach ($patterns as $key => $re) {
-      if (empty($re)) {
+      // Skip empty key/patterns
+      if (!$key || !$re || strlen("$re") < 5) {
         continue;
       }
 
@@ -183,7 +182,7 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
       $this->assign('rowDisplayCount', 2);
     }
     $highlightedFields = array();
-    $highlightedFields[] = 'contribution_type';
+    $highlightedFields[] = 'financial_type';
     //CRM-2219 removing other required fields since for updation only
     //invoice id or trxn id or contribution id is required.
     if ($this->_onDuplicate == CRM_Contribute_Import_Parser::DUPLICATE_UPDATE) {
@@ -195,7 +194,7 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
       //modify field title only for update mode. CRM-3245
       foreach (array(
         'contribution_id', 'invoice_id', 'trxn_id') as $key) {
-        $this->_mapperFields[$key] .= " (match to contribution record)";
+        $this->_mapperFields[$key] .= ' (match to contribution record)';
         $highlightedFields[] = $key;
       }
     }
@@ -234,9 +233,9 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
 
       $mappingName        = $mappingName[1];
       $mappingContactType = $mappingContactType[1];
-      $mappingLocation    = CRM_Utils_Array::value('1', $mappingLocation[1]);
-      $mappingPhoneType   = CRM_Utils_Array::value('1', $mappingPhoneType[1]);
-      $mappingRelation    = CRM_Utils_Array::value('1', $mappingRelation[1]);
+      $mappingLocation    = CRM_Utils_Array::value('1', CRM_Utils_Array::value(1, $mappingLocation));
+      $mappingPhoneType   = CRM_Utils_Array::value('1', CRM_Utils_Array::value(1, $mappingPhoneType));
+      $mappingRelation    = CRM_Utils_Array::value('1', CRM_Utils_Array::value(1, $mappingRelation));
 
       //mapping is to be loaded from database
 
@@ -309,7 +308,7 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
     // get the Dedupe rule for this contact type and build soft credit array
     $ruleParams = array(
       'contact_type' => $contactType,
-      'level' => 'Strict',
+      'used'         => 'Unsupervised',
     );
     $fieldsArray = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
     $softCreditFields = array();
@@ -471,7 +470,7 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
         CRM_Contribute_Import_Parser::CONTACT_ORGANIZATION => 'Organization',
       );
       $params = array(
-        'level' => 'Strict',
+        'used'         => 'Unsupervised',
         'contact_type' => $contactTypes[$contactTypeId],
       );
       list($ruleFields, $threshold) = CRM_Dedupe_BAO_RuleGroup::dedupeRuleFieldsWeight($params);
@@ -484,13 +483,13 @@ class CRM_Contribute_Import_Form_MapField extends CRM_Core_Form {
       foreach ($ruleFields as $field => $weight) {
         $fieldMessage .= ' ' . $field . '(weight ' . $weight . ')';
       }
+
       // FIXME: should use the schema titles, not redeclare them
       $requiredFields = array(
         'contribution_contact_id' => ts('Contact ID'),
         'total_amount' => ts('Total Amount'),
-        'contribution_type' => ts('Contribution Type'),
+        'financial_type'    => ts('Financial Type')
       );
-
 
       foreach ($requiredFields as $field => $title) {
         if (!in_array($field, $importKeys)) {

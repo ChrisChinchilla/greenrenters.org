@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -37,7 +37,9 @@
  * This file is used to build the form configuring mailing details
  */
 class CRM_Mailing_Form_Upload extends CRM_Core_Form {
-  public $_mailingID; function preProcess() {
+  public $_mailingID;
+  
+  function preProcess() {
     $this->_mailingID = $this->get('mailing_id');
     if (CRM_Core_Permission::check('administer CiviCRM')) {
       $this->assign('isAdmin', 1);
@@ -49,8 +51,7 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
     $this->_searchBasedMailing = CRM_Contact_Form_Search::isSearchContext($this->get('context'));
     if(CRM_Contact_Form_Search::isSearchContext($this->get('context')) && !$ssID){
       $params = array();
-      $value = CRM_Core_BAO_PrevNextCache::buildSelectedContactPager($this,$params);
-      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts($value['offset'],$value['rowCount1']);
+      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
       $this->assign("value", $result);
     }
   }
@@ -218,7 +219,7 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
       //redirect user to enter from email address.
       $url = CRM_Utils_System::url('civicrm/admin/options/from_email_address', 'group=from_email_address&action=add&reset=1');
       $status = ts("There is no valid from email address present. You can add here <a href='%1'>Add From Email Address.</a>", array(1 => $url));
-      $session->setStatus($status);
+      $session->setStatus($status, ts('Notice'));
     }
     else {
       foreach ($fromEmailAddress as $key => $email) {
@@ -232,10 +233,10 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
     );
 
     //Added code to add custom field as Reply-To on form when it is enabled from Mailer settings
-    if ( isset($config->replyTo) && ! CRM_Utils_Array::value( 'override_verp', $options ) ) {
+    if (isset($config->replyTo) && !empty($config->replyTo) &&
+      ! CRM_Utils_Array::value( 'override_verp', $options ) ) {
       $this->add('select', 'reply_to_address', ts('Reply-To'),
-        array(
-          '' => '- select -') + $fromEmailAddress
+        array('' => '- select -') + $fromEmailAddress
       );
     }
     elseif (CRM_Utils_Array::value('override_verp', $options)) {
@@ -291,8 +292,6 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
 
     $this->addFormRule(array('CRM_Mailing_Form_Upload', 'formRule'), $this);
 
-    //FIXME : currently we are hiding save an continue later when
-    //search base mailing, we should handle it when we fix CRM-3876
     $buttons = array(
       array('type' => 'back',
         'name' => ts('<< Previous'),
@@ -313,23 +312,6 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
         'name' => ts('Cancel'),
       ),
     );
-    if ($this->_searchBasedMailing && $ssID) {
-      $buttons = array(
-        array('type' => 'back',
-          'name' => ts('<< Previous'),
-        ),
-        array(
-          'type' => 'upload',
-          'name' => ts('Next >>'),
-          'spacing' => '&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;',
-          'isDefault' => TRUE,
-        ),
-        array(
-          'type' => 'cancel',
-          'name' => ts('Cancel'),
-        ),
-      );
-    }
     $this->addButtons($buttons);
   }
 
@@ -395,6 +377,8 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
     $msgTemplate = NULL;
     //mail template is composed
     if ($formValues['upload_type']) {
+      $composeParams = array();
+
       foreach ($composeFields as $key) {
         if (CRM_Utils_Array::value($key, $formValues)) {
           $composeParams[$key] = $formValues[$key];
@@ -497,19 +481,18 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
 
         $session  = CRM_Core_Session::singleton();
         $draftURL = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-        $status   = ts("Your mailing has been saved. You can continue later by clicking the 'Continue' action to resume working on it.<br /> From <a href='%1'>Draft and Unscheduled Mailings</a>.", array(1 => $draftURL));
-        CRM_Core_Session::setStatus($status);
+        $status   = ts("You can continue later by clicking the 'Continue' action to resume working on it.<br />From <a href='%1'>Draft and Unscheduled Mailings</a>.", array(1 => $draftURL));
+        CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
 
-        //replace user context to search.
+        // Redirect user to search.
         $url = CRM_Utils_System::url('civicrm/contact/' . $fragment, $urlParams);
-        return $this->controller->setDestination($url);
       }
       else {
-        $status = ts("Your mailing has been saved. Click the 'Continue' action to resume working on it.");
-        CRM_Core_Session::setStatus($status);
+        $status = ts("Click the 'Continue' action to resume working on it.");
         $url = CRM_Utils_System::url('civicrm/mailing/browse/unscheduled', 'scheduled=false&reset=1');
-        return $this->controller->setDestination($url);
       }
+      CRM_Core_Session::setStatus($status, ts('Mailing Saved'), 'success');
+      return $this->controller->setDestination($url);
     }
   }
 
@@ -522,8 +505,7 @@ class CRM_Mailing_Form_Upload extends CRM_Core_Form {
    * @access public
    * @static
    */
-  static
-  function formRule($params, $files, $self) {
+  static function formRule($params, $files, $self) {
     if (CRM_Utils_Array::value('_qf_Import_refresh', $_POST)) {
       return TRUE;
     }

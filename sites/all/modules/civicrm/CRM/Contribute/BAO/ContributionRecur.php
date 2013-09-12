@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -167,7 +167,7 @@ SELECT r.payment_processor_id
       return NULL;
     }
 
-    return CRM_Core_BAO_PaymentProcessor::getPayment($paymentProcessorID, $mode);
+    return CRM_Financial_BAO_PaymentProcessor::getPayment($paymentProcessorID, $mode);
   }
 
   /**
@@ -183,7 +183,7 @@ SELECT r.payment_processor_id
     $recurID = implode(',', $ids);
     $totalCount = array();
 
-    $query = " 
+    $query = "
          SELECT contribution_recur_id, count( contribution_recur_id ) as commpleted
          FROM civicrm_contribution
          WHERE contribution_recur_id IN ( {$recurID}) AND is_test = 0
@@ -264,7 +264,7 @@ SELECT r.payment_processor_id
 <br/>' . ts('The recurring contribution of %1, every %2 %3 has been cancelled.', array(
   1 => $dao->amount,
               2 => $dao->frequency_interval,
-              3 => $dao->frequency_unit,
+              3 => $dao->frequency_unit
             ));
         }
         $activityParams = array(
@@ -368,8 +368,8 @@ SELECT r.payment_processor_id
 
   static function getSubscriptionDetails($entityID, $entity = 'recur') {
     $sql = "
-SELECT rec.id                   as recur_id, 
-       rec.processor_id         as subscription_id, 
+SELECT rec.id                   as recur_id,
+       rec.processor_id         as subscription_id,
        rec.frequency_interval,
        rec.installments,
        rec.frequency_unit,
@@ -377,14 +377,14 @@ SELECT rec.id                   as recur_id,
        rec.is_test,
        rec.auto_renew,
        rec.currency,
-       con.id                   as contribution_id, 
+       con.id                   as contribution_id,
        con.contribution_page_id,
        con.contact_id,
        mp.membership_id";
 
     if ($entity == 'recur') {
       $sql .= "
-      FROM civicrm_contribution_recur rec 
+      FROM civicrm_contribution_recur rec
 INNER JOIN civicrm_contribution       con ON ( con.contribution_recur_id = rec.id )
 LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
      WHERE rec.id = %1
@@ -393,14 +393,14 @@ LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
     elseif ($entity == 'contribution') {
       $sql .= "
       FROM civicrm_contribution       con
-INNER JOIN civicrm_contribution_recur rec 
+INNER JOIN civicrm_contribution_recur rec ON ( con.contribution_recur_id = rec.id )
 LEFT  JOIN civicrm_membership_payment mp  ON ( mp.contribution_id = con.id )
      WHERE con.id = %1";
     }
     elseif ($entity == 'membership') {
       $sql .= "
-      FROM civicrm_membership_payment mp 
-INNER JOIN civicrm_membership         mem ON ( mp.membership_id = mem.id ) 
+      FROM civicrm_membership_payment mp
+INNER JOIN civicrm_membership         mem ON ( mp.membership_id = mem.id )
 INNER JOIN civicrm_contribution_recur rec ON ( mem.contribution_recur_id = rec.id )
 INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
      WHERE mp.membership_id = %1";
@@ -410,7 +410,9 @@ INNER JOIN civicrm_contribution       con ON ( con.id = mp.contribution_id )
     if ($dao->fetch()) {
       return $dao;
     }
-    else return CRM_Core_DAO::$_nullObject;
+    else {
+      return CRM_Core_DAO::$_nullObject;
+    }
   }
 
   static function setSubscriptionContext() {

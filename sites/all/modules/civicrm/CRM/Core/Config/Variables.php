@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,7 +31,7 @@
  * it need to be defined here first.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -85,6 +85,11 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $imageUploadURL = NULL;
 
   /**
+   * The local path to the default extension container
+   */
+  public $extensionsDir;
+
+  /**
    * The url for resources defined by extensions
    */
   public $extensionsURL = NULL;
@@ -101,6 +106,13 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    * @var string
    */
   public $countryLimit = array('1228');
+
+  /**
+   * Id of default state/province for contact.
+   * 1046 is an id for Washington(country:United States).
+   * @var int
+   */
+  public $defaultContactStateProvince;
 
   /**
    * List of country codes limiting the province list.
@@ -254,7 +266,6 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    * @var int
    */
   public $maxImportFileSize = 1048576;
-  public $maxAttachments = 3;
   public $maxFileSize = 2;
 
   /**
@@ -306,11 +317,6 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    */
   public $mapGeoCoding = 1;
 
-  /**
-   * Whether deleted contacts should be moved to trash instead
-   * @var boolean
-   */
-  public $contactUndelete = TRUE;
 
   /**
    * Whether database-level logging should be performed
@@ -398,7 +404,8 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $includeWildCardInName = 1;
   public $includeEmailInName = 1;
   public $includeNickNameInName = 0;
-  public $smartGroupCacheTimeout = 0;
+
+  public $smartGroupCacheTimeout = 5;
 
   public $defaultSearchProfileID = NULL;
 
@@ -445,6 +452,11 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    * Path to wkhtmltopdf if available
    */
   public $wkhtmltopdfPath = FALSE;
+  
+  /**
+   * Allow second-degree relations permission to edit contacts
+   */
+  public $wpBasePage = NULL;
 
   /**
    * Provide addressSequence
@@ -537,7 +549,12 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
       $country = array();
       if (is_array($this->countryLimit)) {
         foreach ($this->countryLimit as $val) {
-          $country[] = $countryIsoCodes[$val];
+          // CRM-12007
+          // some countries have disappeared and hence they might be in country limit
+          // but not in the country table
+          if (isset($countryIsoCodes[$val])) {
+            $country[] = $countryIsoCodes[$val];
+          }
         }
       }
       else {

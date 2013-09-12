@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -361,8 +361,8 @@ class CRM_Contact_Form_Task_Label extends CRM_Contact_Form_Task {
   /**
    * function to create labels (pdf)
    *
-   * @param   array    $contactRows assciated array of contact data
-   * @param   string   $format      format in which labels needs to be printed
+   * @param   array    $contactRows   assciated array of contact data
+   * @param   string   $format   format in which labels needs to be printed
    * @param   string   $fileName    The name of the file to save the label in
    *
    * @return  null

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -36,7 +36,9 @@ class CRM_Contact_Form_Search_Custom_PriceSet extends CRM_Contact_Form_Search_Cu
 
   protected $_eventID = NULL;
 
-  protected $_tableName = NULL; function __construct(&$formValues) {
+  protected $_tableName = NULL;
+
+  function __construct(&$formValues) {
     parent::__construct($formValues);
 
     $this->_eventID = CRM_Utils_Array::value('event_id',
@@ -108,12 +110,12 @@ WHERE  p.contact_id = c.id
 
     $sql = "
 SELECT c.id as contact_id,
-       p.id as participant_id, 
-       l.price_field_value_id as price_field_value_id, 
+       p.id as participant_id,
+       l.price_field_value_id as price_field_value_id,
        l.qty
 FROM   civicrm_contact c,
        civicrm_participant  p,
-       civicrm_line_item    l       
+       civicrm_line_item    l
 WHERE  c.id = p.contact_id
 AND    p.event_id = {$this->_eventID}
 AND    p.id = l.entity_id
@@ -247,20 +249,25 @@ AND    p.entity_id    = e.id
   }
 
   function all($offset = 0, $rowcount = 0, $sort = NULL,
-    $includeContactIDs = FALSE
+    $includeContactIDs = FALSE, $justIDs = FALSE
   ) {
-    $selectClause = "
+    if ($justIDs) {
+      $selectClause = "contact_a.id as contact_id";
+    }
+    else {
+      $selectClause = "
 contact_a.id             as contact_id  ,
 contact_a.display_name   as display_name";
 
-    foreach ($this->_columns as $dontCare => $fieldName) {
-      if (in_array($fieldName, array(
-        'contact_id',
-            'display_name',
-          ))) {
-        continue;
+      foreach ($this->_columns as $dontCare => $fieldName) {
+        if (in_array($fieldName, array(
+              'contact_id',
+              'display_name',
+            ))) {
+          continue;
+        }
+        $selectClause .= ",\ntempTable.{$fieldName} as {$fieldName}";
       }
-      $selectClause .= ",\ntempTable.{$fieldName} as {$fieldName}";
     }
 
     return $this->sql($selectClause,

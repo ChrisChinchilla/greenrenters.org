@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -29,7 +29,7 @@
  <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
 
 {if $action eq 8}
-  <div class="messages status">  
+  <div class="messages status no-popup">  
       <div class="icon inform-icon"></div> 
         {ts 1=$formatName}WARNING: You are about to delete the PDF Page Format titled <strong>%1</strong>.{/ts}<p>{ts}This will remove the format from all Message Templates that use it. Do you want to continue?{/ts}</p>
   </div>

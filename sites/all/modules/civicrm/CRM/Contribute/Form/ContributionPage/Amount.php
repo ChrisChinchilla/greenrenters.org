@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -120,7 +120,7 @@ SELECT id
     //check if selected payment processor supports recurring payment
     if (!empty($recurringPaymentProcessor)) {
       $this->addElement('checkbox', 'is_recur', ts('Recurring contributions'), NULL,
-        array('onclick' => "showHideByValue('is_recur',true,'recurFields','table-row','radio',false); showRecurInterval( );")
+        array('onclick' => "showHideByValue('is_recur',true,'recurFields','table-row','radio',false);")
       );
       $this->addCheckBox('recur_frequency_unit', ts('Supported recurring units'),
         CRM_Core_OptionGroup::values('recur_frequency_units', FALSE, FALSE, FALSE, NULL, 'name'),
@@ -128,12 +128,11 @@ SELECT id
         array('&nbsp;&nbsp;', '&nbsp;&nbsp;', '&nbsp;&nbsp;', '<br/>')
       );
       $this->addElement('checkbox', 'is_recur_interval', ts('Support recurring intervals'));
+      $this->addElement('checkbox', 'is_recur_installments', ts('Offer installments'));
     }
 
     // add pay later options
-    $this->addElement('checkbox', 'is_pay_later', ts('Pay later option'),
-      NULL, array('onclick' => "payLater(this);")
-    );
+    $this->addElement('checkbox', 'is_pay_later', ts('Pay later option'), NULL);
     $this->addElement('textarea', 'pay_later_text', ts('Pay later label'),
       CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'pay_later_text'),
       FALSE
@@ -142,6 +141,9 @@ SELECT id
       CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'pay_later_receipt'),
       FALSE
     );
+    
+    //add partial payment options
+
     // add price set fields
     $price = CRM_Price_BAO_Set::getAssoc(FALSE, 'CiviContribute');
     if (CRM_Utils_System::isNull($price)) {
@@ -215,8 +217,8 @@ SELECT id
               foreach ($options as $optionId => $optionValue) {
                 $countRow++;
                 $defaults['value'][$countRow] = $optionValue['amount'];
-                $defaults['label'][$countRow] = $optionValue['label'];
-                $defaults['name'][$countRow] = $optionValue['name'];
+                $defaults['label'][$countRow] = CRM_Utils_Array::value('label', $optionValue);
+                $defaults['name'][$countRow] = CRM_Utils_Array::value('name', $optionValue);
                 $defaults['weight'][$countRow] = $optionValue['weight'];
 
                 $defaults["price_field_value"][$countRow] = $optionValue['id'];
@@ -268,8 +270,7 @@ SELECT id
    * @access public
    * @static
    */
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = array();
     //as for separate membership payment we has to have
     //contribution amount section enabled, hence to disable it need to
@@ -293,7 +294,7 @@ SELECT id
         }
       }
       $hasMembershipBlk = TRUE;
-      if ($membershipBlock->is_separate_payment && !$fields['amount_block_is_active']) {
+      if ($membershipBlock->is_separate_payment && !CRM_Utils_Array::value('amount_block_is_active', $fields)) {
         $errors['amount_block_is_active'] = ts('To disable Contribution Amounts section you need to first disable Separate Membership Payment option from Membership Settings.');
       }
     }
@@ -307,7 +308,7 @@ SELECT id
         $errors['min_amount'] = ts('Minimum Amount should be less than Maximum Amount');
       }
     }
-
+ 
     if (isset($fields['is_pay_later'])) {
       if (empty($fields['pay_later_text'])) {
         $errors['pay_later_text'] = ts('Please enter the text for the \'pay later\' checkbox displayed on the contribution form.');
@@ -316,7 +317,7 @@ SELECT id
         $errors['pay_later_receipt'] = ts('Please enter the instructions to be sent to the contributor when they choose to \'pay later\'.');
       }
     }
-
+    
     // don't allow price set w/ membership signup, CRM-5095
     if ($priceSetId = CRM_Utils_Array::value('price_set_id', $fields)) {
       // don't allow price set w/ membership.
@@ -365,17 +366,19 @@ SELECT id
 
     if (CRM_Utils_Array::value('is_recur_interval', $fields)) {
       foreach(array_keys($fields['payment_processor']) as $paymentProcessorID) {
-        $paymentProcessorType = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_PaymentProcessor',
-                                                            $paymentProcessorID,
-                                                            'payment_processor_type'
-                                                            );
+        $paymentProcessorTypeId = CRM_Core_DAO::getFieldValue(
+          'CRM_Financial_DAO_PaymentProcessor',
+          $paymentProcessorID,
+          'payment_processor_type_id'
+        );
+        $paymentProcessorType = CRM_Core_PseudoConstant::paymentProcessorType(false, $paymentProcessorTypeId, 'name');
         if ($paymentProcessorType == 'Google_Checkout') {
           $errors['is_recur_interval'] = ts('Google Checkout does not support recurring intervals');
           break;
         }
       }
     }
-
+    
     return $errors;
   }
 
@@ -389,12 +392,12 @@ SELECT id
     // get the submitted form values.
     $params = $this->controller->exportValues($this->_name);
     if (array_key_exists('payment_processor', $params)) {
-      if (array_key_exists(CRM_Core_DAO::getFieldValue('CRM_Core_DAO_PaymentProcessor', 'AuthNet',
-            'id', 'payment_processor_type'
+      if (array_key_exists(CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_PaymentProcessor', 'AuthNet',
+            'id', 'payment_processor_type_id'
           ),
           CRM_Utils_Array::value('payment_processor', $params)
         )) {
-        CRM_Core_Session::setStatus(ts(' Please note that the Authorize.net payment processor only allows recurring contributions and auto-renew memberships with payment intervals from 7-365 days or 1-12 months (i.e. not greater than 1 year).'));
+        CRM_Core_Session::setStatus(ts(' Please note that the Authorize.net payment processor only allows recurring contributions and auto-renew memberships with payment intervals from 7-365 days or 1-12 months (i.e. not greater than 1 year).'), '', 'alert');
       }
     }
 
@@ -410,6 +413,7 @@ SELECT id
       'is_monetary' => FALSE,
       'is_pay_later' => FALSE,
       'is_recur_interval' => FALSE,
+      'is_recur_installments' => FALSE,
       'recur_frequency_unit' => "null",
       'default_amount_id' => "null",
       'is_allow_other_amount' => FALSE,
@@ -443,6 +447,7 @@ SELECT id
         array_keys($params['recur_frequency_unit'])
       );
       $params['is_recur_interval'] = CRM_Utils_Array::value('is_recur_interval', $params, FALSE);
+      $params['is_recur_installments'] = CRM_Utils_Array::value('is_recur_installments', $params, FALSE);
     }
 
     if (array_key_exists('payment_processor', $params) &&
@@ -507,6 +512,7 @@ SELECT id
           }
             /* || CRM_Utils_Array::value( 'price_field_value', $params )|| CRM_Utils_Array::value( 'price_field_other', $params )*/
           if (!empty($options) || CRM_Utils_Array::value('is_allow_other_amount', $params)) {
+            $fieldParams['is_quick_config'] = 1;
             $noContriAmount = NULL;
             $usedPriceSetId = CRM_Price_BAO_Set::getFor('civicrm_contribution_page', $this->_id, 3);
             if (!(CRM_Utils_Array::value('price_field_id', $params) || CRM_Utils_Array::value('price_field_other', $params)) && !$usedPriceSetId) {
@@ -580,6 +586,7 @@ SELECT id
               $fieldParams['html_type'] = 'Radio';
               $fieldParams['option_label'] = $params['label'];
               $fieldParams['option_amount'] = $params['value'];
+              $fieldParams['financial_type_id'] = CRM_Utils_Array::value('financial_type_id', $this->_values);
               foreach ($options as $value) {
                 $fieldParams['option_weight'][$value['weight']] = $value['weight'];
               }
@@ -588,21 +595,23 @@ SELECT id
             }
             if (CRM_Utils_Array::value('is_allow_other_amount', $params) && !CRM_Utils_Array::value('price_field_other', $params)) {
               $editedFieldParams = array(
-                                         'price_set_id' => $priceSetId,
-                                         'name' => 'other_amount',
-                                         );
+                 'price_set_id' => $priceSetId,
+                 'name' => 'other_amount',
+              );
               $editedResults = array();
 
               CRM_Price_BAO_Field::retrieve($editedFieldParams, $editedResults);
 
               if (!$priceFieldID = CRM_Utils_Array::value('id', $editedResults)) {
-                $fieldParams = array( 'name'               => 'other_amount',
-                                      'label'              => 'Other Amount',
-                                      'price_set_id'       => $priceSetId,
-                                      'html_type'          => 'Text',
-                                      'is_display_amounts' => 0,
-                                      'weight'             => 3,
-                                      );
+                $fieldParams = array( 
+                  'name' => 'other_amount',
+                  'label' => 'Other Amount',
+                  'price_set_id' => $priceSetId,
+                  'html_type' => 'Text',
+                  'financial_type_id' => CRM_Utils_Array::value('financial_type_id', $this->_values),
+                  'is_display_amounts' => 0,
+                  'weight' => 3,
+                );
                 $fieldParams['option_weight'][1] = 1;
                 $fieldParams['option_amount'][1] = 1;
                 if (!$noContriAmount) {

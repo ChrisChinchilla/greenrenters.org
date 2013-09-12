@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,7 +39,10 @@ class CRM_Mailing_Form_Search extends CRM_Core_Form {
   }
 
   public function buildQuickForm() {
-    $this->add('text', 'mailing_name', ts('Mailing Name'),
+    $parent = $this->controller->getParent();
+    $nameTextLabel = ($parent->_sms) ? ts('SMS Name') : ts('Mailing Name');
+
+    $this->add('text', 'mailing_name', $nameTextLabel,
       CRM_Core_DAO::getAttribute('CRM_Mailing_DAO_Mailing', 'title')
     );
 
@@ -56,7 +59,9 @@ class CRM_Mailing_Form_Search extends CRM_Core_Form {
       $this->addElement('checkbox', "mailing_status[$status]", NULL, $status);
     }
 
-    $this->addElement('checkbox', "sms", 'Is SMS');
+    if ($parent->_sms) {
+      $this->addElement('hidden', 'sms', $parent->_sms);
+    }
 
     $this->addButtons(array(
         array(

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -192,7 +192,7 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
 
     CRM_Core_Session::setStatus(ts('Input type of custom field \'%1\' has been successfully changed to \'%2\'.',
         array(1 => $this->_values['label'], 2 => $dstHtmlType)
-      ));
+      ), ts('Field Type Changed'), 'success');
   }
 
   static function fieldTypeTransitions($dataType, $htmlType) {

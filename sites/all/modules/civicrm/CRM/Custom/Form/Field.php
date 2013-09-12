@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -541,8 +541,7 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $default = CRM_Utils_Array::value('default_value', $fields);
 
     $errors = array();
@@ -550,10 +549,12 @@ class CRM_Custom_Form_Field extends CRM_Core_Form {
     //validate field label as well as name.
     $title  = $fields['label'];
     $name   = CRM_Utils_String::munge($title, '_', 64);
-    $query  = 'select count(*) from civicrm_custom_field where ( name like %1 OR label like %2 ) and id != %3';
+    $gId    = $self->_gid;  // CRM-7564
+    $query  = 'select count(*) from civicrm_custom_field where ( name like %1 OR label like %2 ) and id != %3 and custom_group_id = %4';    
     $fldCnt = CRM_Core_DAO::singleValueQuery($query, array(1 => array($name, 'String'),
         2 => array($title, 'String'),
         3 => array((int)$self->_id, 'Integer'),
+        4 => array($gId, 'Integer'),
       ));
     if ($fldCnt) {
       $errors['label'] = ts('Custom field \'%1\' already exists in Database.', array(1 => $title));
@@ -969,12 +970,12 @@ SELECT id
 
     CRM_Core_Session::setStatus(ts('Your custom field \'%1\' has been saved.',
         array(1 => $customField->label)
-      ));
+      ), ts('Saved'), 'success');
 
     $buttonName = $this->controller->getButtonName();
     $session = CRM_Core_Session::singleton();
     if ($buttonName == $this->getButtonName('next', 'new')) {
-      CRM_Core_Session::setStatus(ts(' You can add another custom field.'));
+      CRM_Core_Session::setStatus(ts(' You can add another custom field.'), '', 'info');
       $session->replaceUserContext(CRM_Utils_System::url('civicrm/admin/custom/group/field/add',
           'reset=1&action=add&gid=' . $this->_gid
         ));

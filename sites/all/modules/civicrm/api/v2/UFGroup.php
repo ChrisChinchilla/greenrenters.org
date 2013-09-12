@@ -1,12 +1,12 @@
 <?php
-// $Id: UFGroup.php 40968 2012-06-12 14:28:16Z kurund $
+// $Id: UFGroup.php 45502 2013-02-08 13:32:55Z kurund $
 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,8 +34,8 @@
  * @package CiviCRM_APIv2
  * @subpackage API_UF
  *
- * @copyright CiviCRM LLC (c) 2004-2012
- * @version $Id: UFGroup.php 40968 2012-06-12 14:28:16Z kurund $
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: UFGroup.php 45502 2013-02-08 13:32:55Z kurund $
  *
  */
 
@@ -318,6 +318,7 @@ function civicrm_uf_field_create($groupId, $params) {
     return civicrm_create_error("The field was not added. It already exists in this profile.");
   }
 
+  $params['weight'] = CRM_Core_BAO_UFField::autoWeight($params);
   $ufField = CRM_Core_BAO_UFField::add($params, $ids);
   _civicrm_object_to_array($ufField, $ufFieldArray);
 
@@ -376,6 +377,7 @@ function civicrm_uf_field_update($params, $fieldId) {
     return civicrm_create_error("The field was not added. It already exists in this profile.");
   }
 
+  $params['weight'] = CRM_Core_BAO_UFField::autoWeight($params);
   $ufField = CRM_Core_BAO_UFField::add($params, $ids);
   _civicrm_object_to_array($ufField, $ufFieldArray);
 

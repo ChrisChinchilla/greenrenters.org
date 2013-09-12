@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -48,7 +48,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
   //protected $_mapperPhoneType;
 
   /**
-   * Array of succesfully imported contribution id's
+   * Array of successfully imported contribution id's
    *
    * @array
    */
@@ -56,7 +56,8 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
 
   /**
    * class constructor
-   */ function __construct(&$mapperKeys, $mapperSoftCredit = NULL, $mapperPhoneType = NULL) {
+   */
+  function __construct(&$mapperKeys, $mapperSoftCredit = NULL, $mapperPhoneType = NULL) {
     parent::__construct();
     $this->_mapperKeys = &$mapperKeys;
     $this->_mapperSoftCredit = &$mapperSoftCredit;
@@ -73,9 +74,9 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
 
     $fields = array_merge($fields,
       array('soft_credit' => array('title' => ts('Soft Credit'),
-          'softCredit' => TRUE,
-          'headerPattern' => '/Soft Credit/i',
-        ))
+        'softCredit' => TRUE,
+        'headerPattern' => '/Soft Credit/i',
+      ))
     );
 
     // add pledge fields only if its is enabled
@@ -118,7 +119,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
           $this->_totalAmountIndex = $index;
           break;
 
-        case 'contribution_type':
+        case 'financial_type':
           $this->_contributionTypeIndex = $index;
           break;
       }
@@ -167,15 +168,13 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
 
     //for date-Formats
     $session = CRM_Core_Session::singleton();
-    $dateType = $session->get("dateTypes");
+    $dateType = $session->get('dateTypes');
     foreach ($params as $key => $val) {
       if ($val) {
         switch ($key) {
           case 'receive_date':
-            if (CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key)) {
-              if (!CRM_Utils_Rule::date($params[$key])) {
-                CRM_Import_Parser_Contact::addToErrorMsg('Receive Date', $errorMessage);
-              }
+            if ($dateValue = CRM_Utils_Date::formatDate($params[$key], $dateType)) {
+              $params[$key] = $dateValue;
             }
             else {
               CRM_Import_Parser_Contact::addToErrorMsg('Receive Date', $errorMessage);
@@ -183,10 +182,8 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
             break;
 
           case 'cancel_date':
-            if (CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key)) {
-              if (!CRM_Utils_Rule::date($params[$key])) {
-                CRM_Import_Parser_Contact::addToErrorMsg('Cancel Date', $errorMessage);
-              }
+            if ($dateValue = CRM_Utils_Date::formatDate($params[$key], $dateType)) {
+              $params[$key] = $dateValue;
             }
             else {
               CRM_Import_Parser_Contact::addToErrorMsg('Cancel Date', $errorMessage);
@@ -194,10 +191,8 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
             break;
 
           case 'receipt_date':
-            if (CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key)) {
-              if (!CRM_Utils_Rule::date($params[$key])) {
-                CRM_Import_Parser_Contact::addToErrorMsg('Receipt date', $errorMessage);
-              }
+            if ($dateValue = CRM_Utils_Date::formatDate($params[$key], $dateType)) {
+              $params[$key] = $dateValue;
             }
             else {
               CRM_Import_Parser_Contact::addToErrorMsg('Receipt date', $errorMessage);
@@ -205,10 +200,8 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
             break;
 
           case 'thankyou_date':
-            if (CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key)) {
-              if (!CRM_Utils_Rule::date($params[$key])) {
-                CRM_Import_Parser_Contact::addToErrorMsg('Thankyou Date', $errorMessage);
-              }
+            if ($dateValue = CRM_Utils_Date::formatDate($params[$key], $dateType)) {
+              $params[$key] = $dateValue;
             }
             else {
               CRM_Import_Parser_Contact::addToErrorMsg('Thankyou Date', $errorMessage);
@@ -251,7 +244,6 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
     }
 
     $params = &$this->getActiveFieldParams();
-
     $formatted = array('version' => 3);
 
     // don't add to recent items, CRM-4399
@@ -259,32 +251,22 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
 
     //for date-Formats
     $session = CRM_Core_Session::singleton();
-    $dateType = $session->get("dateTypes");
+    $dateType = $session->get('dateTypes');
 
     $customFields = CRM_Core_BAO_CustomField::getFields(CRM_Utils_Array::value('contact_type', $params));
 
     foreach ($params as $key => $val) {
       if ($val) {
         switch ($key) {
-          case 'receive_date':
-            CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key);
-            break;
-
-          case 'cancel_date':
-            CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key);
-            break;
-
-          case 'receipt_date':
-            CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key);
-            break;
-
-          case 'thankyou_date':
-            CRM_Utils_Date::convertToDefaultDate($params, $dateType, $key);
-            break;
-
-          case 'pledge_payment':
-            $params[$key] = CRM_Utils_String::strtobool($val);
-            break;
+        case 'receive_date':
+        case 'cancel_date':
+        case 'receipt_date':
+        case 'thankyou_date':
+          $params[$key] = CRM_Utils_Date::formatDate($params[$key], $dateType);
+          break;
+        case 'pledge_payment':
+          $params[$key] = CRM_Utils_String::strtobool($val);
+          break;
         }
         if ($customFieldID = CRM_Core_BAO_CustomField::getKeyID($key)) {
           if ($customFields[$customFieldID]['data_type'] == 'Date') {
@@ -337,7 +319,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
     if (CRM_Utils_Array::value('pledge_payment', $paramValues)) {
       $paramValues['onDuplicate'] = $onDuplicate;
     }
-    require_once 'api/v3/DeprecatedUtils.php';
+    require_once 'CRM/Utils/DeprecatedUtils.php';
     $formatError = _civicrm_api3_deprecated_formatted_param($paramValues, $formatted, TRUE);
 
     if ($formatError) {
@@ -361,7 +343,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
     else {
       //fix for CRM-2219 - Update Contribution
       // onDuplicate == CRM_Contribute_Import_Parser::DUPLICATE_UPDATE
-      if (CRM_Utils_Array::value('invoice_id',$paramValues) || 
+      if (CRM_Utils_Array::value('invoice_id',$paramValues) ||
           CRM_Utils_Array::value('trxn_id', $paramValues) || $paramValues['contribution_id']) {
         $dupeIds = array(
           'id' => CRM_Utils_Array::value('contribution_id', $paramValues),
@@ -410,9 +392,8 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
               $formatted['softID'] = $existingSoftCredit['soft_credit_id'];
             }
           }
-          
+
           $newContribution = CRM_Contribute_BAO_Contribution::create($formatted, $ids);
-          CRM_Price_BAO_LineItem::syncLineItems($ids['contribution'], 'civicrm_contribution', CRM_Utils_Array::value('total_amount',$formatted));
 
           $this->_newContributions[] = $newContribution->id;
 
@@ -438,7 +419,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
             }
           }
           $errorMsg = implode(' AND ', $errorMsg);
-          array_unshift($values, "Matching Contribution record not found for " . $errorMsg . ". Row was skipped.");
+          array_unshift($values, 'Matching Contribution record not found for ' . $errorMsg . '. Row was skipped.');
           return CRM_Contribute_Import_Parser::ERROR;
         }
       }
@@ -452,13 +433,13 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
 
       $paramValues['version'] = 3;
       //retrieve contact id using contact dedupe rule
-      require_once 'api/v3/DeprecatedUtils.php';
+      require_once 'CRM/Utils/DeprecatedUtils.php';
       $error = _civicrm_api3_deprecated_check_contact_dedupe($paramValues);
 
       if (CRM_Core_Error::isAPIError($error, CRM_Core_ERROR::DUPLICATE_CONTACT)) {
         $matchedIDs = explode(',', $error['error_message']['params'][0]);
         if (count($matchedIDs) > 1) {
-          array_unshift($values, "Multiple matching contact records detected for this row. The contribution was not imported");
+          array_unshift($values, 'Multiple matching contact records detected for this row. The contribution was not imported');
           return CRM_Contribute_Import_Parser::ERROR;
         }
         else {
@@ -497,7 +478,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
         // Using new Dedupe rule.
         $ruleParams = array(
           'contact_type' => $this->_contactType,
-          'level' => 'Strict',
+          'used'         => 'Unsupervised',
         );
         $fieldsArray = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
 
@@ -522,7 +503,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
           }
         }
 
-        array_unshift($values, "No matching Contact found for (" . $disp . ")");
+        array_unshift($values, 'No matching Contact found for (' . $disp . ')');
         return CRM_Contribute_Import_Parser::ERROR;
       }
     }
@@ -532,7 +513,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
         $checkCid->external_identifier = $paramValues['external_identifier'];
         $checkCid->find(TRUE);
         if ($checkCid->id != $formatted['contact_id']) {
-          array_unshift($values, "Mismatch of External identifier :" . $paramValues['external_identifier'] . " and Contact Id:" . $formatted['contact_id']);
+          array_unshift($values, 'Mismatch of External identifier :' . $paramValues['external_identifier'] . ' and Contact Id:' . $formatted['contact_id']);
           return CRM_Contribute_Import_Parser::ERROR;
         }
       }
@@ -592,7 +573,7 @@ class CRM_Contribute_Import_Parser_Contribution extends CRM_Contribute_Import_Pa
   }
 
   /**
-   * Get the array of succesfully imported contribution id's
+   * Get the array of successfully imported contribution id's
    *
    * @return array
    * @access public

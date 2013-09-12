@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
  * Class representing the table relationships
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -58,7 +58,7 @@ class CRM_Core_TableHierarchy {
     'civicrm_entity_tag' => '22',
     'civicrm_note' => '23',
     'civicrm_contribution' => '24',
-    'civicrm_contribution_type' => '25',
+                         'civicrm_financial_type'    => '25',
     'civicrm_participant' => '26',
     'civicrm_event' => '27',
     'civicrm_worldregion' => '28',
@@ -77,8 +77,7 @@ class CRM_Core_TableHierarchy {
     'civicrm_mailing_event_trackable_url_open' => '41',
   );
 
-  static
-  function &info() {
+  static function &info() {
     //get the campaign related tables.
     CRM_Campaign_BAO_Query::info(self::$info);
 

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -46,8 +46,7 @@ class CRM_Contact_BAO_Contact_Utils {
    * @access public
    * @static
    */
-  static
-  function getImage($contactType, $urlOnly = FALSE, $contactId = NULL, $addProfileOverlay = TRUE) {
+  static function getImage($contactType, $urlOnly = FALSE, $contactId = NULL, $addProfileOverlay = TRUE) {
     static $imageInfo = array();
 
     $contactType = explode(CRM_Core_DAO::VALUE_SEPARATOR, trim($contactType, CRM_Core_DAO::VALUE_SEPARATOR));
@@ -82,8 +81,13 @@ class CRM_Contact_BAO_Contact_Utils {
           $type = CRM_Utils_Array::value('name', $typeInfo);
         }
 
-
-        $imageInfo[$contactType]['image'] = "<div class=\"icon crm-icon {$type}-icon\" title=\"{$contactType}\"></div>";
+        // do not add title since it hides contact name
+        if ($addProfileOverlay) {
+          $imageInfo[$contactType]['image'] = "<div class=\"icon crm-icon {$type}-icon\"></div>";
+        }
+        else{
+          $imageInfo[$contactType]['image'] = "<div class=\"icon crm-icon {$type}-icon\" title=\"{$contactType}\"></div>";
+        }
         $imageInfo[$contactType]['url'] = NULL;
       }
     }
@@ -146,8 +150,7 @@ WHERE  id IN ( $idString )
    * @static
    * @access public
    */
-  static
-  function generateChecksum($contactID, $ts = NULL, $live = NULL, $hash = NULL) {
+  static function generateChecksum($contactID, $ts = NULL, $live = NULL, $hash = NULL) {
     // return a warning message if we dont get a contactID
     // this typically happens when we do a message preview
     // or an anon mailing view - CRM-8298
@@ -190,16 +193,13 @@ WHERE  id IN ( $idString )
    * Make sure the checksum is valid for the passed in contactID
    *
    * @param int    $contactID
-   * @param string $cs         checksum to match against
-   * @param int    $ts         timestamp that checksum was generated
-   * @param int    $live       life of this checksum in hours/ 'inf' for infinite
+   * @param string $inputCheck checksum to match against
    *
    * @return boolean           true if valid, else false
    * @static
    * @access public
    */
-  static
-  function validChecksum($contactID, $inputCheck) {
+  static function validChecksum($contactID, $inputCheck) {
 
     $input = CRM_Utils_System::explode('_', $inputCheck, 3);
 
@@ -232,8 +232,7 @@ WHERE  id IN ( $idString )
    * @static
    * @access public
    */
-  static
-  function maxLocations($contactId) {
+  static function maxLocations($contactId) {
     $contactLocations = array();
 
     // find number of location blocks for this contact and adjust value accordinly
@@ -260,8 +259,7 @@ UNION
    * @access public
    * @static
    */
-  static
-  function createCurrentEmployerRelationship($contactID, $organization) {
+  static function createCurrentEmployerRelationship($contactID, $organization) {
     $organizationId = NULL;
 
     // if organization id is passed.
@@ -278,7 +276,7 @@ UNION
       $dedupeParams = CRM_Dedupe_Finder::formatParams($organizationParams, 'Organization');
 
       $dedupeParams['check_permission'] = FALSE;
-      $dupeIDs = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Organization', 'Fuzzy');
+      $dupeIDs = CRM_Dedupe_Finder::dupesByParams($dedupeParams, 'Organization', 'Supervised');
 
       if (is_array($dupeIDs) && !empty($dupeIDs)) {
         // we should create relationship only w/ first org CRM-4193
@@ -293,7 +291,7 @@ UNION
           'contact_type' => 'Organization',
           'organization_name' => trim($orgName[0]),
         );
-        $org = CRM_Contact_BAO_Contact::add($newOrg);
+        $org = CRM_Contact_BAO_Contact::create($newOrg);
         $organizationId = $org->id;
       }
     }
@@ -346,8 +344,7 @@ UNION
    * @access public
    * @static
    */
-  static
-  function currentEmployerRelatedMembership($contactID, $employerID, $relationshipParams, $duplicate = FALSE) {
+  static function currentEmployerRelatedMembership($contactID, $employerID, $relationshipParams, $duplicate = FALSE) {
     $ids = array();
     $action = CRM_Core_Action::ADD;
 
@@ -377,8 +374,7 @@ UNION
    * @param array $currentEmployerParams associated array of contact id and its employer id
    *
    */
-  static
-  function setCurrentEmployer($currentEmployerParams) {
+  static function setCurrentEmployer($currentEmployerParams) {
     foreach ($currentEmployerParams as $contactId => $orgId) {
       $query = "UPDATE civicrm_contact contact_a,civicrm_contact contact_b
 SET contact_a.employer_id=contact_b.id, contact_a.organization_name=contact_b.organization_name
@@ -396,8 +392,7 @@ WHERE contact_a.id ={$contactId} AND contact_b.id={$orgId}; ";
    * @param int $organizationId current employer id
    *
    */
-  static
-  function updateCurrentEmployer($organizationId) {
+  static function updateCurrentEmployer($organizationId) {
     $query = "UPDATE civicrm_contact contact_a,civicrm_contact contact_b
 SET contact_a.organization_name=contact_b.organization_name
 WHERE contact_a.employer_id=contact_b.id AND contact_b.id={$organizationId}; ";
@@ -412,8 +407,7 @@ WHERE contact_a.employer_id=contact_b.id AND contact_b.id={$organizationId}; ";
    * @param int $employerId contact id ( mostly organization contact id)
    *
    */
-  static
-  function clearCurrentEmployer($contactId, $employerId = NULL) {
+  static function clearCurrentEmployer($contactId, $employerId = NULL) {
     $query = "UPDATE civicrm_contact
 SET organization_name=NULL, employer_id = NULL
 WHERE id={$contactId}; ";
@@ -463,8 +457,7 @@ WHERE id={$contactId}; ";
    * @static
    *
    */
-  static
-  function buildOnBehalfForm(&$form,
+  static function buildOnBehalfForm(&$form,
     $contactType       = 'Individual',
     $countryID         = NULL,
     $stateID           = NULL,
@@ -588,8 +581,7 @@ WHERE id={$contactId}; ";
    * @param int $employerId contact id of employer ( organization id )
    *
    */
-  static
-  function clearAllEmployee($employerId) {
+  static function clearAllEmployee($employerId) {
     $query = "
 UPDATE civicrm_contact
    SET organization_name=NULL, employer_id = NULL
@@ -609,8 +601,7 @@ UPDATE civicrm_contact
    * @static
    * @access public
    */
-  static
-  function formatContactIDSToLinks($contactIDs, $addViewLink = TRUE, $addEditLink = TRUE, $originalId = NULL) {
+  static function formatContactIDSToLinks($contactIDs, $addViewLink = TRUE, $addEditLink = TRUE, $originalId = NULL) {
     $contactLinks = array();
     if (!is_array($contactIDs) || empty($contactIDs)) {
       return $contactLinks;
@@ -687,8 +678,7 @@ LEFT JOIN  civicrm_email ce ON ( ce.contact_id=c.id AND ce.is_primary = 1 )
       if (!empty($originalId) && array_key_exists('merge', $hasPermissions)) {
         $rgBao               = new CRM_Dedupe_BAO_RuleGroup();
         $rgBao->contact_type = $dao->contact_type;
-        $rgBao->level        = 'Fuzzy';
-        $rgBao->is_default   = 1;
+        $rgBao->used         = 'Supervised';
         if ($rgBao->find(TRUE)) {
           $rgid = $rgBao->id;
         }
@@ -714,8 +704,7 @@ LEFT JOIN  civicrm_email ce ON ( ce.contact_id=c.id AND ce.is_primary = 1 )
    * @return $contactDetails array of contact info.
    * @static
    */
-  static
-  function contactDetails($componentIds, $componentName, $returnProperties = array(
+  static function contactDetails($componentIds, $componentName, $returnProperties = array(
     )) {
     $contactDetails = array();
     if (empty($componentIds) ||
@@ -838,8 +827,7 @@ Group By  componentId";
    * @static
    * @access public
    */
-  static
-  function processSharedAddress(&$address) {
+  static function processSharedAddress(&$address) {
     if (!is_array($address)) {
       return;
     }
@@ -874,13 +862,13 @@ Group By  componentId";
       foreach ($values as $field => $submittedValue) {
         if (!in_array($field, $skipFields)){
           if (isset($masterAddress->$field)) {
-            $values[$field] = $masterAddress->$field;
+          $values[$field] = $masterAddress->$field;
           } else {
             $values[$field] = '';
-          }
         }
       }
     }
+  }
   }
 
   /**
@@ -891,8 +879,7 @@ Group By  componentId";
    * @return $contactNames associated array of contact names
    * @static
    */
-  static
-  function getAddressShareContactNames(&$addresses) {
+  static function getAddressShareContactNames(&$addresses) {
     $contactNames = array();
     // get the list of master id's for address
     $masterAddressIds = array();
@@ -920,19 +907,30 @@ Group By  componentId";
     return $contactNames;
   }
 
-  static
-  function clearContactCaches() {
+  /**
+   * Clear the contact cache so things are kosher. We started off being super aggressive with clearing
+   * caches, but are backing off from this with every release. Compromise between ease of coding versus
+   * performance versus being accurate at that very instant
+   *
+   * @param $contactID - the contactID that was edited / deleted
+   *
+   * @return void
+   * @static
+   */
+  static function clearContactCaches($contactID = NULL) {
     // clear acl cache if any.
     CRM_ACL_BAO_Cache::resetCache();
 
-    // also clear prev/next dedupe cache
-    CRM_Core_BAO_PrevNextCache::deleteItem();
+    if (empty($contactID)) {
+      // also clear prev/next dedupe cache - if no contactID passed in
+      CRM_Core_BAO_PrevNextCache::deleteItem();
+    }
 
     // reset the group contact cache for this group
     CRM_Contact_BAO_GroupContactCache::remove();
   }
 
-  public function updateGreeting($params) {
+  public static function updateGreeting($params) {
     $contactType = $params['ct'];
     $greeting    = $params['gt'];
     $valueID     = $id = CRM_Utils_Array::value('id', $params);
@@ -1074,8 +1072,7 @@ WHERE id IN (" . implode(',', $contactIds) . ")";
    *
    * @return int or null
    */
-  static
-  function defaultGreeting($contactType, $greetingType) {
+  static function defaultGreeting($contactType, $greetingType) {
     $contactTypeFilters = array('Individual' => 1, 'Household' => 2, 'Organization' => 3);
     if (!isset($contactTypeFilters[$contactType])) {
       return;

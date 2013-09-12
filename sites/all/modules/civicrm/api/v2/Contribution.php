@@ -1,12 +1,12 @@
 <?php
-// $Id: Contribution.php 40968 2012-06-12 14:28:16Z kurund $
+// $Id: Contribution.php 45502 2013-02-08 13:32:55Z kurund $
 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,8 +34,8 @@
  * @package CiviCRM_APIv2
  * @subpackage API_Contribute
  *
- * @copyright CiviCRM LLC (c) 2004-2012
- * @version $Id: Contribution.php 40968 2012-06-12 14:28:16Z kurund $
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Contribution.php 45502 2013-02-08 13:32:55Z kurund $
  *
  */
 
@@ -283,10 +283,9 @@ function &civicrm_contribution_format_create(&$params) {
  * @access private
  */
 function _civicrm_contribute_check_params(&$params) {
-  static $required = array(
-    'contact_id' => NULL,
+  static $required = array('contact_id' => NULL,
     'total_amount' => NULL,
-    'contribution_type_id' => 'contribution_type',
+    'financial_type_id' => 'financial_type',
   );
 
   // params should be an array
@@ -423,27 +422,26 @@ function _civicrm_contribute_format_params(&$params, &$values, $create = FALSE) 
           return civicrm_create_error("currency not a valid code: $value");
         }
         break;
-
-      case 'contribution_type_id':
-        if (!CRM_Utils_Array::value($value, CRM_Contribute_PseudoConstant::contributionType())) {
-          return civicrm_create_error('Invalid Contribution Type Id');
+        case 'financial_type_id' :
+        if (!CRM_Utils_Array::value($value, CRM_Contribute_PseudoConstant::financialType())) {
+          return civicrm_create_error('Invalid Financial Type Id');
         }
         break;
 
-      case 'contribution_type':
+      case 'financial_type':
         $contributionTypeId = CRM_Utils_Array::key(ucfirst($value),
-          CRM_Contribute_PseudoConstant::contributionType()
+          CRM_Contribute_PseudoConstant::financialType()
         );
         if ($contributionTypeId) {
-          if (CRM_Utils_Array::value('contribution_type_id', $values) &&
-            $contributionTypeId != $values['contribution_type_id']
+          if (CRM_Utils_Array::value('financial_type_id', $values) &&
+            $contributionTypeId != $values['financial_type_id']
           ) {
-            return civicrm_create_error('Mismatched Contribution Type and Contribution Type Id');
+            return civicrm_create_error('Mismatched Financial Type and Financial Type Id');
           }
-          $values['contribution_type_id'] = $contributionTypeId;
+          $values['financial_type_id'] = $contributionTypeId;
         }
         else {
-          return civicrm_create_error('Invalid Contribution Type');
+          return civicrm_create_error('Invalid Financial Type');
         }
         break;
 
@@ -545,8 +543,8 @@ function civicrm_contribute_transact($params) {
     $params['invoiceID'] = $params['invoice_id'];
   }
 
-  require_once 'CRM/Core/BAO/PaymentProcessor.php';
-  $paymentProcessor = CRM_Core_BAO_PaymentProcessor::getPayment($params['payment_processor_id'],
+  require_once 'CRM/Financial/BAO/PaymentProcessor.php';
+  $paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($params['payment_processor_id'],
     $params['payment_processor_mode']
   );
   if (civicrm_error($paymentProcessor)) {

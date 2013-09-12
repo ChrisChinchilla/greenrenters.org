@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
  | Copyright Tech To The People http:tttp.eu (c) 2008                 |
  +--------------------------------------------------------------------+
@@ -82,6 +82,7 @@ class civicrm_cli {
       trigger_error("cli.php can only be run from command line.", E_USER_ERROR);
     }
   }
+
   public function callApi() {
     require_once 'api/api.php';
 
@@ -184,8 +185,12 @@ class civicrm_cli {
     $_SERVER['PHP_SELF'] = "/index.php";
     $_SERVER['HTTP_HOST'] = $this->_site;
     $_SERVER['REMOTE_ADDR'] = "127.0.0.1";
+    $_SERVER['SERVER_SOFTWARE'] = NULL;
+    $_SERVER['REQUEST_METHOD']  = 'GET';
+
     // SCRIPT_FILENAME needed by CRM_Utils_System::cmsRootPath
     $_SERVER['SCRIPT_FILENAME'] = __FILE__;
+
     // CRM-8917 - check if script name starts with /, if not - prepend it.
     if (ord($_SERVER['SCRIPT_NAME']) != 47) {
       $_SERVER['SCRIPT_NAME'] = '/' . $_SERVER['SCRIPT_NAME'];
@@ -198,15 +203,12 @@ class civicrm_cli {
     require_once $civicrm_root . '/CRM/Core/ClassLoader.php';
     CRM_Core_ClassLoader::singleton()->register();
 
-    require_once ('CRM/Core/Config.php');
     $this->_config = CRM_Core_Config::singleton();
 
-    require_once ('CRM/Utils/System.php');
     $class = 'CRM_Utils_System_' . $this->_config->userFramework;
 
     $cms = new $class();
-    if (!CRM_Utils_System::loadBootstrap(array(
-      ), FALSE, FALSE, $civicrm_root)) {
+    if (!CRM_Utils_System::loadBootstrap(array(), FALSE, FALSE, $civicrm_root)) {
       $this->_log(ts("Failed to bootstrap CMS"));
       return FALSE;
     }
@@ -219,6 +221,10 @@ class civicrm_cli {
     }
 
     if (!empty($this->_user)) {
+      if(!CRM_Utils_System::authenticateScript(TRUE, $this->_user, $this->_password, TRUE, FALSE, FALSE)) {
+        $this->_log(ts("Failed to login as %1. Wrong username or password.", array('1' => $this->_user)));
+        return FALSE;
+      }
       if (!$cms->loadUser($this->_user)) {
         $this->_log(ts("Failed to login as %1", array('1' => $this->_user)));
         return FALSE;
@@ -325,19 +331,20 @@ class civicrm_cli_csv_file extends civicrm_cli {
     }
 
     //header
-    $header = fgetcsv($handle, 1000, $this->separator);
-    //  $strtolower = function_exists('mb_strtolower') ? 'mb_strtolower' : 'strtolower';
-    if (!$header) {
+    $header = fgetcsv($handle, 0, $this->separator);
+    // In case fgetcsv couldn't parse the header and dumped the whole line in 1 array element
+    // Try a different separator char
+    if (count($header) == 1) {
       $this->separator = ";";
       rewind($handle);
-      $header = fgetcsv($handle, 1000, $this->separator);
-    }
-    if (!$header) {
-      die("Invalid file format for " . $this->_file . ". It must be a valid csv with separator ',' or ';'\n");
+      $header = fgetcsv($handle, 0, $this->separator);
+      if (count($header) == 1) {
+        die("Invalid file format for " . $this->_file . ". It must be a valid csv with separator ',' or ';'\n");
+      }
     }
 
     $this->header = $header;
-    while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+    while (($data = fgetcsv($handle, 0, $this->separator)) !== FALSE) {
       // skip blank lines
       if(count($data) == 1 && is_null($data[0])) continue;
       $this->row++;

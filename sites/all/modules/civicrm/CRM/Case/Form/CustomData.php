@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -76,7 +76,8 @@ class CRM_Case_Form_CustomData extends CRM_Core_Form {
    *
    * @access public
    *
-   */ function preProcess() {
+   */
+  function preProcess() {
     $this->_groupID   = CRM_Utils_Request::retrieve('groupID', 'Positive', $this, TRUE);
     $this->_entityID  = CRM_Utils_Request::retrieve('entityID', 'Positive', $this, TRUE);
     $this->_subTypeID = CRM_Utils_Request::retrieve('subType', 'Positive', $this, TRUE);

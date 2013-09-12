@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -131,7 +131,7 @@ class CRM_Price_Page_Field extends CRM_Core_Page {
     $priceFieldBAO->price_set_id = $this->_sid;
     $priceFieldBAO->orderBy('weight, label');
     $priceFieldBAO->find();
-    
+
     while ($priceFieldBAO->fetch()) {
       $priceField[$priceFieldBAO->id] = array();
       CRM_Core_DAO::storeValues($priceFieldBAO, $priceField[$priceFieldBAO->id]);
@@ -243,11 +243,12 @@ class CRM_Price_Page_Field extends CRM_Core_Page {
       $this->assign('usedBy', $usedBy);
       $this->_isSetReserved= CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $this->_sid, 'is_reserved');
       $this->assign('isReserved', $this->_isSetReserved);
-      
+
       CRM_Price_BAO_Set::checkPermission($this->_sid);
       $comps = array(
         'Event' => 'civicrm_event',
         'Contribution' => 'civicrm_contribution_page',
+        'EventTemplate' => 'civicrm_event_template'
       );
       $priceSetContexts = array();
       foreach ($comps as $name => $table) {

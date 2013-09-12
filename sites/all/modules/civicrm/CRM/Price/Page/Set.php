@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -151,7 +151,7 @@ class CRM_Price_Page_Set extends CRM_Core_Page {
     }
     elseif ($action & CRM_Core_Action::COPY) {
       $session = CRM_Core_Session::singleton();
-      CRM_Core_Session::setStatus(ts('A copy of the price set has been created'));
+      CRM_Core_Session::setStatus(ts('A copy of the price set has been created'), ts('Saved'), 'success');
       $this->copy();
     }
     else {
@@ -181,6 +181,7 @@ class CRM_Price_Page_Set extends CRM_Core_Page {
           $comps = array(
             'Event' => 'civicrm_event',
             'Contribution' => 'civicrm_contribution_page',
+            'EventTemplate' => 'civicrm_event_template'
           );
           $priceSetContexts = array();
           foreach ($comps as $name => $table) {

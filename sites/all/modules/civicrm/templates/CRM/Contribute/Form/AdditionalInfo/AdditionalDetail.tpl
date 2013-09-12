@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,12 +27,13 @@
 {if $isOnline}{assign var=valueStyle value=" class='view-value'"}{else}{assign var=valueStyle value=""}{/if}
 <div id="id-additionalDetail" class="section-shown">
     <table class="form-layout-compressed">
-        <tr  class="crm-contribution-form-block-contribution_page"><td class="label">{$form.contribution_page_id.label}</td><td{$valueStyle}>{$form.contribution_page_id.html|crmReplace:class:twenty}</td></tr>
+        <tr  class="crm-contribution-form-block-contribution_page"><td class="label">{$form.contribution_page_id.label}</td><td{$valueStyle}>{$form.contribution_page_id.html|crmAddClass:twenty}</td></tr>
         <tr class="crm-contribution-form-block-note"><td class="label" style="vertical-align:top;">{$form.note.label}</td><td>{$form.note.html}</td></tr>
         <tr class="crm-contribution-form-block-non_deductible_amount"><td class="label">{$form.non_deductible_amount.label}</td><td{$valueStyle}>{$form.non_deductible_amount.html|crmMoney:$currency:'':1}<br />
             <span class="description">{ts}Non-deductible portion of this contribution.{/ts}</span></td></tr>
         <tr class="crm-contribution-form-block-fee_amount"><td class="label">{$form.fee_amount.label}</td><td{$valueStyle}>{$form.fee_amount.html|crmMoney:$currency:'XXX':'YYY'}<br />
             <span class="description">{ts}Processing fee for this transaction (if applicable).{/ts}</span></td></tr>
+        
         <tr class="crm-contribution-form-block-net_amount"><td class="label">{$form.net_amount.label}</td><td{$valueStyle}>{$form.net_amount.html|crmMoney:$currency:'':1}<br />
             <span class="description">{ts}Net value of the contribution (Total Amount minus Fee).{/ts}</span></td></tr>
         <tr class="crm-contribution-form-block-invoice_id"><td class="label">{$form.invoice_id.label}</td><td{$valueStyle}>{$form.invoice_id.html}<br />

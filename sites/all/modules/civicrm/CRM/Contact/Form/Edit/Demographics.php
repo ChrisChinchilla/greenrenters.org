@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -47,8 +47,7 @@ class CRM_Contact_Form_Edit_Demographics {
    * @access public
    * @static
    */
-  static
-  function buildQuickForm(&$form) {
+  static function buildQuickForm(&$form) {
     // radio button for gender
     $genderOptions = array();
     $gender = CRM_Core_PseudoConstant::gender(TRUE);
@@ -74,6 +73,6 @@ class CRM_Contact_Form_Edit_Demographics {
    *
    * @return None
    */
-  function setDefaultValues(&$form, &$defaults) {}
+  static function setDefaultValues(&$form, &$defaults) {}
 }
 

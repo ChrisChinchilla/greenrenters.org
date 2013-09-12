@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -53,7 +53,8 @@ class CRM_Contact_Form_Task_Map extends CRM_Contact_Form_Task {
    *
    * @return void
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
     $cid = CRM_Utils_Request::retrieve('cid', 'Positive',
       $this, FALSE
     );
@@ -73,7 +74,15 @@ class CRM_Contact_Form_Task_Map extends CRM_Contact_Form_Task {
     if ($cid) {
       $ids = array($cid);
       $this->_single = TRUE;
-      if ($context && !$profileGID) {
+      if ($profileGID) {
+        // this does a check and ensures that the user has permission on this profile
+        // CRM-11766
+        $profileIDs = CRM_Profile_Page_Listings::getProfileContact($profileGID);
+        if (!in_array($cid, $profileIDs)) {
+          CRM_Core_Error::fatal();
+        }
+      }
+      elseif ($context) {
         $qfKey = CRM_Utils_Request::retrieve('key', 'String', $this);
         $urlParams = 'force=1';
         if (CRM_Utils_Rule::qfKey($qfKey)) {
@@ -142,14 +151,13 @@ class CRM_Contact_Form_Task_Map extends CRM_Contact_Form_Task {
    * @return string           the location of the file we have created
    * @access protected
    */
-  static
-  function createMapXML($ids, $locationId, &$page, $addBreadCrumb, $type = 'Contact') {
+  static function createMapXML($ids, $locationId, &$page, $addBreadCrumb, $type = 'Contact') {
     $config = CRM_Core_Config::singleton();
 
     CRM_Utils_System::setTitle(ts('Map Location(s)'));
     $page->assign('query', 'CiviCRM Search Query');
     $page->assign('mapProvider', $config->mapProvider);
-    $page->assign('mapKey', $config->mapAPIKey);
+    $page->assign('mapKey', urlencode($config->mapAPIKey));
     if ($type == 'Contact') {
       $imageUrlOnly = FALSE;
 
@@ -222,10 +230,12 @@ class CRM_Contact_Form_Task_Map extends CRM_Contact_Form_Task {
       }
     }
 
-    $center = array('lat' => (float ) $sumLat / count($locations),
+    $center = array(
+      'lat' => (float ) $sumLat / count($locations),
       'lng' => (float ) $sumLng / count($locations),
     );
-    $span = array('lat' => (float )($maxLat - $minLat),
+    $span = array(
+      'lat' => (float )($maxLat - $minLat),
       'lng' => (float )($maxLng - $minLng),
     );
     $page->assign_by_ref('center', $center);

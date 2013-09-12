@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -97,23 +97,20 @@ class CRM_Contact_Page_Inline_Address extends CRM_Core_Page {
       $this->assign('add', $currentAddressBlock['address'][$locBlockNo]);
       $this->assign('sharedAddresses', $sharedAddresses);
     }
+    $contact = new CRM_Contact_BAO_Contact( );
+    $contact->id = $contactId;
+    $contact->find(true);
+    $privacy = array( );
+    foreach ( CRM_Contact_BAO_Contact::$_commPrefs as $name ) {
+      if ( isset( $contact->$name ) ) {
+        $privacy[$name] = $contact->$name;
+      }
+    }
 
     $this->assign('contactId', $contactId);
     $this->assign('locationIndex', $locBlockNo);
     $this->assign('addressId', $addressId);
-
-    $appendBlockIndex = CRM_Core_BAO_Address::getAddressCount($contactId);
-
-    // check if we are adding new address, then only append add link 
-    if ( $appendBlockIndex == $locBlockNo ) {
-      if ( $appendBlockIndex ) {
-        $appendBlockIndex++;
-      }
-    }
-    else {
-      $appendBlockIndex = 0; 
-    }
-    $this->assign('appendBlockIndex', $appendBlockIndex);
+    $this->assign('privacy', $privacy);
     
     // check logged in user permission
     CRM_Contact_Page_View::checkUserPermission($this, $contactId);

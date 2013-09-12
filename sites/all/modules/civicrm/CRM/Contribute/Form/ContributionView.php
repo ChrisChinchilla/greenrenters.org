@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -54,7 +54,7 @@ class CRM_Contribute_Form_ContributionView extends CRM_Core_Form {
 
     CRM_Contribute_BAO_Contribution::getValues($params, $values, $ids);
 
-    $softParams = array('contribution_id' => $values['contribution_id']);
+    $softParams = array('contribution_id' => CRM_Utils_Array::value('contribution_id', $values));
     if ($softContribution = CRM_Contribute_BAO_Contribution::getSoftContribution($softParams, TRUE)) {
       $values = array_merge($values, $softContribution);
     }
@@ -65,6 +65,16 @@ class CRM_Contribute_Form_ContributionView extends CRM_Core_Form {
       $values['contribution_page_title'] = CRM_Utils_Array::value(CRM_Utils_Array::value('contribution_page_id', $values), $contribPages);
     }
 
+    // get recieved into i.e to_financial_account_id from last trxn
+    $financialTrxnId = CRM_Core_BAO_FinancialTrxn::getFinancialTrxnId($values['contribution_id'], 'DESC');
+    $values['to_financial_account'] = '';
+    if (CRM_Utils_Array::value('financialTrxnId', $financialTrxnId)) {
+      $values['to_financial_account_id'] = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialTrxn', $financialTrxnId['financialTrxnId'], 'to_financial_account_id');   
+      if ($values['to_financial_account_id']) {
+        $values['to_financial_account'] = CRM_Contribute_PseudoConstant::financialAccount($values['to_financial_account_id']);        
+      }
+    }
+        
     if (CRM_Utils_Array::value('honor_contact_id', $values)) {
       $sql    = "SELECT display_name FROM civicrm_contact WHERE id = %1";
       $params = array(1 => array($values['honor_contact_id'], 'Integer'));
@@ -88,7 +98,7 @@ class CRM_Contribute_Form_ContributionView extends CRM_Core_Form {
       }
     }
 
-    $groupTree = CRM_Core_BAO_CustomGroup::getTree('Contribution', $this, $id, 0, $values['contribution_type_id']);
+    $groupTree = CRM_Core_BAO_CustomGroup::getTree('Contribution', $this, $id, 0, CRM_Utils_Array::value('financial_type_id', $values));
     CRM_Core_BAO_CustomGroup::buildCustomDataView($this, $groupTree);
 
     $premiumId = NULL;
@@ -112,7 +122,7 @@ class CRM_Contribute_Form_ContributionView extends CRM_Core_Form {
     }
 
     // Get Note
-    $noteValue = CRM_Core_BAO_Note::getNote($values['id'], 'civicrm_contribution');
+    $noteValue = CRM_Core_BAO_Note::getNote(CRM_Utils_Array::value('id', $values), 'civicrm_contribution');
     $values['note'] = array_values($noteValue);
 
     // show billing address location details, if exists
@@ -154,15 +164,23 @@ class CRM_Contribute_Form_ContributionView extends CRM_Core_Form {
     // assign values to the template
     $this->assign($values);
 
+    $displayName = CRM_Contact_BAO_Contact::displayName($values['contact_id']);
+    $this->assign('displayName', $displayName);
+    
+    // Check if this is default domain contact CRM-10482
+    if (CRM_Contact_BAO_Contact::checkDomainContact($values['contact_id'])) {
+      $displayName .= ' (' . ts('default organization') . ')';
+    }
+
+    // omitting contactImage from title for now since the summary overlay css doesn't work outside of our crm-container
+    CRM_Utils_System::setTitle(ts('View Contribution from') .  ' ' . $displayName);
+
     // add viewed contribution to recent items list
     $url = CRM_Utils_System::url('civicrm/contact/view/contribution',
       "action=view&reset=1&id={$values['id']}&cid={$values['contact_id']}&context=home"
     );
 
-    $displayName = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact', $values['contact_id'], 'display_name');
-    $this->assign('displayName', $displayName);
-
-    $title = $displayName . ' - (' . CRM_Utils_Money::format($values['total_amount']) . ' ' . ' - ' . $values['contribution_type'] . ')';
+    $title = $displayName . ' - (' . CRM_Utils_Money::format($values['total_amount']) . ' ' . ' - ' . $values['financial_type'] . ')';
 
     $recentOther = array();
     if (CRM_Core_Permission::checkActionPermission('CiviContribute', CRM_Core_Action::UPDATE)) {

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -49,26 +49,29 @@ class CRM_Contact_Form_DedupeRules extends CRM_Admin_Form {
    *
    * @return None
    * @access public
-   */ function preProcess() {
+   */ 
+  function preProcess() {
     // Ensure user has permission to be here
     if (!CRM_Core_Permission::check('administer dedupe rules')) {
       CRM_Utils_System::permissionDenied();
       CRM_Utils_System::civiExit();
     }
-
+    $this->_options = array(ts('Unsupervised'), ts('Supervised'), ts('General'));
     $this->_rgid = CRM_Utils_Request::retrieve('id', 'Positive', $this, FALSE, 0);
     $this->_contactType = CRM_Utils_Request::retrieve('contact_type', 'String', $this, FALSE, 0);
     if ($this->_rgid) {
       $rgDao = new CRM_Dedupe_DAO_RuleGroup();
       $rgDao->id = $this->_rgid;
       $rgDao->find(TRUE);
+
       $this->_defaults['threshold'] = $rgDao->threshold;
       $this->_contactType = $rgDao->contact_type;
-      $this->_defaults['level'] = $rgDao->level;
+      $this->_defaults['used'] = CRM_Utils_Array::key($rgDao->used, $this->_options);
       $this->_defaults['title'] = $rgDao->title;
-      $this->_defaults['is_default'] = $rgDao->is_default;
+      $this->_defaults['name'] = $rgDao->name;
       $this->_defaults['is_reserved'] = $rgDao->is_reserved;
       $this->assign('isReserved', $rgDao->is_reserved);
+      $this->assign('ruleName', $rgDao->name);
       $ruleDao = new CRM_Dedupe_DAO_Rule();
       $ruleDao->dedupe_rule_group_id = $this->_rgid;
       $ruleDao->find();
@@ -104,23 +107,13 @@ class CRM_Contact_Form_DedupeRules extends CRM_Admin_Form {
     $this->addRule('title', ts('A duplicate matching rule with this name already exists. Please select another name.'),
       'objectExists', array('CRM_Dedupe_DAO_RuleGroup', $this->_rgid, 'title')
     );
-    $levelType = array(
-      'Fuzzy' => ts('Fuzzy'),
-      'Strict' => ts('Strict'),
-    );
-    $ruleLevel = $this->add('select', 'level', ts('Level'), $levelType);
 
-    $default = $this->add('checkbox', 'is_default', ts('Default?'));
-    if (CRM_Utils_Array::value('is_default', $this->_defaults)) {
-      $default->freeze();
-      $ruleLevel->freeze();
-    }
+    $this->addRadio('used', ts('Usage'), $this->_options);
 
     $disabled = array();
     $reserved = $this->add('checkbox', 'is_reserved', ts('Reserved?'));
     if (CRM_Utils_Array::value('is_reserved', $this->_defaults)) {
       $reserved->freeze();
-      $ruleLevel->freeze();
       $disabled = array('disabled' => TRUE);
     }
 
@@ -158,8 +151,7 @@ class CRM_Contact_Form_DedupeRules extends CRM_Admin_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = array();
     if (CRM_Utils_Array::value('is_reserved', $fields)) {
       return TRUE;
@@ -193,18 +185,21 @@ class CRM_Contact_Form_DedupeRules extends CRM_Admin_Form {
    */
   public function postProcess() {
     $values = $this->exportValues();
-
-    $isDefault = CRM_Utils_Array::value('is_default', $values, FALSE);
-    // reset defaults
-    if ($isDefault) {
+    
+    //FIXME: Handle logic to replace is_default column by usage
+    $used = CRM_Utils_Array::value('used', $values, FALSE);
+    // reset used column to General (since there can only
+    // be one 'Supervised' or 'Unsupervised' rule)
+    if ($this->_options[$used] != 'General') {
       $query = "
 UPDATE civicrm_dedupe_rule_group 
-   SET is_default = 0
+   SET used = 'General'
  WHERE contact_type = %1 
-   AND level = %2";
+   AND used = %2";
       $queryParams = array(1 => array($this->_contactType, 'String'),
-        2 => array($values['level'], 'String'),
+        2 => array($this->_options[$used], 'String'),
       );
+
       CRM_Core_DAO::executeQuery($query, $queryParams);
     }
 
@@ -215,8 +210,7 @@ UPDATE civicrm_dedupe_rule_group
 
     $rgDao->title        = $values['title'];
     $rgDao->is_reserved  = CRM_Utils_Array::value('is_reserved', $values, FALSE);
-    $rgDao->is_default   = $isDefault;
-    $rgDao->level        = $values['level'];
+    $rgDao->used         = $this->_options[$values['used']];
     $rgDao->contact_type = $this->_contactType;
     $rgDao->threshold    = $values['threshold'];
     $rgDao->save();
@@ -230,7 +224,7 @@ UPDATE civicrm_dedupe_rule_group
 
     // lets skip updating of fields for reserved dedupe group
     if ($rgDao->is_reserved) {
-      CRM_Core_Session::setStatus(ts('The rule \'%1\' has been saved.', array(1 => $rgDao->title)));
+      CRM_Core_Session::setStatus(ts("The rule '%1' has been saved.", array(1 => $rgDao->title)), ts('Saved'), 'success');
       return;
     }
 
@@ -284,7 +278,7 @@ UPDATE civicrm_dedupe_rule_group
 
     CRM_Core_BAO_PrevNextCache::deleteItem(NULL, $cacheKey);
 
-    CRM_Core_Session::setStatus(ts('The rule \'%1\' has been saved.', array(1 => $rgDao->title)));
+    CRM_Core_Session::setStatus(ts("The rule '%1' has been saved.", array(1 => $rgDao->title)), ts('Saved'), 'success');
   }
 }
 

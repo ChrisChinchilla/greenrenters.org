@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,7 +40,8 @@ class CRM_Report_Form_Grant_Statistics extends CRM_Report_Form {
 
   protected $_customGroupExtends = array('Grant');
 
-  protected $_add2groupSupported = FALSE; function __construct() {
+  protected $_add2groupSupported = FALSE;
+  function __construct() {
     $this->_columns = array(
       'civicrm_grant' =>
       array(
@@ -267,29 +268,29 @@ class CRM_Report_Form_Grant_Statistics extends CRM_Report_Form {
   function from() {
     $this->_from = "
         FROM civicrm_grant {$this->_aliases['civicrm_grant']}
-                        LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']} 
+                        LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']}
                     ON ({$this->_aliases['civicrm_grant']}.contact_id  = {$this->_aliases['civicrm_contact']}.id  ) ";
     if ($this->_addressField) {
       $this->_from .= "
-                  LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']} 
-                         ON {$this->_aliases['civicrm_contact']}.id = 
-                            {$this->_aliases['civicrm_address']}.contact_id AND 
+                  LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']}
+                         ON {$this->_aliases['civicrm_contact']}.id =
+                            {$this->_aliases['civicrm_address']}.contact_id AND
                             {$this->_aliases['civicrm_address']}.is_primary = 1\n
                   LEFT JOIN civicrm_country country
-                         ON {$this->_aliases['civicrm_address']}.country_id = 
+                         ON {$this->_aliases['civicrm_address']}.country_id =
                             country.id
                   LEFT JOIN civicrm_worldregion {$this->_aliases['civicrm_world_region']}
-                         ON country.region_id = 
+                         ON country.region_id =
                             {$this->_aliases['civicrm_world_region']}.id";
     }
   }
 
   function where() {
-    $granted = array_search('Granted', CRM_Grant_PseudoConstant::grantStatus());
-    $whereClause = " 
-WHERE {$this->_aliases['civicrm_grant']}.amount_total IS NOT NULL 
+    $approved = array_search( 'Approved', CRM_Grant_PseudoConstant::grantStatus( ) );
+    $whereClause = "
+WHERE {$this->_aliases['civicrm_grant']}.amount_total IS NOT NULL
   AND {$this->_aliases['civicrm_grant']}.amount_total > 0";
-    $this->_where = $whereClause . " AND {$this->_aliases['civicrm_grant']}.status_id = {$granted} ";
+    $this->_where = $whereClause . " AND {$this->_aliases['civicrm_grant']}.status_id = {$approved} ";
 
     foreach ($this->_columns as $tableName => $table) {
       if (array_key_exists('filters', $table)) {
@@ -386,8 +387,8 @@ WHERE {$this->_aliases['civicrm_grant']}.amount_total IS NOT NULL
     $gender     = CRM_Core_PseudoConstant::gender();
 
     $grantAmountTotal = "
-SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count , 
-         SUM({$this->_aliases['civicrm_grant']}.amount_total) as totalAmount 
+SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count ,
+         SUM({$this->_aliases['civicrm_grant']}.amount_total) as totalAmount
   {$this->_from} ";
 
     if (!empty($this->_whereClause)) {
@@ -405,7 +406,7 @@ SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count ,
     }
 
     $grantAmountAwarded = "
-SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count , 
+SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count ,
          SUM({$this->_aliases['civicrm_grant']}.amount_granted) as grantedAmount,
          SUM({$this->_aliases['civicrm_grant']}.amount_total) as totalAmount
   {$this->_from} ";
@@ -541,8 +542,7 @@ SELECT COUNT({$this->_aliases['civicrm_grant']}.id) as count ,
     }
   }
 
-  static
-  function getStatistics(&$grantStatistics, $fieldValue, $values,
+  static function getStatistics(&$grantStatistics, $fieldValue, $values,
     $awardedGrants, $awardedGrantsAmount, $customData = FALSE
   ) {
     if (!$awardedGrantsAmount) {

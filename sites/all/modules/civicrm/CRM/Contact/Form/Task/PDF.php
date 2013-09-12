@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -50,12 +50,15 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
 
   public $_cid = NULL;
 
+  public $_activityId = NULL;
+
   /**
    * build all the data structures needed to build the form
    *
    * @return void
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
 
     $this->skipOnHold = $this->skipDeceased = FALSE;
     CRM_Contact_Form_Task_PDFLetterCommon::preProcess($this);
@@ -66,7 +69,12 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
     // retrieve contact ID if this is 'single' mode
     $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this, FALSE);
 
-    $this->_activityId = CRM_Utils_Request::retrieve('id', 'Positive', $this, FALSE);
+    if ($cid) {
+      // this is true in non-search context / single mode
+      // in search context 'id' is the default profile id for search display
+      // CRM-11227
+      $this->_activityId = CRM_Utils_Request::retrieve('id', 'Positive', $this, FALSE);
+    }
 
     if ($cid) {
       CRM_Contact_Form_Task_PDFLetterCommon::preProcessSingle($this, $cid);
@@ -84,7 +92,7 @@ class CRM_Contact_Form_Task_PDF extends CRM_Contact_Form_Task {
     if (isset($this->_activityId)) {
       $params = array('id' => $this->_activityId);
       CRM_Activity_BAO_Activity::retrieve($params, $defaults);
-      $defaults['html_message'] = $defaults['details'];
+      $defaults['html_message'] = CRM_Utils_Array::value('details', $defaults);
     }
     $defaults = $defaults + CRM_Contact_Form_Task_PDFLetterCommon::setDefaultValues();
     return $defaults;

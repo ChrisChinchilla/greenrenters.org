@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 <h3>{if $action eq 1}{ts}New Contact Type{/ts}{elseif $action eq 2}{ts}Edit Contact Type{/ts}{else}{ts}Delete Contact Type{/ts}{/if}</h3>
 <div class="crm-block crm-form-block crm-contact-type-form-block">
 {if $action eq 8}
-  <div class="messages status">
+  <div class="messages status no-popup">
     <div class="icon inform-icon"></div>
         {ts}WARNING: {ts}This action cannot be undone.{/ts} {ts}Do you want to continue?{/ts}{/ts}
     </div>
@@ -54,7 +54,7 @@
    </tr>
    <tr class="crm-contact-type-form-block-image_URL">
       <td class="label">{$form.image_URL.label}</td>
-      <td>{$form.image_URL.html|crmReplace:class:'huge40'}{help id="id-image_URL"}</td>
+      <td>{$form.image_URL.html|crmAddClass:'huge40'}{help id="id-image_URL"}</td>
    </tr> 
    <tr class="crm-contact-type-form-block-description">
      <td class="label">{$form.description.label}

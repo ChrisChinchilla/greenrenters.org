@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -141,7 +141,7 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
     if ($this->_action == CRM_Core_Action::UPDATE &&
       CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', $this->_id, 'is_reserved')
     ) {
-            $this->freeze(array('label', 'description', 'is_active' ));
+      $this->freeze(array('label', 'is_active'));
     }
     $this->add('text', 'weight', ts('Weight'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_OptionValue', 'weight'), TRUE);
 
@@ -162,7 +162,7 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
       $wt = CRM_Utils_Weight::delWeight('CRM_Core_DAO_OptionValue', $this->_id, $fieldValues);
 
       if (CRM_Core_BAO_OptionValue::del($this->_id)) {
-        CRM_Core_Session::setStatus(ts('Selected Survey type has been deleted.'));
+        CRM_Core_Session::setStatus(ts('Selected Survey type has been deleted.'), ts('Record Deleted'), 'success');
       }
     }
     else {
@@ -178,7 +178,7 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
       $params['component_id'] = CRM_Core_Component::getComponentID('CiviCampaign');
       $optionValue = CRM_Core_OptionValue::addOptionValue($params, $groupParams, $this->_action, $this->_id);
 
-      CRM_Core_Session::setStatus(ts('The Survey type \'%1\' has been saved.', array(1 => $optionValue->label)));
+      CRM_Core_Session::setStatus(ts('The Survey type \'%1\' has been saved.', array(1 => $optionValue->label)), ts('Saved'), 'success');
     }
   }
 }

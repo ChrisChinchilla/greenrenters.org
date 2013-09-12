@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                               |
+ | CiviCRM version 4.3                                               |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
  *
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -64,7 +64,7 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
       );
     }
 
-    $this->_participantStatusId = $values['status_id'];
+    $this->_participantStatusId = CRM_Utils_Array::value('status_id', $values);
     $this->_eventId = CRM_Utils_Array::value('event_id', $values);
     $csContactId = CRM_Utils_Array::value('contact_id', $values);
 

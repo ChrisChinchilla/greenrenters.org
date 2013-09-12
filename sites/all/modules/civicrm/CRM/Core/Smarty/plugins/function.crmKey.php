@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,6 +42,10 @@
  * @return string the generated key
  */
 function smarty_function_crmKey($params, &$smarty) {
-  return CRM_Core_Key::get($params['name']);
+  return
+    CRM_Core_Key::get(
+      $params['name'],
+      CRM_Utils_Array::value('addSequence', $params, 0)
+    );
 }
 

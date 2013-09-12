@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -33,7 +33,7 @@
  * @package CiviCRM_APIv2
  * @subpackage API_utils
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * @version $Id: utils.php 31877 2011-01-19 04:23:54Z shot $
  *
  */
@@ -43,13 +43,10 @@ require_once 'api/api.php';
  * @todo Write documentation
  *
  */
-function _civicrm_initialize($useException = FALSE) {
+function _civicrm_initialize() {
   require_once 'CRM/Core/Config.php';
   $config = CRM_Core_Config::singleton();
-  if ($useException) {
-    CRM_Core_Error::setRaiseException();
   }
-}
 
 function civicrm_verify_mandatory(&$params, $daoName = NULL, $keys = array(
   )) {
@@ -991,17 +988,17 @@ function _civicrm_contribute_formatted_param(&$params, &$values, $create = FALSE
         }
         break;
 
-      case 'contribution_type':
+      case 'financial_type':
         require_once 'CRM/Contribute/PseudoConstant.php';
-        $contriTypes = CRM_Contribute_PseudoConstant::contributionType();
+            $contriTypes = CRM_Contribute_PseudoConstant::financialType( );
         foreach ($contriTypes as $val => $type) {
           if (strtolower($value) == strtolower($type)) {
-            $values['contribution_type_id'] = $val;
+                    $values['financial_type_id'] = $val;
             break;
           }
         }
-        if (!CRM_Utils_Array::value('contribution_type_id', $values)) {
-          return civicrm_create_error("Contribution Type is not valid: $value");
+        if (!CRM_Utils_Array::value('financial_type_id', $values)) {
+          return civicrm_create_error("Financial Type is not valid: $value");
         }
         break;
 

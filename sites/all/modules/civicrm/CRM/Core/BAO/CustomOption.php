@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -232,7 +232,6 @@ WHERE  f.custom_group_id = g.id
       if ($dao->dataType == 'Money') {
         $params['value'] = CRM_Utils_Rule::cleanMoney($params['value']);
       }
-      CRM_Core_Error::debug($params);
       switch ($dao->htmlType) {
         case 'Autocomplete-Select':
         case 'Select':

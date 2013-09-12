@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -74,9 +74,13 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
     );
 
     // also create the form element for the activity links box
-    $controller = new CRM_Core_Controller_Simple('CRM_Activity_Form_ActivityLinks',
+    $controller = new CRM_Core_Controller_Simple(
+      'CRM_Activity_Form_ActivityLinks',
       ts('Activity Links'),
-      NULL
+      NULL,
+      FALSE,
+      FALSE,
+      TRUE
     );
     $controller->setEmbedded(TRUE);
     $controller->run();
@@ -128,6 +132,11 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
    * @access public
    */
   function view() {
+    // Add js for in-place editing and jstree for tags
+    CRM_Core_Resources::singleton()
+      ->addScriptFile('civicrm', 'templates/CRM/Contact/Page/View/Summary.js')
+      ->addScriptFile('civicrm', 'packages/jquery/plugins/jstree/jquery.jstree.js', 0, 'html-header', FALSE)
+      ->addStyleFile('civicrm', 'packages/jquery/plugins/jstree/themes/default/style.css', 0, 'html-header');
     $session = CRM_Core_Session::singleton();
     $url = CRM_Utils_System::url('civicrm/contact/view', 'reset=1&cid=' . $this->_contactId);
     $session->pushUserContext($url);
@@ -245,6 +254,7 @@ class CRM_Contact_Page_View_Summary extends CRM_Contact_Page_View {
 
     $this->assign($defaults);
 
+    // FIXME: when we sort out TZ isssues with DATETIME/TIMESTAMP, we can skip next query
     // also assign the last modifed details
     $lastModified = CRM_Core_BAO_Log::lastModified($this->_contactId, 'civicrm_contact');
     $this->assign_by_ref('lastModified', $lastModified);

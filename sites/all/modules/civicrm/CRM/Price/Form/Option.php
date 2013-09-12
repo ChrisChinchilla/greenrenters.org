@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -93,7 +93,16 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       $defaults['value'] = CRM_Utils_Money::format(CRM_Utils_Array::value('value', $defaults), NULL, '%a');
     }
 
+    $memberComponentId = CRM_Core_Component::getComponentID('CiviMember');
+    $extendComponentId = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $this->_sid, 'extends', 'id');
 
+    if (!isset($defaults['membership_num_terms']) && $memberComponentId == $extendComponentId) {
+      $defaults['membership_num_terms'] = 1;
+    }
+    // set financial type used for price set to set default for new option
+    if (!$this->_oid) {
+      $defaults['financial_type_id'] = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $this->_sid, 'financial_type_id', 'id');;
+    }
     if (!isset($defaults['weight']) || !$defaults['weight']) {
       $fieldValues = array('price_field_id' => $this->_fid);
       $defaults['weight'] = CRM_Utils_Weight::getDefaultWeight('CRM_Price_DAO_FieldValue', $fieldValues);
@@ -127,6 +136,7 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       return;
     }
     else {
+      $attributes        = CRM_Core_DAO::getAttribute('CRM_Price_DAO_FieldValue');
       // lets trim all the whitespace
       $this->applyFilter('__ALL__', 'trim');
 
@@ -147,7 +157,7 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       ) {
         $this->_sid = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Field', $this->_fid, 'price_set_id', 'id');
       }
-
+      $this->isEvent = False;
       $extendComponentId = CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $this->_sid, 'extends', 'id');
       $this->assign('showMember', FALSE);
       if ($memberComponentId == $extendComponentId) {
@@ -157,20 +167,36 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
           '' => ' ') + $membershipTypes, FALSE,
           array('onClick' => "calculateRowValues( );")
         );
+        $this->add('text', 'membership_num_terms', ts('Number of terms'), $attributes['membership_num_terms']);
       }
       else {
         $allComponents = explode(CRM_Core_DAO::VALUE_SEPARATOR, $extendComponentId);
         $eventComponentId = CRM_Core_Component::getComponentID('CiviEvent');
         if (in_array($eventComponentId, $allComponents)) {
+          $this->isEvent = TRUE;
           // count
           $this->add('text', 'count', ts('Participants Count'));
           $this->addRule('count', ts('Please enter a valid Max Participants.'), 'positiveInteger');
-
+          
           $this->add('text', 'max_value', ts('Max Participants'));
           $this->addRule('max_value', ts('Please enter a valid Max Participants.'), 'positiveInteger');
         }
+        
       }
-
+      //Financial Type
+      $financialType = CRM_Financial_BAO_FinancialType::getIncomeFinancialType();
+       
+      if (count($financialType)) {
+        $this->assign('financialType', $financialType);
+      }
+      $this->add(
+        'select', 
+        'financial_type_id', 
+        ts('Financial Type'), 
+        array('' => ts('- select -')) + $financialType,
+        true
+      );
+      
       //CRM_Core_DAO::getFieldValue( 'CRM_Price_DAO_Field', $this->_fid, 'weight', 'id' );
       // FIX ME: duplicate rule?
       /*
@@ -190,7 +216,6 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       $this->addRule('amount', ts('Please enter a monetary value for this field.'), 'money');
 
       $this->add('textarea', 'description', ts('Description'));
-
 
       // weight
       $this->add('text', 'weight', ts('Order'), NULL, TRUE);
@@ -250,8 +275,7 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
    * @static
    * @access public
    */
-  static
-  function formRule($fields, $files, $form) {
+  static function formRule($fields, $files, $form) {
     $errors = array();
     if (CRM_Utils_Array::value('count', $fields) && CRM_Utils_Array::value('max_value', $fields) &&
       $fields['count'] > $fields['max_value']
@@ -280,7 +304,7 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       );
 
       if (CRM_Price_BAO_FieldValue::del($this->_oid)) {
-        CRM_Core_Session::setStatus(ts('%1 option has been deleted.', array(1 => $label)));
+        CRM_Core_Session::setStatus(ts('%1 option has been deleted.', array(1 => $label)), ts('Record Deleted'), 'success');
       }
       return;
     }
@@ -292,15 +316,13 @@ class CRM_Price_Form_Option extends CRM_Core_Form {
       $params['amount'] = CRM_Utils_Rule::cleanMoney(trim($params['amount']));
       $params['price_field_id'] = $this->_fid;
       $params['is_default'] = CRM_Utils_Array::value('is_default', $params, FALSE);
-
       $ids = array();
       if ($this->_oid) {
         $ids['id'] = $this->_oid;
       }
-
       $optionValue = CRM_Price_BAO_FieldValue::create($params, $ids);
 
-      CRM_Core_Session::setStatus(ts('The option \'%1\' has been saved.', array(1 => $params['label'])));
+      CRM_Core_Session::setStatus(ts("The option '%1' has been saved.", array(1 => $params['label'])), ts('Value Saved'), 'success');
     }
   }
 }

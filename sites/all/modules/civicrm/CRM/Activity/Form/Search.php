@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -20,14 +20,14 @@
  | License along with this program; if not, contact CiviCRM LLC       |
  | at info[AT]civicrm[DOT]org. If you have questions about the        |
  | GNU Affero General Public License or the licensing of CiviCRM,     |
- | see the CiviCRM license FAQ at http://civicrm.org/licensing        |    
+ | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 */
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -142,13 +142,13 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
    *
    * @return void
    * @access public
-   */ function preProcess() {
+   */
+  function preProcess() {
     $this->set('searchFormName', 'Search');
 
     /**
      * set the button names
      */
-
     $this->_searchButtonName = $this->getButtonName('refresh');
     $this->_printButtonName = $this->getButtonName('next', 'print');
     $this->_actionButtonName = $this->getButtonName('next', 'action');
@@ -156,11 +156,10 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
     $this->_done = FALSE;
     $this->defaults = array();
 
-    /* 
-         * we allow the controller to set force/reset externally, useful when we are being 
-         * driven by the wizard framework 
-         */
-
+    /*
+     * we allow the controller to set force/reset externally, useful when we are being
+     * driven by the wizard framework
+     */
     $this->_reset   = CRM_Utils_Request::retrieve('reset', 'Boolean', CRM_Core_DAO::$_nullObject);
     $this->_force   = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE);
     $this->_limit   = CRM_Utils_Request::retrieve('limit', 'Positive', $this);
@@ -237,10 +236,10 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
 
     CRM_Activity_BAO_Query::buildSearchForm($this);
 
-    /* 
-         * add form checkboxes for each row. This is needed out here to conform to QF protocol 
-         * of all elements being declared in builQuickForm 
-         */
+    /*
+     * add form checkboxes for each row. This is needed out here to conform to QF protocol
+     * of all elements being declared in builQuickForm
+     */
 
     $rows = $this->get('rows');
     if (is_array($rows)) {
@@ -255,8 +254,6 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
           );
         }
       }
-
-      $total = $cancel = 0;
 
       $permission = CRM_Core_Permission::getPermission();
 
@@ -329,17 +326,12 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
       // if we are editing / running a saved search and the form has not been posted
       $this->_formValues = CRM_Contact_BAO_SavedSearch::getFormValues($this->_ssID);
     }
-    if (CRM_Utils_Array::value('activity_survey_id', $this->_formValues)) {
-      // if the user has choosen a survey but not any activity type, we force the activity type
-      $sid = CRM_Utils_Array::value('activity_survey_id', $this->_formValues);
-      $activity_type_id = CRM_Core_DAO::getFieldValue('CRM_Campaign_DAO_Survey', $sid, 'activity_type_id');
 
-      $this->_formValues['activity_type_id'][$activity_type_id] = 1;
-    }
-
-    if (!CRM_Utils_Array::value('activity_test', $this->_formValues)) {
+    // We don't show test records in summaries or dashboards
+    if (empty($this->_formValues['activity_test']) && $this->_force) {
       $this->_formValues["activity_test"] = 0;
     }
+
     if (!CRM_Utils_Array::value('activity_contact_name', $this->_formValues) && !CRM_Utils_Array::value('contact_id', $this->_formValues)) {
       $this->_formValues['activity_role'] = NULL;
     }
@@ -400,52 +392,6 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
     $controller->run();
   }
 
-  /**
-   * This function is used to add the rules (mainly global rules) for form.
-   * All local rules are added near the element
-   *
-   * @return None
-   * @access public
-   * @see valid_date
-   */
-  function addRules() {
-    $this->addFormRule(array('CRM_Activity_Form_Search', 'formRule'));
-  }
-
-  /**
-   * global validation rules for the form
-   *
-   * @param array $fields posted values of the form
-   * @param array $errors list of errors to be posted back to the form
-   *
-   * @return void
-   * @static
-   * @access public
-   */
-  static
-  function formRule($fields) {
-    $errors = array();
-
-    if (!empty($errors)) {
-      return $errors;
-    }
-
-    return TRUE;
-  }
-
-  /**
-   * Set the default form values
-   *
-   * @access protected
-   *
-   * @return array the default array reference
-   */
-  function &setDefaultValues() {
-    $defaults = array();
-    $defaults = $this->_formValues;
-    return $defaults;
-  }
-
   function fixFormValues() {
     if (!$this->_force) {
       return;
@@ -456,11 +402,15 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
       $this->_defaults['activity_status'] = $status;
     }
 
-    $survey = CRM_Utils_Request::retrieve('survey', 'Positive',
-      CRM_Core_DAO::$_nullObject
-    );
+    $survey = CRM_Utils_Request::retrieve('survey', 'Positive', CRM_Core_DAO::$_nullObject);
+
     if ($survey) {
-      $this->_formValues['activity_survey_id'] = $survey;
+      $this->_formValues['activity_survey_id'] = $this->_defaults['activity_survey_id'] = $survey;
+      $sid = CRM_Utils_Array::value('activity_survey_id', $this->_formValues);
+      $activity_type_id = CRM_Core_DAO::getFieldValue('CRM_Campaign_DAO_Survey', $sid, 'activity_type_id');
+
+      $this->_formValues['activity_type_id'][$activity_type_id] = 1;
+      $this->_defaults['activity_type_id'][$activity_type_id] = 1;
     }
     $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
 
@@ -475,13 +425,17 @@ class CRM_Activity_Form_Search extends CRM_Core_Form {
           $this->_formValues['activity_role'] = $activity_role;
         }
         else {
-          list($display, $image) = CRM_Contact_BAO_Contact::getDisplayAndImage($cid);
           $this->_defaults['sort_name'] = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact', $cid, 'sort_name');
         }
         // also assign individual mode to the template
         $this->_single = TRUE;
       }
     }
+
+    if (!empty($this->_defaults)) {
+      $this->setDefaults($this->_defaults);
+    }
+
   }
 
   function getFormValues() {

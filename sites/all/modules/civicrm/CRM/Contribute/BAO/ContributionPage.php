@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -88,11 +88,11 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
     else {
       $values['custom_post_id'] = '';
     }
-    // add an accounting code also
-    if (CRM_Utils_Array::value('contribution_type_id', $values)) {
-      $values['accountingCode'] = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionType', $values['contribution_type_id'], 'accounting_code');
+    // // add an accounting code also
+    // if ($values ['financial_type_id']) {
+    //   $values ['accountingCode'] = CRM_Core_DAO::getFieldValue( 'CRM_Financial_DAO_FinancialType', $values ['financial_type_id'], 'accounting_code' );
+    // }
     }
-  }
 
   /**
    * Function to send the emails
@@ -114,7 +114,7 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
       if ($preProfileType == 'Membership' && CRM_Utils_Array::value('membership_id', $values)) {
         $params['custom_pre_id'] = array(
           array(
-            'membership_id',
+            'member_id',
             '=',
             $values['membership_id'],
             0,
@@ -142,7 +142,7 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
       if ($postProfileType == 'Membership' && CRM_Utils_Array::value('membership_id', $values)) {
         $params['custom_post_id'] = array(
           array(
-            'membership_id',
+            'member_id',
             '=',
             $values['membership_id'],
             0,
@@ -164,12 +164,12 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
 
       $gIds['custom_post_id'] = $values['custom_post_id'];
     }
-    
+
     if (CRM_Utils_Array::value('is_for_organization', $values)) {
       if (CRM_Utils_Array::value('membership_id', $values)) {
         $params['onbehalf_profile'] = array(
           array(
-            'membership_id',
+            'member_id',
             '=',
             $values['membership_id'],
             0,
@@ -301,9 +301,10 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
         'isShare' => CRM_Utils_Array::value('is_share', $values),
       );
 
-      if ($contributionTypeId = CRM_Utils_Array::value('contribution_type_id', $values)) {
+            if ( $contributionTypeId = CRM_Utils_Array::value('financial_type_id', $values ) ) {
         $tplParams['contributionTypeId'] = $contributionTypeId;
-        $tplParams['contributionTypeName'] = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionType', $contributionTypeId);
+                $tplParams['contributionTypeName'] = CRM_Core_DAO::getFieldValue( 'CRM_Financial_DAO_FinancialType',
+                                                                                  $contributionTypeId );
       }
 
       if ($contributionPageId = CRM_Utils_Array::value('id', $values)) {
@@ -392,9 +393,9 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
   }
   
   /*
-   * Construct the message to be sent by the send function
-   *
-   */
+     * Construct the message to be sent by the send function
+     *
+     */
   function composeMessage($tplParams, $contactID, $isTest) {
     $sendTemplateParams = array(
       'groupName' => $tplParams['membershipID'] ? 'msg_tpl_workflow_membership' : 'msg_tpl_workflow_contribution',
@@ -487,7 +488,7 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
         // in some cases its just recurringNotify() thats called for the first time and these urls don't get set.
         // like in PaypalPro, & therefore we set it here additionally.
         $template         = CRM_Core_Smarty::singleton();
-        $paymentProcessor = CRM_Core_BAO_PaymentProcessor::getProcessorForEntity($recur->id, 'recur', 'obj');
+        $paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($recur->id, 'recur', 'obj');
         $url              = $paymentProcessor->subscriptionURL($recur->id, 'recur');
         $template->assign('cancelSubscriptionUrl', $url);
 
@@ -606,8 +607,9 @@ class CRM_Contribute_BAO_ContributionPage extends CRM_Contribute_DAO_Contributio
         'contribution_page_id' => $copy->id,
       ));
 
-    //copy option group and values
-    $copy->default_amount_id = CRM_Core_BAO_OptionGroup::copyValue('contribution', $id, $copy->id, CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionPage', $id, 'default_amount_id'));
+    //copy price sets
+    CRM_Price_BAO_Set::copyPriceSet('civicrm_contribution_page', $id, $copy->id);
+
     $copyTellFriend = &CRM_Core_DAO::copyGeneric('CRM_Friend_DAO_Friend', array(
         'entity_id' => $id,
         'entity_table' => 'civicrm_contribution_page',
@@ -685,8 +687,9 @@ WHERE entity_table = 'civicrm_contribution_page'
    *
    * @return array $info info regarding all sections.
    * @access public
+   * @static
    */
-  function getSectionInfo($contribPageIds = array(
+  static function getSectionInfo($contribPageIds = array(
     )) {
     $info = array();
     $whereClause = NULL;
@@ -707,7 +710,7 @@ WHERE entity_table = 'civicrm_contribution_page'
     );
     $query = "
    SELECT  civicrm_contribution_page.id as id,
-           civicrm_contribution_page.contribution_type_id as settings,
+           civicrm_contribution_page.financial_type_id as settings, 
            amount_block_is_active as amount,
            civicrm_membership_block.id as membership,
            civicrm_uf_join.id as custom,

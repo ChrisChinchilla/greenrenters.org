@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -54,8 +54,7 @@ class CRM_Contact_Form_Edit_CommunicationPreferences {
    * @access public
    * @static
    */
-  static
-  function buildQuickForm(&$form) {
+  static function buildQuickForm(&$form) {
     // since the pcm - preferred comminication method is logically
     // grouped hence we'll use groups of HTML_QuickForm
 
@@ -135,8 +134,7 @@ class CRM_Contact_Form_Edit_CommunicationPreferences {
    * @access public
    * @static
    */
-  static
-  function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     //CRM-4575
 
     $greetings = self::getGreetingFields($self->_contactType);
@@ -161,7 +159,7 @@ class CRM_Contact_Form_Edit_CommunicationPreferences {
    *
    * @return None
    */
-  function setDefaultValues(&$form, &$defaults) {
+  static function setDefaultValues(&$form, &$defaults) {
 
     if (!empty($defaults['preferred_language'])) {
       $languages = array_flip(CRM_Core_PseudoConstant::languages());
@@ -200,8 +198,7 @@ class CRM_Contact_Form_Edit_CommunicationPreferences {
    * @return None
    * @access public
    */
-  static
-  function getGreetingFields($contactType) {
+  static function getGreetingFields($contactType) {
     if (empty(self::$greetings[$contactType])) {
       self::$greetings[$contactType] = array();
 

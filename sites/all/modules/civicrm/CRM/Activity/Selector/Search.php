@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,7 +27,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -157,7 +157,8 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
    *
    * @return CRM_Contact_Selector
    * @access public
-   */ function __construct(&$queryParams,
+   */
+  function __construct(&$queryParams,
     $action         = CRM_Core_Action::NONE,
     $activityClause = NULL,
     $single         = FALSE,
@@ -290,7 +291,11 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
       }
       $bulkActivityTypeID = CRM_Utils_Array::key('Bulk Email', $activityType);
       $row['mailingId'] = '';
-      if ($accessCiviMail && in_array($result->source_record_id, $mailingIDs) && ($bulkActivityTypeID == $activityTypeId)) {
+      if (
+        $accessCiviMail &&
+        ($mailingIDs === TRUE || in_array($result->source_record_id, $mailingIDs)) &&
+        ($bulkActivityTypeID == $activityTypeId)
+      ) {
         $row['mailingId'] = CRM_Utils_System::url('civicrm/mailing/report',
           "mid={$result->source_record_id}&reset=1&cid={$result->source_contact_id}&context=activitySelector"
         );
@@ -336,7 +341,6 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
    * @return array  $qill  which contains an array of strings
    * @access public
    */
-
   public function getQILL() {
     return $this->_query->qill();
   }

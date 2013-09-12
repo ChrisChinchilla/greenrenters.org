@@ -1,12 +1,12 @@
 <?php
-// $Id: Location.php 40968 2012-06-12 14:28:16Z kurund $
+// $Id: Location.php 45502 2013-02-08 13:32:55Z kurund $
 
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,8 +34,8 @@
  * @package CiviCRM_APIv2
  * @subpackage API_Location
  *
- * @copyright CiviCRM LLC (c) 2004-2012
- * @version $Id: Location.php 40968 2012-06-12 14:28:16Z kurund $
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Location.php 45502 2013-02-08 13:32:55Z kurund $
  */
 
 /**

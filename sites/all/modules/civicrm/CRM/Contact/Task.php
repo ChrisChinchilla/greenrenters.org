@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,7 +30,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -59,8 +59,7 @@ class CRM_Contact_Task {
    */
   static $_optionalTasks = NULL;
 
-  static
-  function initTasks() {
+  static function initTasks() {
     if (!self::$_tasks) {
       self::$_tasks = array(
         1 => array('title' => ts('Add Contacts to Group'),
@@ -126,6 +125,9 @@ class CRM_Contact_Task {
         ),
         22 => array('title' => ts('Unhold Emails'),
           'class' => 'CRM_Contact_Form_Task_Unhold',
+        ),
+        25 => array('title' => ts('Alter Contact Communication Preferences'),
+          'class' => 'CRM_Contact_Form_Task_AlterPreferences',
         ),
         self::RESTORE => array(
           'title' => ts('Restore Contacts'),
@@ -236,8 +238,7 @@ class CRM_Contact_Task {
    * @static
    * @access public
    */
-  static
-  function &taskTitles() {
+  static function &taskTitles() {
     self::initTasks();
 
     $titles = array();
@@ -280,10 +281,8 @@ class CRM_Contact_Task {
    * @return array set of tasks that are valid for the user
    * @access public
    */
-  static
-  function &permissionedTaskTitles($permission, $deletedContacts = FALSE) {
+  static function &permissionedTaskTitles($permission, $deletedContacts = false) {
     self::initTasks();
-
     $tasks = array();
     if ($deletedContacts) {
       if (CRM_Core_Permission::check('access deleted contacts')) {
@@ -315,7 +314,6 @@ class CRM_Contact_Task {
         $tasks[20] = self::$_tasks[20]['title'];
       }
     }
-
     return $tasks;
   }
 
@@ -326,16 +324,14 @@ class CRM_Contact_Task {
    * @static
    * @access public
    */
-  static
-  function &optionalTaskTitle() {
+  static function &optionalTaskTitle() {
     $tasks = array(
       14 => self::$_tasks[14]['title'],
     );
     return $tasks;
   }
 
-  static
-  function getTask($value) {
+  static function getTask($value) {
     self::initTasks();
 
     if (!CRM_Utils_Array::value($value, self::$_tasks)) {

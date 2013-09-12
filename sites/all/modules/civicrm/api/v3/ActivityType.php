@@ -3,9 +3,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -36,7 +36,7 @@
  * @package CiviCRM_APIv3
  * @subpackage API_Activity
  *
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id: ActivityType.php 30171 2010-10-14 09:11:27Z mover $
  *
  */
@@ -93,7 +93,8 @@ function civicrm_api3_activity_type_create($params) {
   _civicrm_api3_object_to_array($activityObject, $activityType[$activityObject->id]);
   return civicrm_api3_create_success($activityType, $params, 'activity_type', 'create');
 }
-/*
+
+/**
  * Adjust Metadata for Create action
  * 
  * The metadata is used for setting defaults, documentation & validation

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2012
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -67,7 +67,7 @@ class CRM_Contact_Form_Edit_Address {
 
     $js = array();
     if ( !$inlineEdit ) {
-      $js = array('onChange' => 'checkLocation( this.id );');
+    $js = array('onChange' => 'checkLocation( this.id );');
     }
 
     $form->addElement('select',
@@ -77,9 +77,9 @@ class CRM_Contact_Form_Edit_Address {
         '' => ts('- select -')) + CRM_Core_PseudoConstant::locationType(),
         $js
     );
-    
+
     if ( !$inlineEdit ) {
-      $js = array('id' => 'Address_' . $blockId . '_IsPrimary', 'onClick' => 'singleSelect( this.id );');
+    $js = array('id' => 'Address_' . $blockId . '_IsPrimary', 'onClick' => 'singleSelect( this.id );');
     }
     else {
       //make location type required for inline edit
@@ -95,7 +95,7 @@ class CRM_Contact_Form_Edit_Address {
     );
 
     if ( !$inlineEdit ) {
-      $js = array('id' => 'Address_' . $blockId . '_IsBilling', 'onClick' => 'singleSelect( this.id );');
+    $js = array('id' => 'Address_' . $blockId . '_IsBilling', 'onClick' => 'singleSelect( this.id );');
     }
 
     $form->addElement(
@@ -219,11 +219,24 @@ class CRM_Contact_Form_Edit_Address {
     if (!empty($form->_values['address']) && CRM_Utils_Array::value($blockId, $form->_values['address'])) {
       $entityId = $form->_values['address'][$blockId]['id'];
     }
+
+    // CRM-11665 geocode override option
+    $geoCode = FALSE;
+    if (!empty($config->geocodeMethod)) {
+      $geoCode = TRUE;
+      $form->addElement('checkbox',
+        "address[$blockId][manual_geo_code]",
+        ts('Override automatic geocoding')
+      );
+    }
+    $form->assign('geoCode', $geoCode);
+
     // Process any address custom data -
     $groupTree = CRM_Core_BAO_CustomGroup::getTree('Address',
       $form,
       $entityId
     );
+
     if (isset($groupTree) && is_array($groupTree)) {
       // use simplified formatted groupTree
       $groupTree = CRM_Core_BAO_CustomGroup::formatGroupTree($groupTree, 1, $form);
@@ -235,24 +248,24 @@ class CRM_Contact_Form_Edit_Address {
           $groupTree[$id]['fields'][$fldId]['element_name'] = "address[$blockId][{$field['element_name']}]";
         }
       }
+
       $defaults = array();
       CRM_Core_BAO_CustomGroup::setDefaults($groupTree, $defaults);
-      // For some of the custom fields like checkboxes, the defaults doesn't populate
-      // in proper format due to the different element-name format - 'address[$blockId][custom-X]'.
-      // Below eval() fixes this issue.
-      $address = array();
+
+      // since we change element name for address custom data, we need to format the setdefault values
+      $addressDefaults = array();
       foreach ($defaults as $key => $val) {
         if ( empty( $val ) ) {
           continue;
         }
-        elseif ( is_array($val) ) {
-          $val = var_export($val, TRUE);
-        }
-        @eval("\${$key} = " .$val . ";" );
+
+        // inorder to set correct defaults for checkbox custom data, we need to converted flat key to array
+        // this works for all types custom data
+        $keyValues = explode('[', str_replace(']', '', $key));
+        $addressDefaults[$keyValues[0]][$keyValues[1]][$keyValues[2]] = $val;
       }
-      
-      $defaults = array('address' => $address);
-      $form->setDefaults($defaults);
+
+      $form->setDefaults($addressDefaults);
 
       // we setting the prefix to 'dnc_' below, so that we don't overwrite smarty's grouptree var.
       // And we can't set it to 'address_' because we want to set it in a slightly different format.
@@ -423,7 +436,7 @@ class CRM_Contact_Form_Edit_Address {
       }
 
       // CRM-7296 freeze the select for state if address is shared with household
-      // CRM-9070 freeze the select for state if it is view only      
+      // CRM-9070 freeze the select for state if it is view only
       if (isset($form->_fields) &&
           CRM_Utils_Array::value($stateElementName, $form->_fields) &&
           (CRM_Utils_Array::value('is_shared', $form->_fields[$stateElementName]) ||

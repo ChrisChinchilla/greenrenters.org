@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.2                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2012                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -36,8 +36,8 @@
     {/if}
     {literal}
     <script>
-	function contactImagePopUp(url, width, height) {
-     	    newwindow = window.open(url,'name', 'width='+width+', height='+height );
-        }	
+  function contactImagePopUp(url, width, height) {
+           newwindow = window.open(url,'name', 'width='+width+', height='+height );
+        }
     </script>
     {/literal}
