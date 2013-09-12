@@ -7,3 +7,6 @@
 [submodule "sites/default/extensions/com.chrischinchilla.fullmailstats"]
 	path = sites/default/extensions/com.chrischinchilla.fullmailstats
 	url = git://github.com/ChrisChinchilla/FullMailStats.git
+[submodule "sites/default/extensions/org.greenrenters.extendedevents"]
+	path = sites/default/extensions/org.greenrenters.extendedevents
+	url = git@github.com:ChrisChinchilla/org.greenrenters.extendedevents.git
