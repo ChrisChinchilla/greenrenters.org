@@ -24,6 +24,7 @@
  +--------------------------------------------------------------------+
 *}
 {* this template is used for displaying event information *}
+
 {if $registerClosed }
 <div class="spacer"></div>
 <div class="messages status">
@@ -57,6 +58,13 @@
     </div></li>
 
 {/if}
+
+
+{crmAPI var="ParticipantS" entity="Participant" action="get" sequential="1" event_id=$event.id }
+{* $x=$event.max_participants, $y=$ParticipantS.count *}
+Remaining - {math equation="x - y" x=$event.max_participants y=$ParticipantS.count}
+
+
 <li><div id="crm-participant-wrapper">
 	      <div id="crm-participant-links"><span title="{ts}Participant listing links.{/ts}"><div class="icon search-icon"></div></div>
 	      <div class="ac_results" id="crm-participant-list" style="margin-left: -25px;">
