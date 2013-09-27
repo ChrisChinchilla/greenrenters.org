@@ -23,18 +23,17 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
-{* this template is used for adding/editing location type  *}
-<div class="form-item">
-<fieldset><legend>
-{if $action eq 1}{ts}New Discount{/ts}{elseif $action eq 2}{ts}Edit Discount{/ts}{else}{ts}Delete Discount{/ts}{/if}
-</legend>
+{* this template is used for adding/editing discounts  *}
+<h3>
+  {if $action eq 1}{ts}New Discount{/ts}{elseif $action eq 2}{ts}Edit Discount{/ts}{else}{ts}Delete Discount{/ts}{/if}
+</h3>
 <div class="crm-block crm-form-block crm-discount-item-form-block">
 <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
 {if $action eq 8}
       <div class="messages status">
         <dl>
           <dt><div class="icon inform-icon"></div></dt>
-          <dd>    
+          <dd>
             {ts}WARNING: Deleting this discount code will prevent users who have this code to avail of this discount.{/ts} {ts}Do you want to continue?{/ts}
           </dd>
        </dl>
@@ -83,7 +82,7 @@
       <tr class="crm-discount-item-form-block-auto-discount">
           <td class="label">{$form.autodiscount.label}</td>
           <td>{$form.autodiscount.html}<br />
-            <span class="description">{ts}Anyone in the selected memberships will automatically have the discount code applied.{/ts}
+            <span class="description">{ts}Anyone in the selected memberships will automatically have the discount code applied. Autodiscount is generally used with a randomly-generated code which is <strong><em>not</em></strong> given out to users. Cividiscount will apply the discount to the memberships with no code required.{/ts}
           </td>
       </tr>
 {/if}
@@ -91,7 +90,7 @@
       <tr class="crm-discount-item-form-block-events">
           <td class="label">{$form.events.label}</td>
           <td>{$form.events.html}<br />
-            <span class="description">{ts}Allow discounts to be used on the selected events. Only active current and future events are listed. If you use price sets for your events, you also need to select a price set below.{/ts}
+            <span class="description">{ts}Allow discounts to be used on the selected events. Only active current and future events are listed.<br /><strong><em>If you use price sets for your events, you also need to select any discountable price sets below.</em></strong>{/ts}
           </td>
       </tr>
 {/if}
@@ -122,10 +121,10 @@
 {literal}
 <script type="text/javascript">
 var dataUrl        = "{/literal}{$organizationURL}{literal}";
-cj('#organization').autocomplete( dataUrl, { 
-                                      width        : 250, 
+cj('#organization').autocomplete( dataUrl, {
+                                      width        : 250,
                                       selectFirst  : false,
-                                      matchCase    : true, 
+                                      matchCase    : true,
                                       matchContains: true
     }).result( function(event, data, formatted) {
         var foundContact   = ( parseInt( data[1] ) ) ? cj( "#organization_id" ).val( data[1] ) : cj( "#organization_id" ).val('');
@@ -140,15 +139,15 @@ cj(function(){
 var organizationId = "{/literal}{$currentOrganization}{literal}";
 if ( organizationId ) {
     var dataUrl = "{/literal}{crmURL p='civicrm/ajax/rest' h=0 q="className=CRM_Contact_Page_AJAX&fnName=getContactList&json=1&context=contact&org=1&id=" }{literal}" + organizationId;
-    cj.ajax({ 
-        url     : dataUrl,   
+    cj.ajax({
+        url     : dataUrl,
         async   : false,
         success : function(html){
             htmlText = html.split( '|' , 2);
             cj('input#organization').val(htmlText[0]);
             cj('input#organization_id').val(htmlText[1]);
         }
-    }); 
+    });
 }
 });
 
