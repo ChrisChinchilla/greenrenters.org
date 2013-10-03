@@ -2000,17 +2000,17 @@ function civicrm_views_data() {
   //Contribution Type
   $data['civicrm_contribution']['contribution_type'] = array(
     'title' => t('Contribution Type'),
-    'real field' => 'contribution_type_id',
+    'real field' => 'financial_type_id',
     'help' => t('The Type of Contribution made, ie Member Dues, Event Fees etc'),
     'field' => array(
-      'handler' => 'civicrm_handler_field_contribution_type',
+      'handler' => 'civicrm_handler_field_financial_type',
       'click sortable' => TRUE,
     ),
     'argument' => array(
       'handler' => 'views_handler_argument',
     ),
     'filter' => array(
-      'handler' => 'civicrm_handler_filter_contribution_type',
+      'handler' => 'civicrm_handler_filter_financial_type',
       'allow empty' => TRUE,
     ),
     'sort' => array(
@@ -5171,7 +5171,13 @@ function civicrm_views_data() {
    */
 
   $data['civicrm_campaign']['table']['group'] = t('CiviCRM Campaigns');
-
+ $data['civicrm_campaign']['table']['join'] = array(
+ 
+'civicrm_contribution' => array(
+      'left_field' => 'campaign_id',
+      'field' => 'id',
+    ),
+);   
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla
     'field' => 'id',
