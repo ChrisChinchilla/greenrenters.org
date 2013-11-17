@@ -3289,7 +3289,7 @@ function civicrm_views_data() {
     'help' => t('Activity -> Campaign'),
     'relationship' => array(
       'base' => 'civicrm_campaign',
-      'field' => 'id',
+      'field' => 'campaign_id',
       'handler' => 'views_handler_relationship',
       'label' => t('Activity -> Campaign'),
     ),
@@ -5172,12 +5172,12 @@ function civicrm_views_data() {
 
   $data['civicrm_campaign']['table']['group'] = t('CiviCRM Campaigns');
  $data['civicrm_campaign']['table']['join'] = array(
- 
+
 'civicrm_contribution' => array(
       'left_field' => 'campaign_id',
       'field' => 'id',
     ),
-);   
+);
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla
     'field' => 'id',
