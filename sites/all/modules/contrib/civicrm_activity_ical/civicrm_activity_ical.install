@@ -1,0 +1,66 @@
+<?php
+/**
+ * @file
+ * Standard Drupal module *.install file
+ */
+
+/**
+ * Implements hook_install().
+ */
+function civicrm_activity_ical_install() {
+  drupal_install_schema('civicrm_activity_ical');
+
+  require_once drupal_get_path('module', 'civicrm_activity_ical') .'/functions.php';
+  civicrm_activity_ical_set_default_variables();
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function civicrm_activity_ical_uninstall() {
+  variable_del('civicrm_activity_ical_cache_interval');
+  drupal_uninstall_schema('civicrm_activity_ical');
+}
+
+/**
+ * Implements hook_schema().
+ */
+function civicrm_activity_ical_schema() {
+  $schema = array();
+  $schema['civicrm_activity_ical_cache'] = array(
+    'description' => 'Cached data for CiviCRM activity iCalendar feed module',
+    'fields' => array(
+      'uid' => array(
+        'description' => 'The uid of the user.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'cache' => array(
+        'description' => 'The cached feed output.',
+        'type' => 'text',
+        'size' => 'medium',
+        'not null' => TRUE,
+      ),
+      'cached' => array(
+        'description' => 'Unix timestamp showing when data was cached.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary key' => array('uid'),
+    'indexes' => array(
+      'timestamp' => array('cached'),
+    ),
+  );
+  return $schema;
+}
+
+/**
+ * Creates new table 'civicrm_activity_ical_cache'.
+ */
+function civicrm_activity_ical_update_6001() {
+  $ret = array();
+  $schema = civicrm_activity_ical_schema();
+  db_create_table($ret, 'civicrm_activity_ical_cache', $schema['civicrm_activity_ical_cache']);
+  return $ret;
+}

@@ -1,0 +1,13 @@
+name = CiviCRM activities iCalendar feed
+description = Provides an iCalendar feed of assigned activities for each user.
+package = CiviCRM
+core = 6.x
+php = 5.2
+dependencies[] = civicrm
+
+; Information added by drupal.org packaging script on 2013-01-16
+version = "6.x-1.0"
+core = "6.x"
+project = "civicrm_activity_ical"
+datestamp = "1358301617"
+

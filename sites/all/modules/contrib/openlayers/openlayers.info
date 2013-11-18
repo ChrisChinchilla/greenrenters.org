@@ -1,0 +1,12 @@
+name = OpenLayers
+description = OpenLayers base API module
+core = 6.x
+package = OpenLayers
+php = 5.2
+dependencies[] = ctools
+; Information added by drupal.org packaging script on 2013-04-01
+version = "6.x-2.0-beta3"
+core = "6.x"
+project = "openlayers"
+datestamp = "1364801112"
+

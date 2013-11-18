@@ -1,0 +1,3 @@
+<?php
+
+include_once('service_links_block.features.inc');

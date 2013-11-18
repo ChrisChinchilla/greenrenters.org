@@ -1,0 +1,11 @@
+name = FTP Media Mover
+description = Adds FTP harvesting to Media Mover
+package = "Media Mover"
+dependencies[] = media_mover_api 
+core = 6.x
+; Information added by drupal.org packaging script on 2012-03-22
+version = "6.x-1.0-beta7+24-dev"
+core = "6.x"
+project = "media_mover"
+datestamp = "1332375952"
+

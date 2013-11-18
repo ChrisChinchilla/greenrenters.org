@@ -1,0 +1,13 @@
+name = OpenLayers Views
+description = Provides OpenLayers Views plugins.
+core = 6.x
+package = OpenLayers
+dependencies[] = openlayers
+dependencies[] = views
+
+; Information added by drupal.org packaging script on 2013-04-01
+version = "6.x-2.0-beta3"
+core = "6.x"
+project = "openlayers"
+datestamp = "1364801112"
+

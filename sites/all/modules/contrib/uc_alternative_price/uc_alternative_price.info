@@ -1,0 +1,10 @@
+name = Alternative Price
+description = Allows an alternative price product feature for product nodes.
+dependencies[] = uc_product
+package = "Ubercart - extra"
+; Information added by drupal.org packaging script on 2011-02-25
+version = "6.x-2.x-dev"
+core = "6.x"
+project = "uc_alternative_price"
+datestamp = "1298620477"
+

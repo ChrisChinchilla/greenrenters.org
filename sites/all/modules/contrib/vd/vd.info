@@ -1,0 +1,13 @@
+name = "Views displays"
+description = "Extended views display modes"
+core = "6.x"
+dependencies[] = ds
+dependencies[] = views
+package = "Display suite"
+
+; Information added by drupal.org packaging script on 2012-01-25
+version = "6.x-2.1"
+core = "6.x"
+project = "vd"
+datestamp = "1327459251"
+

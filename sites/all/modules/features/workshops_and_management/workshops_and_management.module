@@ -1,0 +1,3 @@
+<?php
+
+include_once('workshops_and_management.features.inc');
