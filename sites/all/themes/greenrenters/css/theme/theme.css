@@ -33,13 +33,14 @@ color: #C61F26;
 h2,
 h2 a,
 legend,
-#crm-container fieldset legend
+#crm-container fieldset legend,
+.pane-node-title
 {
 	color: #003399;
 	font-weight: bold;
 	font-size:18px;
 }
-	
+
 	#crm-container fieldset legend {
 display: block;
 font-family: Georgia, "Times New Roman", Times, serif;
@@ -61,6 +62,7 @@ color: #146633;
     font-weight: normal;
 	font-size:12px;
 }
+/*
 h5 {
 }
 h6 {}
@@ -98,7 +100,7 @@ p code {}
 samp {}
 kbd {}
 var {}
-
+*/
 
 /**********************************************************
  *                 Global Link Styles
@@ -110,16 +112,18 @@ a,
 	color: #156734;
 	text-decoration:none;
 }
+/*
 a:link    {}
 a:visited {}
 a:hover   {}
 a:active  {}
 a.active  {}
-
+*/
 /* Set global a:active and a:focus styles. */
+/*
 a:active,
 a:focus {}
-
+*/
 
 /**********************************************************
  *                    Body Classes
@@ -128,21 +132,24 @@ a:focus {}
     enable them in the Advanced theme settings. */
 
 /* Front or not front. */
+/*
 .front {}
 .not-front {}
-
+*/
 /* Is the user logged in. */
+/*
 .logged-in {}
 .not-logged-in {}
-
+*/
 /* Content type body classes. */
+/*
 .article-type-book  {}
 .article-type-blog  {}
 .article-type-forum {}
 .article-type-page  {}
 .article-type-poll  {}
 .article-type-story {}
-
+*/
 .small{font-size:12px;}
 
 
@@ -150,26 +157,33 @@ a:focus {}
  *                  The wrapper divs
  *    Be careful how you modify these, see layout.css
  **********************************************************/
-#container {width:980px !important;}
+#container  {
+  /*width:980px !important;*/
+  min-width: 960px;
+  max-width: 1140px;
+  margin: 0 auto;
+}
 /* TEMPORARY */
 
 /* Column wrappers */
-#columns {}
+/*
+#columns {
+  float: right;
+  width: 75%;
+}
+*/
 .columns-inner {}
 
 /* Content wrappers */
 #content-column {
-
-    min-width: 720px;
-	width:50%;
-
-	}
+  clear: none;
+  float: left;
+  width: 100%;
+}
 
 	.page-fbsurvey #container #columns .columns-inner #content-column,
 	.page-fbstore #container #columns .columns-inner #content-column,
 	.page-node-1017 #container #columns .columns-inner #content-column
-
-
 	{
 		width:500px;
 		min-width:0;
@@ -182,12 +196,16 @@ a:focus {}
 	}
 
 .content-inner {
+  /*margin:0px !important;*/
+  margin-left: 22% !important;
+  border: 2px solid black;
+  /*width:696px;*/
+}
 
-	margin:0px !important;
-	border: 2px solid black;
-/*width:696px;*/
-
-	}
+.grnbth .content-inner  {
+  border: none;
+  margin-left: 0 !important;
+}
 
 /* Main content wrappers*/
 #main-content {}
@@ -205,8 +223,10 @@ a:focus {}
 /* Header region is embedded in the header, floated between the logo/site_name
    and the search box. */
 #header-region {
-	width:700px;
-	}
+  width:700px;
+  margin: 0 auto;
+  float: none;
+}
 
 /* Menu Bar sits below the header and is ideal for dynamic menus
    such as http://drupal.org/project/superfish. */
@@ -251,11 +271,11 @@ a:focus {}
 	}
 
 /* Target a specific sidebar. */
-#sidebar-first {
-    margin: 0 !important;
-    width: 240px;
-
-	}
+#sidebar-first  {
+  /* TODO: WHY? */
+  width: 22% !important;
+  margin-left: -100% !important;
+}
 #sidebar-last {
 	/*margin-left:0 !important;
 	margin-top: 265px;*/
@@ -270,28 +290,28 @@ a:focus {}
 /**
  * DO NOT USE display:none as this hides it from screen readers!
  */
+/*
 #skip-nav {}
-
+*/
 /* Override default pseudo class styles */
+/*
 #skip-nav a:link    {}
 #skip-nav a:visited {}
 #skip-nav a:hover   {}
 #skip-nav a:focus   {}
 #skip-nav a:active  {}
-
+*/
 
 /**********************************************************
  *                 Header Elements
  **********************************************************/
 /* #header wraps #branding, #search-box-top and #header-blocks. */
-#header {
-	width: 700px;
-		margin: 0 auto;
+#header  {
+  margin-left: 22%;
+  /*width: 700px;*/
+}
 
-	/*background-image: url(../images/house_header.gif);	*/
-	}
-	
-	#house_overlay { 
+	#house_overlay {
 background-color: #e9e9e9;
 width: 40%;
 height: 40%;
@@ -337,12 +357,13 @@ span#logo {}
 span#site-name {}
 
 /* Override default pseudo class styles. */
+/*
 #site-name a:link    {}
 #site-name a:visited {}
 #site-name a:hover   {}
 #site-name a:focus   {}
 #site-name a:active  {}
-
+*/
 /* Site slogan. */
 #site-slogan {}
 
@@ -860,7 +881,10 @@ ul.links li.comment_delete a {}
 	padding:0;
 	margin:0;
 	}
-.block-inner   {} /* Block inner div */
+#block-block-4 .block-inner {
+  padding: 0;
+  } /* Block inner div */
+
 .block-title   {} /* h2 block title */
 
 
@@ -885,7 +909,8 @@ ul.links li.comment_delete a {}
 /* High specifity selectors to style blocks in one sidebar - be careful,
    these are powerful selectors! */
 #sidebar-first .block {
-	}
+  margin-right: 10px;
+}
 
 #sidebar-first .block h2 {}
 #sidebar-first .block-inner {}
@@ -911,9 +936,9 @@ padding:0;
 /* High specifity selectors to style blocks in one region. */
 #leaderboard       .block {}
 #header-region     .block {
-	margin:0;
-	padding:0;
-		height: 272px;
+  margin:0;
+  padding:0;
+		/*height: 272px;*/
 
 	}
 #menu-bar          .block {}
@@ -1170,7 +1195,9 @@ ul.menu li.last  {}
  **********************************************************/
 .panel-col {}
 .panel-col .inside {}
-.panel-pane {}
+.panel-pane {
+  clear: both;
+}
 
 .sixcol-6x16 {}
 .fivecol-5x20 {}
@@ -1278,17 +1305,18 @@ margin-bottom: 100%;*/
   height:auto;
 }
 
+/*
 .view-content .title
 {
   margin-bottom: 20px;
 }
-
+*/
+/*
 .view-content .body
 {
-	/*margin-top:20px;*/
-
+  margin-top:20px;
 }
-
+*/
 .pane-availableworkshopsblocks .view-content .body
 {
 	margin-top:0;
@@ -1452,39 +1480,44 @@ margin-top: 210px;
 /* panels */
 .panel-2col-stacked .panel-col-top .inside {
     margin-bottom: 0.5em;
-    width: 100%;
+    /*width: 100%;*/
 }
 
 .panel-2col-stacked .panel-col-first {
-	float: left;
-    width: 180px;
-	margin-right: 10px;
-    margin-top: 0px;
+  /*float: left;*/
+  /*width: 180px;*/
+  margin-right: 10px;
+  margin-top: 0px;
+  width: 20%;
 }
 
 .panel-2col-stacked .panel-col-last {
-	    float: right;
-min-width: 485px;
-/*width:45%;*/
-	    margin-top: 0px;
-	    word-wrap:break-word;
-
+  /*
+  float: right;
+  min-width: 485px;
+  width:45%;
+  */
+  margin-right: 10px;
+  margin-top: 0px;
+  width: 77%;
 }
 
 /* Front page panels */
 
-
 #front_page .panel-col-first {
-	    float: left;
-    width: 40%;
-	margin-right: 10px;
-    margin-top: 0px;
+  /*
+float: left;
+  width: 40%;
+  */
+  margin-right: 10px;
+  margin-top: 0px;
+  width: 30%;
 }
 
 #front_page .panel-col-last {
-	    float: left;
-	    margin-top: 0px;
-		min-width:0px;
+  margin-right: 10px;
+  margin-top: 0px;
+  width: 67%;
 }
 
 .pane-print-0
@@ -1492,12 +1525,14 @@ min-width: 485px;
 clear:both;
 }
 
+/*
 .panel-col-last .pane-content
 {
 	width:485px;
 }
-
+*/
 /* Flags */
+/*
 .flag-wrapper
 {
  clear: both;
@@ -1505,7 +1540,7 @@ clear:both;
     font-size: 12px;
     width: 150px;
 }
-
+*/
 /*Related posts */
 
 #block-associated_links-1 .content,
@@ -1617,10 +1652,9 @@ padding:15px;
 margin:0;
 }
 
-.pane-frontpageevents
-{
-font-size: 12px;
-width:370px;
+.pane-frontpageevents {
+  font-size: 12px;
+  /*width:370px;*/
 }
 
 .pane-frontpageevents .item-list ul li
@@ -1790,7 +1824,7 @@ margin-bottom: 5px;
 {
 	clear:both;
 }
-	
+
 #crm-container .crm-section .label, .crm-section .label {
    float: left;
     text-align: left;

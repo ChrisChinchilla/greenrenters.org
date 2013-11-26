@@ -97,7 +97,7 @@
   <?php print $layout_settings; ?>
   <?php print $scripts; ?>
 <link rel="alternate" type="application/rss+xml" title="Green Renters RSS feed" href="http://feeds.feedburner.com/GreenRenters" />
-  
+
 </head>
 <body class="<?php print $classes; ?>">
 
@@ -151,11 +151,77 @@
     <?php endif; ?>
 
     <div id="columns"><div class="columns-inner clearfix">
+      <div id="content-column">
 
+          <div id="header" class="clearfix">
+
+
+
+
+
+
+      <?php if ($header): ?>
+        <div id="header-region"><?php print $header; ?></div> <!-- /header region -->
+      <?php endif; ?>
+
+    </div> <!-- /header -->
+
+    <div class="content-inner">
+
+        <?php if ($breadcrumb): ?>
+      <div id="breadcrumb">
+        <h2 class="element-invisible"><?php print t('You are here:'); ?></h2>
+        <?php print $breadcrumb; ?>
+      </div> <!-- /breadcrumb -->
+    <?php endif; ?>
+
+    <?php if ($messages or $help): ?>
+      <div id="messages-and-help">
+        <h2 class="element-invisible"><?php print t('System Messages'); ?></h2>
+        <?php if ($messages): print $messages; endif; ?>
+        <?php if ($help): print $help; endif; ?>
+      </div> <!-- /messages/help -->
+    <?php endif; ?>
+
+
+        <?php if ($mission): ?>
+          <div id="mission"><?php print $mission; ?></div> <!-- /mission -->
+        <?php endif; ?>
+
+        <?php if ($content_top): ?>
+          <div id="content-top"><?php print $content_top; ?></div> <!-- /content-top -->
+        <?php endif; ?>
+
+        <div id="main-content">
+
+          <?php if ($title or $tabs): ?>
+            <div id="main-content-header">
+              <?php if ($title): ?><h1 id="page-title"><?php print $title; ?></h1><?php endif; ?>
+              <?php if ($tabs): ?>
+                <div class="local-tasks"><?php print $tabs; ?></div>
+              <?php endif; ?>
+            </div>
+          <?php endif; ?>
+          <?php if ($content_aside): ?>
+            <div id="content-aside">
+
+
+<?php print $content_aside; ?></div> <!-- /content-aside -->
+          <?php endif; ?>
+
+          <div id="content"><?php print $content; ?></div>
+
+        </div> <!-- /main-content -->
+
+        <?php if ($content_bottom): ?>
+          <div id="content-bottom"><?php print $content_bottom; ?></div> <!-- /content-bottom -->
+        <?php endif; ?>
+
+      </div></div> <!-- /content-column -->
       <?php if ($left): ?>
         <div id="sidebar-first" class="sidebar">
-		
-		
+
+
       <?php if ($linked_site_logo or $linked_site_name or $site_slogan): ?>
         <div id="branding">
 
@@ -179,86 +245,20 @@
 
         </div> <!-- /branding -->
       <?php endif; ?>
-        
+
               <?php if ($search_box): ?>
         <div id="search-box"<?php print $toggle_label ?>><?php print $search_box; ?></div> <!-- /search box -->
       <?php endif; ?>
-      
+
 		<?php print $left; ?>
         </div> <!-- /sidebar-first -->
       <?php endif; ?>
-     
-     
-      <div id="content-column">
-      
-          <div id="header" class="clearfix">
 
 
 
 
 
 
-      <?php if ($header): ?>
-        <div id="header-region"><?php print $header; ?></div> <!-- /header region -->
-      <?php endif; ?>
-
-    </div> <!-- /header -->
-    
-    <div class="content-inner">
-    
-        <?php if ($breadcrumb): ?>
-      <div id="breadcrumb">
-        <h2 class="element-invisible"><?php print t('You are here:'); ?></h2>
-        <?php print $breadcrumb; ?>
-      </div> <!-- /breadcrumb -->
-    <?php endif; ?>
-
-    <?php if ($messages or $help): ?>
-      <div id="messages-and-help">
-        <h2 class="element-invisible"><?php print t('System Messages'); ?></h2>
-        <?php if ($messages): print $messages; endif; ?>
-        <?php if ($help): print $help; endif; ?>
-      </div> <!-- /messages/help -->
-    <?php endif; ?>
-    
-
-        <?php if ($mission): ?>
-          <div id="mission"><?php print $mission; ?></div> <!-- /mission -->
-        <?php endif; ?>
-
-        <?php if ($content_top): ?>
-          <div id="content-top"><?php print $content_top; ?></div> <!-- /content-top -->
-        <?php endif; ?>
-
-        <div id="main-content">
-
-          <?php if ($title or $tabs): ?>
-            <div id="main-content-header">
-              <?php if ($title): ?><h1 id="page-title"><?php print $title; ?></h1><?php endif; ?>
-              <?php if ($tabs): ?>
-                <div class="local-tasks"><?php print $tabs; ?></div>
-              <?php endif; ?>
-            </div>
-          <?php endif; ?>
-          <?php if ($content_aside): ?>
-            <div id="content-aside">
-			
-
-<?php print $content_aside; ?></div> <!-- /content-aside -->
-          <?php endif; ?>
-
-          <div id="content"><?php print $content; ?></div>
-
-        </div> <!-- /main-content -->
-
-        <?php if ($content_bottom): ?>
-          <div id="content-bottom"><?php print $content_bottom; ?></div> <!-- /content-bottom -->
-        <?php endif; ?>
-
-      </div></div> <!-- /content-column -->
-      
-       
-      
       <?php if ($right): ?>
         <div id="sidebar-last" class="sidebar"><?php print $right; ?></div> <!-- /sidebar-last -->
       <?php endif; ?>
@@ -269,8 +269,8 @@
 
 
     </div>
-      
-     
+
+
 
 </div> <!-- /columns -->
 
