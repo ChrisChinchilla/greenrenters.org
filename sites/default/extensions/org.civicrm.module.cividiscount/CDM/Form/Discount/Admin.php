@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.1                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2011                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,22 +29,21 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2011
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 require_once 'CRM/Admin/Form.php';
+require_once 'CDM/BAO/Item.php';
 
 /**
- * This class generates form components for Location Type
+ * This class generates form components for cividiscount administration.
  *
  */
-class CDM_Form_Discount_Add extends CRM_Admin_Form {
+class CDM_Form_Discount_Admin extends CRM_Admin_Form {
   protected $_multiValued = null;
-
   protected $_orgID = null;
-
   protected $_cloneID = null;
 
   function preProcess() {
@@ -78,9 +77,8 @@ class CDM_Form_Discount_Add extends CRM_Admin_Form {
       'autodiscount' => null,
       'memberships'  => null,
       'events'       => null,
-      'pricesets'    => null);
-
-    require_once 'CDM/BAO/Item.php';
+      'pricesets'    => null
+    );
   }
 
   function setDefaultValues() {
@@ -99,6 +97,9 @@ class CDM_Form_Discount_Add extends CRM_Admin_Form {
       CDM_BAO_Item::retrieve($params, $defaults);
     }
     $defaults['is_active'] = $origID ? CRM_Utils_Array::value('is_active', $defaults) : 1;
+
+    // assign the defaults to smarty so delete can use it
+    $this->assign('discountValue', $defaults);
 
     foreach ($this->_multiValued as $mv => $info) {
       if (! empty($defaults[$mv])) {
@@ -193,7 +194,7 @@ class CDM_Form_Discount_Add extends CRM_Admin_Form {
 
       $this->addElement('advmultiselect',
         'autodiscount',
-        ts('Automatic Discount'),
+        ts('Automatic Discount for Members'),
         $membershipTypes,
         array('size' => 5,
           'style' => 'width:auto; min-width:150px;',
@@ -251,64 +252,17 @@ class CDM_Form_Discount_Add extends CRM_Admin_Form {
       return;
     }
 
-    // store the submitted values in an array
     $params = $this->exportValues();
 
-    // action is taken depending upon the mode
-    $item                  = new CDM_DAO_Item();
-    $item->code            = $params['code'];
-    $item->description     = $params['description'];
-    $item->amount          = $params['amount'];
-    $item->amount_type     = $params['amount_type'];
-    $item->count_max       = $params['count_max'];
-
-    foreach ($this->_multiValued as $mv => $dontCare) {
-      if (! empty($params[$mv])) {
-        $item->$mv =
-          CRM_Core_DAO::VALUE_SEPARATOR .
-            implode(CRM_Core_DAO::VALUE_SEPARATOR,
-              array_values($params[$mv])) .
-            CRM_Core_DAO::VALUE_SEPARATOR;
-      }
-      else {
-        $item->$mv = 'null';
-      }
-    }
-
-    require_once 'CRM/Utils/Date.php';
-    if (! empty($params['active_on'])) {
-      $item->active_on = CRM_Utils_Date::processDate($params['active_on']);
-    }
-    else {
-      $item->active_on = 'null';
-    }
-    if (! empty($params['expire_on'])) {
-      $item->expire_on = CRM_Utils_Date::processDate($params['expire_on']);
-    }
-    else {
-      $item->expire_on = 'null';
-    }
-
-    if (! empty($params['organization_id'])) {
-      $item->organization_id = $params['organization_id'];
-    }
-    else {
-      $item->organization_id = 'null';
-    }
-
-    $item->is_active = 1;
-    if (!CRM_Utils_Array::value('is_active', $params)) {
-      $item->is_active = 0;
-    }
-
     if ($this->_action & CRM_Core_Action::UPDATE) {
-      $item->id = $this->_id;
+      $params['id'] = $this->_id;
     }
+    $params['multi_valued'] = $this->_multiValued;
 
-    $item->save();
+    $item = CDM_BAO_Item::add($params);
 
     CRM_Core_Session::setStatus(ts('The discount \'%1\' has been saved.',
       array(1 => $item->description ? $item->description : $item->code)));
-  } //end of function
+  }
 
 }

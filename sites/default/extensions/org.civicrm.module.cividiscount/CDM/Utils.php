@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.0                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2011                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CDM
- * @copyright CiviCRM LLC (c) 2004-2011
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -37,8 +37,12 @@
 class CDM_Utils {
 
   static function getEvents() {
+    // lets include all events instead of only public events
+    // quite a few folks want this!
     require_once 'CRM/Event/BAO/Event.php';
-    $eventInfo = CRM_Event_BAO_Event::getCompleteInfo();
+    $eventInfo =
+      CRM_Event_BAO_Event::getCompleteInfo(NULL, NULL, NULL, NULL, FALSE);
+
     if (! empty($eventInfo)) {
       $events    = array();
       foreach ($eventInfo as $info) {
@@ -121,8 +125,20 @@ ORDER BY  pf_label, pfv.price_field_id, pfv.weight
    * @return boolean true is it is quickconfig else false
    */
   static function checkForQuickConfigPriceSet($priceSetId) {
-    if (CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $priceSetId, 'is_quick_config')) {
-      return true;
+    if (
+      version_compare(
+        CRM_Utils_System::version(),
+        '4.4'
+      ) >= 0
+    ) {
+      if (CRM_Core_DAO::getFieldValue('CRM_Price_DAO_PriceSet', $priceSetId, 'is_quick_config')) {
+        return true;
+      }
+    }
+    else {
+      if (CRM_Core_DAO::getFieldValue('CRM_Price_DAO_Set', $priceSetId, 'is_quick_config')) {
+        return true;
+      }
     }
 
     return false;

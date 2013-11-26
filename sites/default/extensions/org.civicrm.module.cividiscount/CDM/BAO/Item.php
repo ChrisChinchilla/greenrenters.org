@@ -2,9 +2,9 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.1                                                |
+ | CiviCRM version 4.3                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2011                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2011
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,6 +43,77 @@ class CDM_BAO_Item extends CDM_DAO_Item {
    */
   function __construct() {
     parent::__construct();
+  }
+
+  /**
+   * Takes an associative array and creates a discount item
+   *
+   * This function extracts all the params it needs to initialize the created
+   * discount item. The params array could contain additional unused name/value
+   * pairs
+   *
+   * @param array  $params (reference ) an assoc array of name/value pairs
+   *
+   * @return object CDM_BAO_Item object
+   * @access public
+   * @static
+   */
+  static function &add(&$params) {
+    require_once 'CRM/Utils/Date.php';
+
+    $item = new CDM_DAO_Item();
+    $item->code = $params['code'];
+    $item->description = $params['description'];
+    $item->amount = $params['amount'];
+    $item->amount_type = $params['amount_type'];
+    $item->count_max = $params['count_max'];
+
+    foreach ($params['multi_valued'] as $mv => $dontCare) {
+      if (!empty($params[$mv])) {
+        $item->$mv =
+          CRM_Core_DAO::VALUE_SEPARATOR .
+          implode(CRM_Core_DAO::VALUE_SEPARATOR, array_values($params[$mv])) .
+          CRM_Core_DAO::VALUE_SEPARATOR;
+      }
+      else {
+        $item->$mv = 'null';
+      }
+    }
+
+    if (! empty($params['id'])) {
+      $item->id = $params['id'];
+    }
+
+    $item->is_active = CRM_Utils_Array::value('is_active', $params) ? 1 : 0;
+
+    if (! empty($params['active_on'])) {
+      $item->active_on = CRM_Utils_Date::processDate($params['active_on']);
+    }
+    else {
+      $item->active_on = 'null';
+    }
+
+    if (! empty($params['expire_on'])) {
+      $item->expire_on = CRM_Utils_Date::processDate($params['expire_on']);
+    }
+    else {
+      $item->expire_on = 'null';
+    }
+
+    if (! empty($params['organization_id'])) {
+      $item->organization_id = $params['organization_id'];
+    }
+    else {
+      $item->organization_id = 'null';
+    }
+
+    $id = empty($params['id']) ? NULL : $params['id'];
+    $op = $id ? 'edit' : 'create';
+    CRM_Utils_Hook::pre($op, 'CiviDiscount', $id, $params);
+    $item->save();
+    CRM_Utils_Hook::post($op, 'CiviDiscount', $item->id, $item);
+
+    return $item;
   }
 
   /**
@@ -70,7 +141,7 @@ class CDM_BAO_Item extends CDM_DAO_Item {
   }
 
   static function getValidDiscounts() {
-    $codes = array();
+    $discounts = array();
 
     $sql = "
 SELECT  id,
@@ -93,11 +164,20 @@ FROM    cividiscount_item
     while ($dao->fetch()) {
       $a = (array) $dao;
       if (CDM_BAO_Item::isValid($a)) {
-        $codes[$a['code']] = $a;
+        $discounts[$a['code']] = $a;
       }
     }
 
-    return $codes;
+    // Expand set-valued fields.
+    $fields = array('events', 'pricesets', 'memberships', 'autodiscount');
+    foreach ($discounts as &$discount) {
+      foreach ($fields as $field) {
+        $items = array_filter(explode(CRM_Core_DAO::VALUE_SEPARATOR, $discount[$field]));
+        $discount[$field] = !empty($items) ? array_combine($items, $items) : array();
+      }
+    }
+
+    return $discounts;
   }
 
   /**
@@ -186,16 +266,17 @@ FROM    cividiscount_item
    * @return true on success else false
    */
   static function del($itemID) {
-    require_once 'CRM/Utils/Rule.php';
-    if (! CRM_Utils_Rule::positiveInteger($itemID)) {
-      return false;
-    }
-
-    require_once 'CDM/DAO/Item.php';
     $item = new CDM_DAO_Item();
     $item->id = $itemID;
-    $item->delete();
 
-    return true;
+    if ($item->find(TRUE)) {
+      CRM_Utils_Hook::pre('delete', 'CiviDiscount', $item->id, $item);
+      $item->delete();
+      CRM_Utils_Hook::post('delete', 'CiviDiscount', $item->id, $item);
+
+      return TRUE;
+    }
+
+    return FALSE;
   }
 }

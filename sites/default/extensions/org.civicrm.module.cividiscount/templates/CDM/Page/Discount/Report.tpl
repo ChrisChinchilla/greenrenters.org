@@ -25,22 +25,23 @@
 *}
 <div class="crm-block crm-content-block crm-discount-view-form-block">
 
-<table class="crm-info-panel">
+  <table class="crm-info-panel">
     <tr>
-        <th class="label">{ts}Contact{/ts}</th>
-        <th class="label">{ts}Event{/ts}</th>
-        <th class="label">{ts}Membership{/ts}</th>
-        <th class="label">{ts}Date{/ts}</th>
-    <tr>
-        {foreach from=$rows item=row}
-		    {if $row}
-            <td><a href="/civicrm/contact/view?reset=1&cid={$row.contact_id}">{$row.display_name}</a>&nbsp;&nbsp;(ID:{$row.contact_id})</td>
-            <td>{$row.event_title}</td>
-            <td>{$row.membership_title}</td>
-            <td>{$row.used_date|crmDate}</td>
-            <tr />
-        {/if}
-        {/foreach}
+      <th class="label">{ts}Contact{/ts}</th>
+      <th class="label">{ts}Event{/ts}</th>
+      <th class="label">{ts}Membership{/ts}</th>
+      <th class="label">{ts}Date{/ts}</th>
     </tr>
-</table>
+    {foreach from=$rows item=row}
+      {if $row}
+        <tr>
+          <td><a href='{crmURL p='civicrm/contact/view' q="cid=`$row.contact_id`&reset=1"}'>{$row.display_name}</a>&nbsp;&nbsp;(ID:{$row.contact_id})</td>
+          <td>{$row.event_title}</td>
+          <td>{$row.membership_title}</td>
+          <td>{$row.used_date|crmDate}</td>
+        </tr>
+      {/if}
+    {/foreach}
+    </tr>
+  </table>
 </div>
