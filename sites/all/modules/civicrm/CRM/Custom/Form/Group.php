@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -82,6 +82,9 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     // current set id
     $this->_id = $this->get('id');
 
+    if ($this->_id && $isReserved = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomGroup', $this->_id, 'is_reserved', 'id')) {
+      CRM_Core_Error::fatal("You cannot edit the settings of a reserved custom field-set.");
+    }
     // setting title for html page
     if ($this->_action == CRM_Core_Action::UPDATE) {
       $title = CRM_Core_BAO_CustomGroup::getTitle($this->_id);
@@ -240,7 +243,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     $sel2['ParticipantRole'] = $participantRole;
     $sel2['ParticipantEventName'] = CRM_Event_PseudoConstant::event(NULL, FALSE, "( is_template IS NULL OR is_template != 1 )");
     $sel2['ParticipantEventType'] = $eventType;
-        $sel2['Contribution']         = CRM_Contribute_PseudoConstant::financialType( );
+    $sel2['Contribution'] = CRM_Contribute_PseudoConstant::financialType();
     $sel2['Relationship'] = $allRelationshipType;
 
     $sel2['Individual'] = CRM_Contact_BAO_ContactType::subTypePairs('Individual', FALSE, NULL);
@@ -520,7 +523,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
   /*
    * Function to return a formatted list of relationship name.
    * @param $list array array of relationship name.
-   * @static 
+   * @static
    * return array array of relationship name.
    */
   static function getFormattedList(&$list) {

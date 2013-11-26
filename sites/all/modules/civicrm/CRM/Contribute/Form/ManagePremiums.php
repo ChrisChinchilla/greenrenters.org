@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -172,27 +172,27 @@ class CRM_Contribute_Form_ManagePremiums extends CRM_Contribute_Form {
     $this->add('Select', 'frequency_unit', ts('Frequency Unit'), array('' => '- select period -', 'day' => 'Day', 'week' => 'Week', 'month' => 'Month', 'year' => 'Year'));
 
     $this->add('text', 'frequency_interval', ts('Frequency'), CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_Product', 'frequency_interval'));
-    
+
     //Financial Type CRM-11106
     $financialType = CRM_Contribute_PseudoConstant::financialType( );
     $premiumFinancialType = array();
     CRM_Core_PseudoConstant::populate(
       $premiumFinancialType,
       'CRM_Financial_DAO_EntityFinancialAccount',
-      $all = True, 
-      $retrieve = 'entity_id', 
-      $filter = null, 
-      'account_relationship = 8' 
+      $all = True,
+      $retrieve = 'entity_id',
+      $filter = null,
+      'account_relationship = 8'
     );
-            
+
     $costFinancialType = array();
     CRM_Core_PseudoConstant::populate(
       $costFinancialType,
       'CRM_Financial_DAO_EntityFinancialAccount',
-      $all = True, 
-      $retrieve = 'entity_id', 
-      $filter = null, 
-      'account_relationship = 7' 
+      $all = True,
+      $retrieve = 'entity_id',
+      $filter = null,
+      'account_relationship = 7'
     );
     $productFinancialType = array_intersect($costFinancialType, $premiumFinancialType);
     foreach( $financialType as $key => $financialTypeName ){
@@ -201,14 +201,14 @@ class CRM_Contribute_Form_ManagePremiums extends CRM_Contribute_Form {
     }
     if( count( $financialType ) ){
       $this->assign( 'financialType', $financialType );
-    } 
+    }
     $this->add(
-      'select', 
-      'financial_type_id', 
-      ts( 'Financial Type' ), 
+      'select',
+      'financial_type_id',
+      ts( 'Financial Type' ),
       array(''=>ts('- select -')) + $financialType
     );
-    
+
     $this->add('checkbox', 'is_active', ts('Enabled?'));
 
     $this->addFormRule(array('CRM_Contribute_Form_ManagePremiums', 'formRule'));
@@ -242,14 +242,17 @@ class CRM_Contribute_Form_ManagePremiums extends CRM_Contribute_Form {
     if (isset($params['imageOption'])) {
       if ($params['imageOption'] == 'thumbnail') {
         if (!$params['imageUrl']) {
-          $errors['imageUrl'] = 'Image URL is Required ';
+          $errors['imageUrl'] = ts('Image URL is Required');
         }
         if (!$params['thumbnailUrl']) {
-          $errors['thumbnailUrl'] = 'Thumbnail URL is Required ';
+          $errors['thumbnailUrl'] = ts('Thumbnail URL is Required');
         }
       }
     }
-
+    // CRM-13231 financial type required if product has cost
+    if (CRM_Utils_Array::value('cost', $params) && !CRM_Utils_Array::value('financial_type_id', $params)) {
+      $errors['financial_type_id'] = ts('Financial Type is required for product having cost.');
+    }
     $fileLocation = $files['uploadFile']['tmp_name'];
     if ($fileLocation != "") {
       list($width, $height) = getimagesize($fileLocation);

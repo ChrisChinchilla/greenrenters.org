@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -402,7 +402,7 @@ class CRM_Utils_String {
   /**
    * Convert a HTML string into a text one using html2text
    *
-   * @param string $html  the tring to be converted
+   * @param string $html  the string to be converted
    *
    * @return string       the converted string
    * @access public
@@ -410,8 +410,11 @@ class CRM_Utils_String {
    */
   static function htmlToText($html) {
     require_once 'packages/html2text/rcube_html2text.php';
-    $converter = new rcube_html2text($html);
-    return $converter->get_text();
+    $token_html = preg_replace('!\{([a-z_.]+)\}!i', 'token:{$1}', $html);
+    $converter = new rcube_html2text($token_html);
+    $token_text = $converter->get_text();
+    $text = preg_replace('!token\:\{([a-z_.]+)\}!i', '{$1}', $token_text);
+    return $text;
   }
 
   static function extractName($string, &$params) {
@@ -630,6 +633,25 @@ class CRM_Utils_String {
     }
     return $result;
   }
+
+  /**
+   * Examples:
+   * "admin foo" => array(NULL,"admin foo")
+   * "cms:admin foo" => array("cms", "admin foo")
+   *
+   * @param string $string e.g. "view all contacts". Syntax: "[prefix:]name"
+   * @return array (0 => string|NULL $prefix, 1 => string $value)
+   */
+  public static function parsePrefix($delim, $string, $defaultPrefix = NULL) {
+    $pos = strpos($string, $delim);
+    if ($pos === FALSE) {
+      return array($defaultPrefix, $string);
+    }
+    else {
+      return array(substr($string, 0, $pos), substr($string, 1+$pos));
+    }
+  }
+
 
 }
 

@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -38,7 +38,7 @@
            <tr class="crm-admin-options-form-block-custom_search_path">
              <td class="label">{ts}Custom Search Path{/ts}</td>
              <td>{$form.label.html}<br />
-                <span class="description">{ts}Enter the "class path" for this custom search here.{/ts} {docURL page="developer/the-extensions-framework/custom-searches"}
+                <span class="description">{ts}Enter the "class path" for this custom search here.{/ts}
              </td>
            </tr>
         {elseif $gName eq 'from_email_address'}
@@ -62,12 +62,12 @@
                <span class="description">{ts}The option label is displayed to users.{/ts}</span>
              </td>
            </tr>
-	   {if $form.financial_account_id.html}
+     {if $form.financial_account_id.html}
              <tr class="crm-admin-options-form-block-grouping">
                <td class="label">{$form.financial_account_id.label}</td>
                <td>{$form.financial_account_id.html}</td>
              </tr>
-	   {/if}
+     {/if}
         {/if}
       {if $gName eq 'case_status'}
             <tr class="crm-admin-options-form-block-grouping">

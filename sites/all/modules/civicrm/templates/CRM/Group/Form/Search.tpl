@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -42,7 +42,7 @@
           {ts}Complete OR partial creator name.{/ts}
       </span>
     </td>
-    <td>
+    <td id="group_type-block">
       {$form.group_type.label}<br />
       {$form.group_type.html}<br />
       <span class="description font-italic">
@@ -91,20 +91,31 @@
 {literal}
 <script type="text/javascript">
 cj( function() {
-  buildGroupSelector( false );
+  // for CRM-11310 and CRM-10635 : processing just parent groups on initial display
+  // passing '1' for parentsOnlyArg to show parent child heirarchy structure display
+  // on initial load of manage group page and
+  // also to handle search filtering for initial load of same page.
+  buildGroupSelector(true, 1);
   cj('#_qf_Search_refresh').click( function() {
     buildGroupSelector( true );
   });
 });
 
-function buildGroupSelector( filterSearch ) {
+function buildGroupSelector( filterSearch, parentsOnlyArg ) {
     if ( filterSearch ) {
-        crmGroupSelector.fnDestroy();
+        if (typeof crmGroupSelector !== 'undefined') {
+          crmGroupSelector.fnDestroy();
+        }
         var parentsOnly = 0;
         var ZeroRecordText = '<div class="status messages">{/literal}{ts escape="js"}No matching Groups found for your search criteria. Suggestions:{/ts}{literal}<div class="spacer"></div><ul><li>{/literal}{ts escape="js"}Check your spelling.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Try a different spelling or use fewer letters.{/ts}{literal}</li><li>{/literal}{ts escape="js"}Make sure you have enough privileges in the access control system.{/ts}{literal}</li></ul></div>';
     } else {
         var parentsOnly = 1;
         var ZeroRecordText = {/literal}'{ts escape="js"}<div class="status messages">No Groups have been created for this site.{/ts}</div>'{literal};
+    }
+
+    // this argument should only be used on initial display i.e onPageLoad
+    if (typeof parentsOnlyArg !== 'undefined') {
+      parentsOnly = parentsOnlyArg;
     }
 
     var columns = '';
@@ -157,17 +168,16 @@ function buildGroupSelector( filterSearch ) {
                        );
             if ( filterSearch ) {
                 var groupTypes = '';
-                if ( cj('.crm-group-search-form-block #group_type_1').prop('checked') ) {
-                    groupTypes = '1';
+                cj('#group_type-block input').each(function(index) {
+                if (cj(this).prop('checked')) {
+                  if (groupTypes) {
+                    groupTypes = groupTypes + ',' + cj(this).attr('id').substr(11);
+                  }
+                  else {
+                    groupTypes = cj(this).attr('id').substr(11);
+                  }
                 }
-
-                if ( cj('.crm-group-search-form-block #group_type_2').prop('checked') ) {
-                    if ( groupTypes ) {
-                        groupTypes = groupTypes + ',2';
-                    } else {
-                        groupTypes = groupTypes + '2';
-                    }
-                }
+                });
 
                 var groupStatus = '';
                 if ( cj('.crm-group-search-form-block #group_status_1').prop('checked') ) {

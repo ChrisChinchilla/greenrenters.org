@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -364,7 +364,7 @@ class CRM_Core_Block {
 
         foreach ($components as $componentName => $obj) {
           if (in_array($componentName, $config->enableComponents)) {
-            eval('$obj->creatNewShortcut( $shortCuts, $newCredit );');
+            $obj->creatNewShortcut($shortCuts, $newCredit);
           }
         }
       }
@@ -562,7 +562,8 @@ class CRM_Core_Block {
       }
       // do nothing
     }
-    elseif (!CRM_Core_Permission::check('access CiviCRM')) {
+    // require 'access CiviCRM' permissons, except for the language switch block
+    elseif (!CRM_Core_Permission::check('access CiviCRM') && $id!=self::LANGSWITCH) {
       return NULL;
     }
     elseif ($id == self::ADD) {

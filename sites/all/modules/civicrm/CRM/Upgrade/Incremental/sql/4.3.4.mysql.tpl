@@ -39,17 +39,17 @@ SELECT @domainContactId := contact_id from civicrm_domain where id = {$domainID}
 -- for Accounts Receivable Account is
 SELECT @option_value_rel_id_ar  := value FROM civicrm_option_value WHERE option_group_id = @option_group_id_arel AND name = 'Accounts Receivable Account is';
 SELECT @arAccount := id FROM civicrm_financial_account WHERE LOWER(name) = 'accounts receivable';
-SELECT @arAccountEntity := financial_account_id FROM civicrm_entity_financial_account 
+SELECT @arAccountEntity := financial_account_id FROM civicrm_entity_financial_account
  WHERE account_relationship = @option_value_rel_id_ar AND entity_table = 'civicrm_financial_type' LIMIT 1;
 
 INSERT INTO civicrm_entity_financial_account(entity_table, entity_id, account_relationship, financial_account_id)
 SELECT 'civicrm_financial_type', cft.id, @option_value_rel_id_ar, IFNULL(@arAccount, @arAccountEntity)
 FROM civicrm_financial_type cft
 LEFT JOIN civicrm_entity_financial_account ceft
-ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id_ar AND ceft.entity_table = 'civicrm_financial_type' 
+ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id_ar AND ceft.entity_table = 'civicrm_financial_type'
 WHERE ceft.entity_id IS NULL;
 
--- for income account is 
+-- for income account is
 SELECT @option_value_rel_id  := value FROM civicrm_option_value WHERE option_group_id = @option_group_id_arel AND name = 'Income Account is';
 SELECT @opval := value FROM civicrm_option_value WHERE name = 'Revenue' and option_group_id = @option_group_id_fat;
 
@@ -58,16 +58,16 @@ INSERT INTO civicrm_financial_account (name, contact_id, financial_account_type_
 SELECT cft.name, @domainContactId, @opval, cft.name as description, 'INC', 1
 FROM civicrm_financial_type cft
 LEFT JOIN civicrm_entity_financial_account ceft
-ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id AND ceft.entity_table = 'civicrm_financial_type' 
-LEFT JOIN civicrm_financial_account ca ON LOWER(ca.name) = LOWER(cft.name) 
+ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id AND ceft.entity_table = 'civicrm_financial_type'
+LEFT JOIN civicrm_financial_account ca ON LOWER(ca.name) = LOWER(cft.name)
 WHERE ceft.entity_id IS NULL AND ca.id IS NULL;
 
 INSERT INTO civicrm_entity_financial_account(entity_table, entity_id, account_relationship, financial_account_id)
 SELECT 'civicrm_financial_type', cft.id, @option_value_rel_id, ca.id
 FROM civicrm_financial_type cft
 LEFT JOIN civicrm_entity_financial_account ceft
-ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id AND ceft.entity_table = 'civicrm_financial_type' 
-LEFT JOIN civicrm_financial_account ca ON LOWER(ca.name) = LOWER(cft.name) 
+ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id AND ceft.entity_table = 'civicrm_financial_type'
+LEFT JOIN civicrm_financial_account ca ON LOWER(ca.name) = LOWER(cft.name)
 WHERE ceft.entity_id IS NULL;
 
 -- for cost of sales
@@ -75,21 +75,35 @@ SELECT @option_value_rel_id_cg := value FROM civicrm_option_value WHERE option_g
 SELECT @opCost := value FROM civicrm_option_value WHERE name = 'Cost of Sales' and option_group_id = @option_group_id_fat;
 SELECT @financialAccountId := id FROM civicrm_financial_account WHERE is_default = 1 and financial_account_type_id = @opCost;
 
+-- CRM-13231
+INSERT IGNORE INTO civicrm_financial_account (id, name, contact_id, financial_account_type_id, description, account_type_code, accounting_code, is_active, is_default)
+VALUES (@financialAccountId, 'Premiums', @domainContactId, @opCost, 'Account to record cost of premiums provided to payors', 'COGS', '5100', 1, 1);
+
+SELECT @financialAccountId := id FROM civicrm_financial_account WHERE is_default = 1 and financial_account_type_id = @opCost;
+
 INSERT INTO civicrm_entity_financial_account(entity_table, entity_id, account_relationship, financial_account_id)
 SELECT 'civicrm_financial_type', cft.id, @option_value_rel_id_cg, @financialAccountId
 FROM civicrm_financial_type cft
 LEFT JOIN civicrm_entity_financial_account ceft
-ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id_cg AND ceft.entity_table = 'civicrm_financial_type' 
+ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id_cg AND ceft.entity_table = 'civicrm_financial_type'
 WHERE ceft.entity_id IS NULL;
 
 -- for Expense Account is
 SELECT @option_value_rel_id_exp  := value FROM civicrm_option_value WHERE option_group_id = @option_group_id_arel AND name = 'Expense Account is';
 SELECT @opexp := value FROM civicrm_option_value WHERE name = 'Expenses' and option_group_id = @option_group_id_fat;
+SET @financialAccountId := '';
 SELECT @financialAccountId := id FROM civicrm_financial_account WHERE is_default = 1 and financial_account_type_id = @opexp;
+
+-- CRM-13231
+INSERT IGNORE INTO civicrm_financial_account (id, name, contact_id, financial_account_type_id, description, account_type_code, accounting_code, is_active, is_default)
+VALUES (@financialAccountId, 'Banking Fees', @domainContactId, @opexp, 'Payment processor fees and manually recorded banking fees', 'EXP', '5200', 1, 1);
+
+SELECT @financialAccountId := id FROM civicrm_financial_account WHERE is_default = 1 and financial_account_type_id = @opexp;
+
 
 INSERT INTO civicrm_entity_financial_account(entity_table, entity_id, account_relationship, financial_account_id)
 SELECT 'civicrm_financial_type', cft.id, @option_value_rel_id_exp, @financialAccountId
 FROM civicrm_financial_type cft
 LEFT JOIN civicrm_entity_financial_account ceft
-ON ceft.entity_id = cft.id AND ceft.account_relationship = 5 AND ceft.entity_table = 'civicrm_financial_type' 
+ON ceft.entity_id = cft.id AND ceft.account_relationship = @option_value_rel_id_exp AND ceft.entity_table = 'civicrm_financial_type'
 WHERE ceft.entity_id IS NULL;

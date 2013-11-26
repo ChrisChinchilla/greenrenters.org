@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -35,7 +35,7 @@
 </div>
 
 <div class="action-link">
-       <a id='notDuplicate' href="#" title={ts}Mark this pair as not a duplicate.{/ts} onClick="processDupes( {$main_cid}, {$other_cid}, 'dupe-nondupe', 'merge-contact', '{crmURL p="civicrm/contact/deduperules" q="reset=1&context=nonDupe"}' );return false;">&raquo; {ts}Mark this pair as not a duplicate.{/ts}</a>
+       <a id='notDuplicate' href="#" title={ts}Mark this pair as not a duplicate.{/ts} onClick="processDupes( {$main_cid}, {$other_cid}, 'dupe-nondupe', 'merge-contact', '{crmURL p="civicrm/contact/dedupefind" q="reset=1&action=update&rgid=$rgid"}' );return false;">&raquo; {ts}Mark this pair as not a duplicate.{/ts}</a>
 </div>
 
 <table>

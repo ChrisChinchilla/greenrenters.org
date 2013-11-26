@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -51,8 +51,8 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
   // see HTML_QuickForm_advcheckbox::setValues() - but patching that doesn't
   // help, as QF doesn't put the 0-value elements in exportValues() anyway...
   // to side-step this, we use the below UUID as a (re)placeholder
-  var $_qfZeroBug = 'e8cddb72-a257-11dc-b9cc-0016d3330ee9'; 
-  
+  var $_qfZeroBug = 'e8cddb72-a257-11dc-b9cc-0016d3330ee9';
+
   function preProcess() {
     if (!CRM_Core_Permission::check('merge duplicate contacts')) {
       CRM_Core_Error::fatal(ts('You do not have access to this page'));
@@ -77,7 +77,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
     $cacheKey .= $rgid ? "_{$rgid}" : '_0';
     $cacheKey .= $gid ? "_{$gid}" : '_0';
 
-    $join = "LEFT JOIN civicrm_dedupe_exception de ON ( pn.entity_id1 = de.contact_id1 AND 
+    $join = "LEFT JOIN civicrm_dedupe_exception de ON ( pn.entity_id1 = de.contact_id1 AND
                                                              pn.entity_id2 = de.contact_id2 )";
     $where = "de.id IS NULL";
 
@@ -193,12 +193,12 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
     $subtypes = CRM_Contact_BAO_ContactType::subTypePairs(NULL, TRUE, '');
 
     $this->assign('contact_type', $main['contact_type']);
-    if (isset($main['contact_sub_type'])) {
+    if (!empty($main['contact_sub_type'])) {
       $this->assign('main_contact_subtype',
         CRM_Utils_Array::value('contact_sub_type', $subtypes[$main['contact_sub_type'][0]])
       );
     }
-    if (isset($other['contact_sub_type'])) {
+    if (!empty($other['contact_sub_type'])) {
       $this->assign('other_contact_subtype',
         CRM_Utils_Array::value('contact_sub_type', $subtypes[$other['contact_sub_type'][0]])
       );
@@ -207,6 +207,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
     $this->assign('other_name', $other['display_name']);
     $this->assign('main_cid', $main['contact_id']);
     $this->assign('other_cid', $other['contact_id']);
+    $this->assign('rgid', $rgid);
 
     $this->_cid         = $cid;
     $this->_oid         = $oid;
@@ -292,11 +293,24 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
     }
 
     $this->addButtons($button);
+    $this->addFormRule(array('CRM_Contact_Form_Merge', 'formRule'), $this);
+  }
+
+  static function formRule($fields, $files, $self) {
+    $errors = array();
+    $link = CRM_Utils_System::href(ts('Flip between the original and duplicate contacts.'),
+      'civicrm/contact/merge',
+      'reset=1&action=update&cid=' . $self->_oid . '&oid=' . $self->_cid . '&rgid=' . $self->_rgid . '&flip=1'
+    );
+    if (CRM_Contact_BAO_Contact::checkDomainContact($self->_oid)) {
+      $errors['_qf_default'] = ts("The Default Organization contact cannot be merged into another contact record. It is associated with the CiviCRM installation for this domain and contains information used for system functions. If you want to merge these records, you can: %1", array(1 => $link));
+    }
+    return $errors;
   }
 
   public function postProcess() {
     $formValues = $this->exportValues();
- 
+
     // reset all selected contact ids from session
     // when we came from search context, CRM-3526
     $session = CRM_Core_Session::singleton();
@@ -332,7 +346,7 @@ class CRM_Contact_Form_Merge extends CRM_Core_Form {
       $cacheKey .= $this->_rgid ? "_{$this->_rgid}" : '_0';
       $cacheKey .= $this->_gid ? "_{$this->_gid}" : '_0';
 
-      $join = "LEFT JOIN civicrm_dedupe_exception de ON ( pn.entity_id1 = de.contact_id1 AND 
+      $join = "LEFT JOIN civicrm_dedupe_exception de ON ( pn.entity_id1 = de.contact_id1 AND
                                                                  pn.entity_id2 = de.contact_id2 )";
       $where = "de.id IS NULL";
 

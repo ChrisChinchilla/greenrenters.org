@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -36,11 +36,7 @@
 /**
  * Drupal specific stuff goes here
  */
-class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
-  function __construct() {
-    $this->is_drupal = TRUE;
-    $this->supports_form_extensions = TRUE;
-  }
+class CRM_Utils_System_Drupal6 extends CRM_Utils_System_DrupalBase {
 
   /**
    * if we are using a theming system, invoke theme, else just print the
@@ -119,9 +115,7 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
     if (form_get_errors() || !isset($form_state['user'])) {
       return FALSE;
     }
-
     return $form_state['user']->uid;
-
   }
 
   /*
@@ -158,7 +152,6 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
     $email = $dao->escape(CRM_Utils_Array::value('mail', $params));
     _user_edit_validate(NULL, $params);
     $errors = form_get_errors();
-
     if ($errors) {
       if (CRM_Utils_Array::value('name', $errors)) {
         $errors['cms_name'] = $errors['name'];
@@ -170,37 +163,45 @@ class CRM_Utils_System_Drupal6 extends CRM_Utils_System_Base {
       unset($_SESSION['messages']);
     }
 
-    // drupal api sucks do the name check manually
+    // Do the name check manually.
     $nameError = user_validate_name($params['name']);
     if ($nameError) {
       $errors['cms_name'] = $nameError;
     }
 
     $sql = "
-SELECT name, mail
-  FROM {$config->userFrameworkUsersTableName}
- WHERE (LOWER(name) = LOWER('$name')) OR (LOWER(mail) = LOWER('$email'))";
+      SELECT name, mail
+      FROM {users}
+      WHERE (LOWER(name) = LOWER('$name')) OR (LOWER(mail) = LOWER('$email'))
+    ";
 
-
-    $db_cms = DB::connect($config->userFrameworkDSN);
-    if (DB::isError($db_cms)) {
-      die("Cannot connect to UF db via $dsn, " . $db_cms->getMessage());
+    $result = db_query($sql);
+    $row = db_fetch_array($result);
+    if (!$row) {
+      return;
     }
-    $query = $db_cms->query($sql);
-    $row = $query->fetchRow();
+
+    $user = NULL;
+
     if (!empty($row)) {
-      $dbName = CRM_Utils_Array::value(0, $row);
-      $dbEmail = CRM_Utils_Array::value(1, $row);
+      $dbName = CRM_Utils_Array::value('name', $row);
+      $dbEmail = CRM_Utils_Array::value('mail', $row);
       if (strtolower($dbName) == strtolower($name)) {
         $errors['cms_name'] = ts('The username %1 is already taken. Please select another username.',
           array(1 => $name)
         );
       }
       if (strtolower($dbEmail) == strtolower($email)) {
-        $resetUrl = $config->userFrameworkBaseURL . 'user/password';
-        $errors[$emailName] = ts('The email address %1 is already registered. <a href="%2">Have you forgotten your password?</a>',
-          array(1 => $email, 2 => $resetUrl)
-        );
+        if(empty($email)) {
+          $errors[$emailName] = ts('You cannot create an email account for a contact with no email',
+            array(1 => $email)
+          );
+        }
+        else{
+          $errors[$emailName] = ts('This email %1 is already registered. Please select another email.',
+            array(1 => $email)
+          );
+        }
       }
     }
   }
@@ -426,7 +427,6 @@ SELECT name, mail
    *
    * @return string the url to post the form
    * @access public
-
    */
   function postURL($action) {
     if (!empty($action)) {
@@ -516,6 +516,8 @@ SELECT name, mail
    *
    * @param string $name     the user name
    * @param string $password the password for the above user name
+   * @param boolean $loadCMSBootstrap load cms bootstrap?
+   * @param NULL|string $realPath filename of script
    *
    * @return mixed false if no auth
    *               array(
@@ -523,6 +525,13 @@ SELECT name, mail
    * @access public
    */
   function authenticate($name, $password, $loadCMSBootstrap = FALSE, $realPath = NULL) {
+   //@todo this 'PEAR-y' stuff is only required when bookstrap is not being loaded which is rare
+   // if ever now.
+   // probably if bootstrap is loaded this call
+   // CRM_Utils_System::loadBootStrap($bootStrapParams, TRUE, TRUE, $realPath); would be
+   // sufficient to do what this fn does. It does exist as opposed to return which might need some hanky-panky to make
+   // safe in the unknown situation where authenticate might be called & it is important that
+   // false is returned
     require_once 'DB.php';
 
     $config = CRM_Core_Config::singleton();
@@ -557,8 +566,8 @@ SELECT name, mail
           }
           CRM_Utils_System::loadBootStrap($bootStrapParams, TRUE, TRUE, $realPath);
         }
-      return array($contactID, $row['uid'], mt_rand());
-    }
+        return array($contactID, $row['uid'], mt_rand());
+      }
     }
     return FALSE;
   }
@@ -584,14 +593,31 @@ SELECT name, mail
   }
 
   /**
-   * Perform an post login activities required by the UF -
-   * e.g. for drupal : records a watchdog message about the new session, saves the login timestamp, calls hook_user op 'login' and generates a new session.
-   * @param array $edit: The array of form values submitted by the user.
+   * Perform any post login activities required by the UF -
+   * e.g. for drupal : records a watchdog message about the new session,
+   * saves the login timestamp, calls hook_user op 'login' and generates a new session.
    *
-  function userLoginFinalize($edit = array()){
-    user_authenticate_finalize(&$edit);
+   * @param array params
+   *
+   * FIXME: Document values accepted/required by $params
+   */
+  function userLoginFinalize($params = array()) {
+    user_authenticate_finalize($params);
   }
-  */
+
+  /**
+   * Determine the native ID of the CMS user
+   *
+   * @param $username
+   * @return int|NULL
+   */
+  function getUfId($username) {
+    $user = user_load(array('name' => $username));
+    if (empty($user->uid)) {
+      return NULL;
+    }
+    return $user->uid;
+  }
 
   /**
    * Set a message in the UF to display to a user
@@ -628,20 +654,26 @@ SELECT name, mail
   function getUFLocale() {
     // return CiviCRM’s xx_YY locale that either matches Drupal’s Chinese locale
     // (for CRM-6281), Drupal’s xx_YY or is retrieved based on Drupal’s xx
+    // sometimes for CLI based on order called, this might not be set and/or empty
     global $language;
-    switch (TRUE) {
-      case $language->language == 'zh-hans':
-        return 'zh_CN';
 
-      case $language->language == 'zh-hant':
-        return 'zh_TW';
-
-      case preg_match('/^.._..$/', $language->language):
-        return $language->language;
-
-      default:
-        return CRM_Core_I18n_PseudoConstant::longForShort(substr($language->language, 0, 2));
+    if (empty($language)) {
+      return NULL;
     }
+
+    if ($language->language == 'zh-hans') {
+      return 'zh_CN';
+    }
+
+    if ($language->language == 'zh-hant') {
+      return 'zh_TW';
+    }
+
+    if (preg_match('/^.._..$/', $language->language)) {
+      return $language->language;
+    }
+
+    return CRM_Core_I18n_PseudoConstant::longForShort(substr($language->language, 0, 2));
   }
 
   function getVersion() {
@@ -651,32 +683,50 @@ SELECT name, mail
   /**
    * load drupal bootstrap
    *
-   * @param $name string  optional username for login
-   * @param $pass string  optional password for login
+   * @param array $params Either uid, or name & pass.
+   * @param boolean $loadUser boolean Require CMS user load.
+   * @param boolean $throwError If true, print error on failure and exit.
+   * @param boolean|string $realPath path to script
    */
-  function loadBootStrap($params = array(
-    ), $loadUser = TRUE, $throwError = TRUE, $realPath = NULL) {
-    $uid  = CRM_Utils_Array::value('uid', $params);
-    $name = CRM_Utils_Array::value('name', $params, FALSE) ? $params['name'] : trim(CRM_Utils_Array::value('name', $_REQUEST));
-    $pass = CRM_Utils_Array::value('pass', $params, FALSE) ? $params['pass'] : trim(CRM_Utils_Array::value('pass', $_REQUEST));
-
+  function loadBootStrap($params = array(), $loadUser = TRUE, $throwError = TRUE, $realPath = NULL) {
     //take the cms root path.
     $cmsPath = $this->cmsRootPath($realPath);
-    if (!file_exists("$cmsPath/includes/bootstrap.inc")) {
-      echo '<br />Sorry, unable to locate bootstrap.inc.';
-      exit();
-    }
 
+    if (!file_exists("$cmsPath/includes/bootstrap.inc")) {
+      if ($throwError) {
+        echo '<br />Sorry, could not locate bootstrap.inc\n';
+        exit();
+      }
+      return FALSE;
+    }
+    // load drupal bootstrap
     chdir($cmsPath);
+    define('DRUPAL_ROOT', $cmsPath);
+
+    // For drupal multi-site CRM-11313
+    if ($realPath && strpos($realPath, 'sites/all/modules/') === FALSE) {
+      preg_match('@sites/([^/]*)/modules@s', $realPath, $matches);
+      if (!empty($matches[1])) {
+        $_SERVER['HTTP_HOST'] = $matches[1];
+      }
+    }
     require_once 'includes/bootstrap.inc';
+    // @ to suppress notices eg 'DRUPALFOO already defined'.
     @drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
-    if (!function_exists('module_exists') ||
-      !module_exists('civicrm')
-    ) {
-      echo '<br />Sorry, could not able to load drupal bootstrap.';
-      exit();
+    // explicitly setting error reporting, since we cannot handle drupal related notices
+    error_reporting(1);
+    if (!function_exists('module_exists') || !module_exists('civicrm')) {
+      if ($throwError) {
+        echo '<br />Sorry, could not load drupal bootstrap.';
+        exit();
+      }
+      return FALSE;
     }
+
+    // seems like we've bootstrapped drupal
+    $config = CRM_Core_Config::singleton();
+
     // lets also fix the clean url setting
     // CRM-6948
     $config->cleanURL = (int) variable_get('clean_url', '0');
@@ -690,27 +740,57 @@ SELECT name, mail
     if (!$loadUser) {
       return TRUE;
     }
-    //load user, we need to check drupal permissions.
-    if ($name) {
-      $user = user_authenticate(array('name' => $name, 'pass' => $pass));
-      if (empty($user->uid)) {
-        echo '<br />Sorry, unrecognized username or password.';
-        exit();
+    global $user;
+    // If $uid is passed in, authentication has been done already.
+    $uid = CRM_Utils_Array::value('uid', $params);
+    if (!$uid) {
+      //load user, we need to check drupal permissions.
+      $name = CRM_Utils_Array::value('name', $params, FALSE) ? $params['name'] : trim(CRM_Utils_Array::value('name', $_REQUEST));
+      $pass = CRM_Utils_Array::value('pass', $params, FALSE) ? $params['pass'] : trim(CRM_Utils_Array::value('pass', $_REQUEST));
+
+      if ($name) {
+        $user = user_authenticate(array('name' => $name, 'pass' => $pass));
+        if (!$user->uid) {
+          if ($throwError) {
+            echo '<br />Sorry, unrecognized username or password.';
+            exit();
+          }
+          return FALSE;
+        }
+        else {
+          return TRUE;
+        }
       }
     }
-    elseif ($uid) {
-      $account = user_load(array('uid' => $uid));
-      if (empty($account->uid)) {
-        echo '<br />Sorry, unrecognized user id.';
-        exit();
-      }
-      else {
-        global $user;
+
+    if ($uid) {
+      $account = user_load($uid);
+      if ($account && $account->uid) {
         $user = $account;
+        return TRUE;
       }
     }
+
+    if ($throwError) {
+      echo '<br />Sorry, can not load CMS user account.';
+      exit();
+    }
+
+    // CRM-6948: When using loadBootStrap, it's implicit that CiviCRM has already loaded its settings
+    // which means that define(CIVICRM_CLEANURL) was correctly set.
+    // So we correct it
+    $config = CRM_Core_Config::singleton();
+    $config->cleanURL = (int)variable_get('clean_url', '0');
+
+    // CRM-8655: Drupal wasn't available during bootstrap, so hook_civicrm_config never executes
+    CRM_Utils_Hook::config($config);
+
+    return FALSE;
   }
 
+  /**
+   *
+   */
   function cmsRootPath($scriptFilename = NULL) {
     $cmsRoot = $valid = NULL;
 
@@ -720,6 +800,7 @@ SELECT name, mail
     else {
       $path = $_SERVER['SCRIPT_FILENAME'];
     }
+
     if (function_exists('drush_get_context')) {
       // drush anyway takes care of multisite install etc
       return drush_get_context('DRUSH_DRUPAL_ROOT');
@@ -796,10 +877,7 @@ SELECT name, mail
    * @return string $url, formatted url.
    * @static
    */
-  function languageNegotiationURL($url,
-    $addLanguagePart = TRUE,
-    $removeLanguagePart = FALSE
-  ) {
+  function languageNegotiationURL($url, $addLanguagePart = TRUE, $removeLanguagePart = FALSE) {
     if (empty($url)) {
       return $url;
     }
@@ -939,6 +1017,29 @@ SELECT name, mail
   }
 
   /**
+   * Get timezone from Drupal
+   * @return boolean|string
+   */
+  function getTimeZoneOffset(){
+    global $user;
+    if (variable_get('configurable_timezones', 1) && $user->uid && strlen($user->timezone)) {
+      $timezone = $user->timezone;
+    } else {
+      $timezone = variable_get('date_default_timezone', null);
+    }
+    if(empty($timezone)){
+      return false;
+    }
+    $hour = $user->timezone / 3600;
+    $timeZoneOffset = sprintf("%02d:%02d", $timezone / 3600, ($timezone/60)%60 );
+    if($timeZoneOffset > 0){
+      $timeZoneOffset = '+' . $timeZoneOffset;
+    }
+    return $timeZoneOffset;
+  }
+
+
+  /**
    * Reset any system caches that may be required for proper CiviCRM
    * integration.
    */
@@ -946,4 +1047,3 @@ SELECT name, mail
     drupal_flush_all_caches();
   }
 }
-

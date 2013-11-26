@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -77,6 +77,8 @@
   {/if}
 
   {if $action eq 2 | $action eq 1} {* add and update actions *}
+		{* Retrieve the ID for the Employee / Employer relationship type *}
+		{crmAPI var="employmentRelationship" entity="RelationshipType" action="getvalue" version="3" name_a_b="Employee of" return="id"}
     <h3>{if $action eq 1}{ts}New Relationship{/ts}{else}{ts}Edit Relationship{/ts}{/if}</h3>
     <div class="crm-block crm-form-block crm-relationship-form-block">
             {if $action eq 1}
@@ -166,7 +168,7 @@
                         var relContact = cj('#contact_1');
                         if ( relType ) {
                              var dataUrl = {/literal}'{crmURL p="civicrm/ajax/rest" h=0 q="className=CRM_Contact_Page_AJAX&fnName=getContactList&json=1&context=relationship&rel="}'{literal} + relType;
-                             relContact.autocomplete( dataUrl, { width : 180, selectFirst : false, matchContains: true });
+                             relContact.autocomplete( dataUrl, { width : 200, selectFirst : false, matchContains: true, max: {/literal}{crmSetting name="search_autocomplete_count" group="Search Preferences"}{literal} });
                              relContact.result(function( event, data ) {
                                 cj("input[name='contact_select_id[1]']").val(data[1]);
                                 cj('#relationship-refresh-save').show( );
@@ -183,10 +185,10 @@
                         var postUrl = "{/literal}{crmURL p='civicrm/ajax/relationshipContactTypeList' h=0}{literal}";
                         cj.post( postUrl, { relType: relType },
                             function ( response ) {
-                                cj( selectID ).get(0).add(new Option('{/literal}{ts escape="js"}- create new contact -{/ts}{literal}', ''), document.all ? i : null);
+                                cj( selectID ).get(0).add(new Option('{/literal}{ts escape="js"}- create new contact -{/ts}{literal}', ''));
                                 response = eval( response );
                                 for (i = 0; i < response.length; i++) {
-                                    cj( selectID ).get(0).add(new Option(response[i].name, response[i].value), document.all ? i : null);
+                                    cj( selectID ).get(0).add(new Option(response[i].name, response[i].value));
                                 }
                             }
                         );
@@ -552,7 +554,7 @@ function buildRelationFields( relType ) {
     {/literal} {if $action EQ 1} {literal}
     if ( relType ) {
         var relTypeId = relType.split("_");
-        if ( relTypeId[0] == 4 ) {
+        if ( relTypeId[0] == {/literal}{$employmentRelationship}{literal} ) {
             if ( relTypeId[1] == 'a' ) {
                 cj('#addCurrentEmployee').show();
                 cj('#addCurrentEmployer').hide();
@@ -611,11 +613,11 @@ function changeCustomData( cType ) {
    function currentEmployer( )
    {
       var relType = document.getElementById('relationship_type_id').value;
-      if ( relType == '4_a_b' ) {
+      if ( relType == "{/literal}{$employmentRelationship}{literal}" + "_a_b" ) {
            cj('#current_employer').show();
            cj('#employee').show();
            cj('#employer').hide();
-      } else if ( relType == '4_b_a' ) {
+      } else if ( relType == "{/literal}{$employmentRelationship}{literal}" + "_b_a" ) {
      cj('#current_employer').show();
            cj('#employer').show();
            cj('#employee').hide();

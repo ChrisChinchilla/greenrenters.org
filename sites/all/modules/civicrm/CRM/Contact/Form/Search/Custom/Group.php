@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -32,7 +32,9 @@
  * $Id$
  *
  */
-class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
+class CRM_Contact_Form_Search_Custom_Group
+  extends CRM_Contact_Form_Search_Custom_Base
+  implements CRM_Contact_Form_Search_Interface {
 
   protected $_formValues;
 
@@ -91,7 +93,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
 
     $groups = CRM_Core_PseudoConstant::group();
 
-    $tags = CRM_Core_PseudoConstant::tag();
+    $tags = CRM_Core_PseudoConstant::get('CRM_Core_DAO_EntityTag', 'tag_id', array('onlyActive' => FALSE));
     if (count($groups) == 0 || count($tags) == 0) {
       CRM_Core_Session::setStatus(ts("At least one Group and Tag must be present for Custom Group / Tag search."), ts('Missing Group/Tag'));
       $url = CRM_Utils_System::url('civicrm/contact/search/custom/list', 'reset=1');
@@ -228,6 +230,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
     if (!$justIDs) {
       if (!empty($sort)) {
         if (is_string($sort)) {
+          $sort = CRM_Utils_Type::escape($sort, 'String');
           $sql .= " ORDER BY $sort ";
         }
         else {
@@ -282,7 +285,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
         $xGroups = 0;
       }
 
-      $sql = "CREATE TEMPORARY TABLE Xg_{$this->_tableName} ( contact_id int primary key) ENGINE=HEAP";
+      $sql = "CREATE TEMPORARY TABLE Xg_{$this->_tableName} ( contact_id int primary key) ENGINE=MyISAM";
       CRM_Core_DAO::executeQuery($sql);
 
       //used only when exclude group is selected
@@ -317,7 +320,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
 
       $sql = "CREATE TEMPORARY TABLE Ig_{$this->_tableName} ( id int PRIMARY KEY AUTO_INCREMENT,
                                                                    contact_id int,
-                                                                   group_names varchar(64)) ENGINE=HEAP";
+                                                                   group_names varchar(64)) ENGINE=MyISAM";
 
       CRM_Core_DAO::executeQuery($sql);
 
@@ -417,7 +420,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
         $xTags = 0;
       }
 
-      $sql = "CREATE TEMPORARY TABLE Xt_{$this->_tableName} ( contact_id int primary key) ENGINE=HEAP";
+      $sql = "CREATE TEMPORARY TABLE Xt_{$this->_tableName} ( contact_id int primary key) ENGINE=MyISAM";
       CRM_Core_DAO::executeQuery($sql);
 
       //used only when exclude tag is selected
@@ -435,7 +438,7 @@ class CRM_Contact_Form_Search_Custom_Group extends CRM_Contact_Form_Search_Custo
 
       $sql = "CREATE TEMPORARY TABLE It_{$this->_tableName} ( id int PRIMARY KEY AUTO_INCREMENT,
                                                                contact_id int,
-                                                               tag_names varchar(64)) ENGINE=HEAP";
+                                                               tag_names varchar(64)) ENGINE=MyISAM";
 
       CRM_Core_DAO::executeQuery($sql);
 

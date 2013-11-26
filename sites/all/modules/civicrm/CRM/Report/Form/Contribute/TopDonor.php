@@ -1,9 +1,8 @@
 <?php
-// $Id$
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -45,7 +44,7 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
     'barChart' => 'Bar Chart',
     'pieChart' => 'Pie Chart',
   );
-  
+
   function __construct() {
     $this->_columns = array(
       'civicrm_contact' =>
@@ -63,12 +62,25 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
             'required' => TRUE,
             'no_repeat' => TRUE,
           ),
-		  'first_name' => array('title' => ts('First Name'),
+          'first_name' => array(
+            'title' => ts('First Name'),
           ),
-		  'last_name' => array('title' => ts('Last Name'),
+          'last_name' => array(
+            'title' => ts('Last Name'),
+          ),
+          'contact_type' =>
+          array(
+            'title' => ts('Contact Type'),
+          ),
+          'contact_sub_type' =>
+          array(
+            'title' => ts('Contact SubType'),
           ),
         ),
       ),
+    )
+    + $this->getAddressColumns()
+    + array(
       'civicrm_contribution' =>
       array(
         'dao' => 'CRM_Contribute_DAO_Contribution',
@@ -83,7 +95,7 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
               'avg' => ts('Average'),
             ),
           ),
-          'currency' => 
+          'currency' =>
           array('required' => TRUE,
              'no_display' => TRUE,
           ),
@@ -121,7 +133,7 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
           ),
         ),
       ),
-	'civicrm_email' =>
+  'civicrm_email' =>
       array(
         'dao' => 'CRM_Core_DAO_Email',
         'fields' =>
@@ -134,7 +146,7 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
         ),
         'grouping' => 'email-fields',
       ),
-	  
+
       'civicrm_phone' =>
       array(
         'dao' => 'CRM_Core_DAO_Phone',
@@ -218,13 +230,15 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
             }
             else {
               $select[] = "{$field['dbAlias']} as {$tableName}_{$fieldName}";
-              $this->_columnHeaders["{$tableName}_{$fieldName}"]['type'] = $field['type'];
+              // $field['type'] is not always set. Use string type as default if not set.
+              $this->_columnHeaders["{$tableName}_{$fieldName}"]['type'] = isset($field['type']) ? $field['type'] : 2;
               $this->_columnHeaders["{$tableName}_{$fieldName}"]['title'] = $field['title'];
             }
           }
         }
       }
     }
+    
     $this->_select = " SELECT * FROM ( SELECT " . implode(', ', $select) . " ";
   }
 
@@ -248,15 +262,16 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
   function from() {
     $this->_from = "
         FROM civicrm_contact {$this->_aliases['civicrm_contact']} {$this->_aclFrom}
-	       	 INNER JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']} 
+	       	 INNER JOIN civicrm_contribution {$this->_aliases['civicrm_contribution']}
 		             ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_contribution']}.contact_id AND {$this->_aliases['civicrm_contribution']}.is_test = 0
-             LEFT  JOIN civicrm_email  {$this->_aliases['civicrm_email']} 
-                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id  
+             LEFT  JOIN civicrm_email  {$this->_aliases['civicrm_email']}
+                         ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_email']}.contact_id
                          AND {$this->_aliases['civicrm_email']}.is_primary = 1
-             LEFT  JOIN civicrm_phone  {$this->_aliases['civicrm_phone']} 
+             LEFT  JOIN civicrm_phone  {$this->_aliases['civicrm_phone']}
                          ON {$this->_aliases['civicrm_contact']}.id = {$this->_aliases['civicrm_phone']}.contact_id AND
-                            {$this->_aliases['civicrm_phone']}.is_primary = 1 
+                            {$this->_aliases['civicrm_phone']}.is_primary = 1
 	";
+    $this->addAddressFromClause();
   }
 
   function where() {
@@ -337,7 +352,7 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
     $setVariable = " SET @rows:=0, @rank=0 ";
     CRM_Core_DAO::singleValueQuery($setVariable);
 
-    $sql = " {$this->_select} {$this->_from}  {$this->_where} {$this->_groupBy} 
+    $sql = " {$this->_select} {$this->_from}  {$this->_where} {$this->_groupBy}
                      ORDER BY civicrm_contribution_total_amount_sum DESC
                  ) as abc {$this->_outerCluase} $this->_limit
                ";
@@ -363,8 +378,8 @@ class CRM_Report_Form_Contribute_TopDonor extends CRM_Report_Form {
   function add2group($groupID) {
     if (is_numeric($groupID)) {
 
-      $sql = " 
-{$this->_select} {$this->_from}  {$this->_where} {$this->_groupBy} 
+      $sql = "
+{$this->_select} {$this->_from}  {$this->_where} {$this->_groupBy}
 ORDER BY civicrm_contribution_total_amount_sum DESC
 ) as abc {$this->_outerCluase}";
       $dao = CRM_Core_DAO::executeQuery($sql);
@@ -401,6 +416,9 @@ ORDER BY civicrm_contribution_total_amount_sum DESC
       $this->set(CRM_Utils_Pager::PAGE_ID, $pageId);
       $offset = ($pageId - 1) * $rowCount;
 
+      $offset = CRM_Utils_Type::escape($offset, 'Int');
+      $rowCount = CRM_Utils_Type::escape($rowCount, 'Int');
+
       $this->_limit = " LIMIT $offset, " . $rowCount;
     }
   }
@@ -426,6 +444,7 @@ ORDER BY civicrm_contribution_total_amount_sum DESC
           $rows[$rowNum]['civicrm_contact_display_name_link'] = $url;
           $entryFound = TRUE;
         }
+        $entryFound = $this->alterDisplayAddressFields($row, $rows, $rowNum, 'contribute/detail', 'List all contribution(s)') ? TRUE : $entryFound;
 
         // skip looking further in rows, if first row itself doesn't
         // have the column we need

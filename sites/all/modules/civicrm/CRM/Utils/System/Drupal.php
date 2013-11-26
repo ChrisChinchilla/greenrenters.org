@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -36,11 +36,7 @@
 /**
  * Drupal specific stuff goes here
  */
-class CRM_Utils_System_Drupal extends CRM_Utils_System_Base {
-  function __construct() {
-    $this->is_drupal = TRUE;
-    $this->supports_form_extensions = TRUE;
-  }
+class CRM_Utils_System_Drupal extends CRM_Utils_System_DrupalBase {
 
   /**
    * Function to create a user in Drupal.
@@ -63,7 +59,7 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_Base {
 
     $admin = user_access('administer users');
     if (!variable_get('user_email_verification', TRUE) || $admin) {
-            $form_state['input']['pass'] = array('pass1'=>$params['cms_pass'],'pass2'=>$params['cms_pass']);
+      $form_state['input']['pass'] = array('pass1'=>$params['cms_pass'],'pass2'=>$params['cms_pass']);
     }
 
     if(!empty($params['notify'])){
@@ -98,9 +94,7 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_Base {
     if (form_get_errors()) {
       return FALSE;
     }
-    else {
-      return $form_state['user']->uid;
-  }
+    return $form_state['user']->uid;
   }
 
   /*
@@ -550,7 +544,8 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_Base {
    *
    * @param string $name     the user name
    * @param string $password the password for the above user name
-   * @param $loadCMSBootstrap boolean load cms bootstrap?
+   * @param boolean $loadCMSBootstrap load cms bootstrap?
+   * @param NULL|string $realPath filename of script
    *
    * @return mixed false if no auth
    *               array(
@@ -566,8 +561,6 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_Base {
     if (DB::isError($dbDrupal)) {
       CRM_Core_Error::fatal("Cannot connect to drupal db via $config->userFrameworkDSN, " . $dbDrupal->getMessage());
     }
-
-
 
     $account = $userUid = $userMail = NULL;
     if ($loadCMSBootstrap) {
@@ -653,14 +646,31 @@ AND    u.status = 1
   }
 
   /**
-   * Perform an post login activities required by the UF -
-   * e.g. for drupal: records a watchdog message about the new session, saves the login timestamp, calls hook_user op 'login' and generates a new session.
-   * @param array $edit: The array of form values submitted by the user.
+   * Perform any post login activities required by the UF -
+   * e.g. for drupal: records a watchdog message about the new session, saves the login timestamp,
+   * calls hook_user op 'login' and generates a new session.
    *
-  function userLoginFinalize($edit = array()){
-    user_login_finalize(&$edit);
+   * @param array params
+   *
+   * FIXME: Document values accepted/required by $params
+   */
+  function userLoginFinalize($params = array()){
+    user_login_finalize($params);
   }
-  */
+
+  /**
+   * Determine the native ID of the CMS user
+   *
+   * @param $username
+   * @return int|NULL
+   */
+  function getUfId($username) {
+    $user = user_load_by_name($username);
+    if (empty($user->uid)) {
+      return NULL;
+    }
+    return $user->uid;
+  }
 
   /**
    * Set a message in the UF to display to a user
@@ -735,11 +745,11 @@ AND    u.status = 1
   /**
    * load drupal bootstrap
    *
-   * @param $params array with uid or name and password
-   * @param $loadUser boolean load cms user?
-   * @param $throwError throw error on failure?
+   * @param array $params Either uid, or name & pass.
+   * @param boolean $loadUser boolean Require CMS user load.
+   * @param boolean $throwError If true, print error on failure and exit.
+   * @param boolean|string $realPath path to script
    */
-
   function loadBootStrap($params = array(), $loadUser = TRUE, $throwError = TRUE, $realPath = NULL) {
     //take the cms root path.
     $cmsPath = $this->cmsRootPath($realPath);
@@ -763,7 +773,8 @@ AND    u.status = 1
       }
     }
     require_once 'includes/bootstrap.inc';
-    drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+    // @ to suppress notices eg 'DRUPALFOO already defined'.
+    @drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
     // explicitly setting error reporting, since we cannot handle drupal related notices
     error_reporting(1);
@@ -836,8 +847,10 @@ AND    u.status = 1
     return FALSE;
   }
 
+  /**
+   *
+   */
   function cmsRootPath($scriptFilename = NULL) {
-
     $cmsRoot = $valid = NULL;
 
     if (!is_null($scriptFilename)) {
@@ -923,11 +936,7 @@ AND    u.status = 1
    * @return string $url, formatted url.
    * @static
    */
-  function languageNegotiationURL(
-    $url,
-    $addLanguagePart = TRUE,
-    $removeLanguagePart = FALSE
-  ) {
+  function languageNegotiationURL($url, $addLanguagePart = TRUE, $removeLanguagePart = FALSE) {
     if (empty($url)) {
       return $url;
     }
@@ -960,7 +969,7 @@ AND    u.status = 1
         if ($urlType == LOCALE_LANGUAGE_NEGOTIATION_URL_DOMAIN) {
           if (isset($language->domain) && $language->domain) {
             if ($addLanguagePart) {
-              $url = CRM_Utils_File::addTrailingSlash($language->domain, '/');
+              $url = (CRM_Utils_System::isSSL() ? 'https' : 'http') . '://' . $language->domain . base_path();
             }
             if ($removeLanguagePart && defined('CIVICRM_UF_BASEURL')) {
               $url = str_replace('\\', '/', $url);
@@ -1019,12 +1028,17 @@ AND    u.status = 1
 
   /**
    * Wrapper for og_membership creation
+   *
+   * @param integer $ogID Organic Group ID
+   * @param integer $drupalID drupal User ID
    */
   function og_membership_create($ogID, $drupalID){
     if (function_exists('og_entity_query_alter')) {
-      // sort-of-randomly chose a function that only exists in the 7.x-2.x branch
-      // TODO: Find a more solid way to make this test
-      // Also, since we don't know how to get the entity type of the group, we'll assume it's 'node'
+      // sort-of-randomly chose a function that only exists in the // 7.x-2.x branch
+      //
+      // @TODO Find more solid way to check - try system_get_info('module', 'og').
+      //
+      // Also, since we don't know how to get the entity type of the // group, we'll assume it's 'node'
       og_group('node', $ogID, array('entity' => user_load($drupalID)));
     }
     else {
@@ -1035,6 +1049,9 @@ AND    u.status = 1
 
   /**
    * Wrapper for og_membership deletion
+   *
+   * @param integer $ogID Organic Group ID
+   * @param integer $drupalID drupal User ID
    */
   function og_membership_delete($ogID, $drupalID) {
     if (function_exists('og_entity_query_alter')) {
@@ -1048,6 +1065,32 @@ AND    u.status = 1
     }
   }
 
+  /**
+   * Get timezone from Drupal
+   * @return boolean|string
+   */
+  function getTimeZoneOffset(){
+    global $user;
+    if (variable_get('configurable_timezones', 1) && $user->uid && strlen($user->timezone)) {
+      $timezone = $user->timezone;
+    } else {
+      $timezone = variable_get('date_default_timezone', null);
+    }
+    $tzObj = new DateTimeZone($timezone);
+    $dateTime = new DateTime("now", $tzObj);
+    $tz = $tzObj->getOffset($dateTime);
+
+    if(empty($tz)){
+      return false;
+    }
+
+    $timeZoneOffset = sprintf("%02d:%02d", $tz / 3600, ($tz/60)%60 );
+
+    if($timeZoneOffset > 0){
+      $timeZoneOffset = '+' . $timeZoneOffset;
+    }
+    return $timeZoneOffset;
+  }
   /**
    * Reset any system caches that may be required for proper CiviCRM
    * integration.

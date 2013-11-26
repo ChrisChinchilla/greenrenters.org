@@ -3,7 +3,7 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -2003,14 +2003,14 @@ function civicrm_views_data() {
     'real field' => 'financial_type_id',
     'help' => t('The Type of Contribution made, ie Member Dues, Event Fees etc'),
     'field' => array(
-      'handler' => 'civicrm_handler_field_financial_type',
+      'handler' => 'civicrm_handler_field_contribution_type',
       'click sortable' => TRUE,
     ),
     'argument' => array(
       'handler' => 'views_handler_argument',
     ),
     'filter' => array(
-      'handler' => 'civicrm_handler_filter_financial_type',
+      'handler' => 'civicrm_handler_filter_contribution_type',
       'allow empty' => TRUE,
     ),
     'sort' => array(
@@ -3289,7 +3289,7 @@ function civicrm_views_data() {
     'help' => t('Activity -> Campaign'),
     'relationship' => array(
       'base' => 'civicrm_campaign',
-      'field' => 'campaign_id',
+      'field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('Activity -> Campaign'),
     ),
@@ -3333,7 +3333,7 @@ function civicrm_views_data() {
     'help' => t('The contact who is assigned the activity.'),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'assignee_contact_id',
+      'field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('CiviCRM Assignee Contact ID'),
     ),
@@ -3357,7 +3357,7 @@ function civicrm_views_data() {
     'help' => t('The contact who is the activity\'s target.'),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'target_contact_id',
+      'field' => 'id',
       'handler' => 'views_handler_relationship',
       'label' => t('CiviCRM Target Contact ID'),
     ),
@@ -5171,13 +5171,7 @@ function civicrm_views_data() {
    */
 
   $data['civicrm_campaign']['table']['group'] = t('CiviCRM Campaigns');
- $data['civicrm_campaign']['table']['join'] = array(
 
-'civicrm_contribution' => array(
-      'left_field' => 'campaign_id',
-      'field' => 'id',
-    ),
-);
   $data['civicrm_campaign']['table']['base'] = array(
     // Governs the whole mozilla
     'field' => 'id',

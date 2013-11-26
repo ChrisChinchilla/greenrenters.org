@@ -3,7 +3,7 @@
 
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -39,8 +39,7 @@ class civicrm_handler_field_grant_type extends views_handler_field {
       if (!civicrm_initialize()) {
         return;
       }
-      require_once 'CRM/Grant/PseudoConstant.php';
-      self::$_grantType = CRM_Grant_PseudoConstant::grantType();
+      self::$_grantType = CRM_Core_PseudoConstant::get('CRM_Grant_DAO_Grant', 'grant_type_id');;
     }
   }
 

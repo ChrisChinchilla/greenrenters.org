@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -165,28 +165,11 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
    * @access public
    */
   static function deleteBatch($batchId) {
-    //delete batch entries from cache
-    $cacheKeyString = CRM_Batch_BAO_Batch::getCacheKeyForBatch($batchId);
-    CRM_Core_BAO_Cache::deleteGroup('batch entry', $cacheKeyString, FALSE);
-
     // delete entry from batch table
     $batch = new CRM_Batch_DAO_Batch();
     $batch->id = $batchId;
     $batch->delete();
     return true;
-  }
-
-  /**
-   * function to get cachekey for batch
-   *
-   * @param int $batchId batch id
-   *
-   * @retun string $cacheString
-   * @static
-   * @access public
-   */
-  static function getCacheKeyForBatch($batchId) {
-    return "batch-entry-{$batchId}";
   }
 
   /**
@@ -266,7 +249,7 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
 
     $orderBy = ' ORDER BY batch.id desc';
     if (!empty($params['sort'])) {
-      $orderBy = ' ORDER BY ' . $params['sort'];
+      $orderBy = ' ORDER BY ' . CRM_Utils_Type::escape($params['sort'], 'String');
     }
 
     $query = "
@@ -285,8 +268,8 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
       $links = self::links();
     }
 
-    $batchTypes = CRM_Core_PseudoConstant::getBatchType();
-    $batchStatus = CRM_Core_PseudoConstant::getBatchStatus();
+    $batchTypes = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'type_id');
+    $batchStatus = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'status_id');
     $paymentInstrument = CRM_Contribute_PseudoConstant::paymentInstrument();
 
     $results = array();
@@ -353,7 +336,7 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
    * @param  array   $params associated array for params
    * @access public
    */
-  static function getBatchCount(&$params) {
+  public static function getBatchCount(&$params) {
     $args = array();
     $whereClause = self::whereClause($params, $args);
     $query = " SELECT COUNT(*) FROM civicrm_batch batch
@@ -368,7 +351,7 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
    * @param  array   $params associated array for params
    * @access public
    */
-  function whereClause($params) {
+  public static function whereClause($params) {
     $clauses = array();
     // Exclude data-entry batches
     if (empty($params['status_id'])) {
@@ -483,14 +466,16 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
   /**
    * function to get batch list
    *
-   * @return array array of batches
+   * @return array array of all batches
+   * excluding batches with data entry in progress
    */
   static function getBatches() {
-    $query = 'SELECT id, title
+    $dataEntryStatusId = CRM_Core_OptionGroup::getValue('batch_status','Data Entry');
+    $query = "SELECT id, title
       FROM civicrm_batch
-      WHERE type_id IN (1,2)
-      AND status_id = 2
-      ORDER BY id DESC';
+      WHERE item_count >= 1
+      AND status_id != {$dataEntryStatusId}
+      ORDER BY id DESC";
 
     $batches = array();
     $dao = CRM_Core_DAO::executeQuery($query);
@@ -596,7 +581,7 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
   }
 
   static function closeReOpen($batchIds = array(), $status) {
-    $batchStatus = CRM_Core_PseudoConstant::accountOptionValues( 'batch_status' );
+    $batchStatus = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'status_id');
     $params['status_id'] = CRM_Utils_Array::key( $status, $batchStatus );
     $session = CRM_Core_Session::singleton( );
     $params['modified_date'] = date('YmdHis');
@@ -633,8 +618,8 @@ class CRM_Batch_BAO_Batch extends CRM_Batch_DAO_Batch {
     }
 
     $orderBy = " ORDER BY civicrm_financial_trxn.id";
-    if (CRM_Utils_Array::value('sort', $params)) {
-      $orderBy = ' ORDER BY ' . CRM_Utils_Array::value('sort', $params);
+    if (!empty($params['sort'])) {
+      $orderBy = ' ORDER BY ' . CRM_Utils_Type::escape($params['sort'], 'String');
     }
 
     $from = "civicrm_financial_trxn

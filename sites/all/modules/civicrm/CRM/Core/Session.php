@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.3                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
@@ -88,7 +88,7 @@ class CRM_Core_Session {
   /**
    * singleton function used to manage this object
    *
-   * @return CRM_CoreSession
+   * @return CRM_Core_Session
    * @static
    */
   static function &singleton() {
