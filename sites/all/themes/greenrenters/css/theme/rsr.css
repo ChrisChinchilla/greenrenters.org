@@ -5,15 +5,20 @@
 
 .rsr #sidebar-first
 {
-    width: 350px !important;
+	min-width: 350px;
+	width: 34% !important;
+	margin-left: -100% !important;
+}
+
+.rsr .content-inner {
+	border: 2px dashed #0a0a32;
+	margin-left: 34% !important;
 }
 
 .rsr #content-column {
-	width: 600px;
-	max-width: 600px;
-	min-width: 600px;
-	margin-left:10px;
-	margin-top: 20px;
+	clear: none;
+	float: left;
+	width: 100%;
 }
 
 #block-block-27
@@ -31,10 +36,6 @@
 
 .rsr #branding {
 	display: none;
-}
-
-.rsr .content-inner {
-	border: 2px dashed #0a0a32;
 }
 
 .rsr #sidebar-first .block-inner {
