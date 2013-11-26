@@ -33,6 +33,11 @@ function grnbth_context_default_contexts() {
         ),
       ),
     ),
+    'theme' => array(
+      'title' => '',
+      'subtitle' => '',
+      'class' => 'grnbth',
+    ),
   );
   $context->condition_mode = 0;
 

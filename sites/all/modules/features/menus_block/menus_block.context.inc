@@ -67,6 +67,7 @@ function menus_block_context_default_contexts() {
     'context' => array(
       'values' => array(
         '~rsr_layout' => '~rsr_layout',
+        '~grnbth_pages' => '~grnbth_pages',
       ),
     ),
     'path' => array(

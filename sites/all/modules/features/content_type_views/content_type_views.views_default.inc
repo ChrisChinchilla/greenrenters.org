@@ -1971,6 +1971,9 @@ function content_type_views_views_default_views() {
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['path'] = 'tag/%';
 
+  /* Display: Block */
+  $handler = $view->new_display('block', 'Block', 'block_1');
+
   $views[$view->name] = $view;
 
   // Exported view: tutorial_page

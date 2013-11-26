@@ -69,7 +69,7 @@ rentalsweetrental/*',
     ),
   );
   $display->cache = array();
-  $display->title = '';
+  $display->title = 'Rental Sweet Rental';
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass;
@@ -323,7 +323,7 @@ rentalsweetrental/*',
     $pane->position = 6;
     $display->content['new-7'] = $pane;
     $display->panels['middle'][6] = 'new-7';
-  $display->hide_title = PANELS_TITLE_NONE;
+  $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
   $export['node_view_panel_context_14'] = $handler;
