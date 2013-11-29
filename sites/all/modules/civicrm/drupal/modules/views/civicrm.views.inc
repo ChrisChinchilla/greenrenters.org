@@ -117,7 +117,7 @@ function civicrm_views_data() {
     ),
     // Directly links to activity.
     'civicrm_activity' => array(
-      'left_field' => 'source_contact_id',
+      'left_field' => 'source_record_id',
       'field' => 'id',
     ),
     // Directly links to membership.
@@ -3021,7 +3021,7 @@ function civicrm_views_data() {
     ),
   );
 
-  $data['civicrm_activity']['source_contact_id'] = array(
+  $data['civicrm_activity']['source_record_id'] = array(
     'title' => t('Source Contact'),
     'help' => t('The contact who scheduled this activity'),
     'relationship' => array(
@@ -3289,7 +3289,7 @@ function civicrm_views_data() {
     'help' => t('Activity -> Campaign'),
     'relationship' => array(
       'base' => 'civicrm_campaign',
-      'field' => 'id',
+      'field' => 'campaign_id',
       'handler' => 'views_handler_relationship',
       'label' => t('Activity -> Campaign'),
     ),

@@ -38,7 +38,9 @@ class civicrm_handler_field_priority extends views_handler_field {
         return;
       }
       require_once 'CRM/Core/PseudoConstant.php';
-      self::$_priority = CRM_Core_PseudoConstant::priority();
+      //self::$_priority = CRM_Core_PseudoConstant::priority();
+      //self::$_grantStatus = CRM_Core_PseudoConstant::get('CRM_Grant_DAO_Grant', 'status_id');
+      self::$_priority = CRM_Core_PseudoConstant::get('CRM_Activity_DAO_Activity', 'priority_id');
     }
   }
 
